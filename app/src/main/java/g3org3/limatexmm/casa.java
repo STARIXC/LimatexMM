@@ -181,26 +181,26 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         //split text for every space " "
         String[] comment_split = comment_all.split(" ");
 
-        //save the user here words for later
+        //save the used words here words for later
         List<String> used_words = new ArrayList<>();
 
         //declaring the new string that will replace the old one
         SpannableStringBuilder temp_new = new SpannableStringBuilder();
 
-        //declare the phase which will be analized
-        StringBuilder temp_phase = new StringBuilder();
+        //declare the phrase which will be analized
+        StringBuilder temp_phrase = new StringBuilder();
         ;
 
         //for each word in the text
         for (int i = 0; i < comment_split.length; i++) {
 
-            //reset the analizing phase
-            temp_phase.delete(0, temp_phase.length());
+            //reset the analizing phrase
+            temp_phrase.delete(0, temp_phrase.length());
 
 
             //here the for is returned after the first word + i*words was found
-            phase:
-            //build phase using the following 4 words
+            phrase:
+            //build phrase using the following 4 words
             for (int i2 = 0; i2 < 5; i2++) {
 
                 //get the word id
@@ -209,26 +209,26 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
                 //check for used words, jump to the last used word + 1
                 if (used_words.contains(String.valueOf(word_id))) {
                     //get back to each word
-                    break phase;
+                    break phrase;
                 }
 
                 //check if the word id exists
                 if (word_id < comment_split.length) {
 
-                    //add word to analized phase
-                    temp_phase.append(comment_split[word_id]);
+                    //add word to analized phrase
+                    temp_phrase.append(comment_split[word_id]);
 
-                    //filtrer phase for commas
-                    String text_to_compare = temp_phase.toString().replaceAll(",", "");
+                    //filtrer phrase for commas
+                    String text_to_compare = temp_phrase.toString().replaceAll(",", "");
                     Integer text_to_compare_w_count = text_to_compare.split(" ").length;
 
                     if (text_to_compare_w_count > 1) {
 
 
-                        //check in the comment phase list for the current analized phase
+                        //check in the comment phrase list for the current analized phrase
                         for (int i3 = 0; i3 < commentListList.size(); i3++) {
 
-                            //if the phase exists
+                            //if the phrase exists
                             if (commentListList.get(i3).getComName().equals(text_to_compare)) {
 
                                 for (int pw = 0; pw < text_to_compare_w_count; pw++) {
@@ -236,7 +236,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
                                 }
 
 
-                                //get the color of the phase by checking the price
+                                //get the color of the phrase by checking the price
                                 Integer temp_price = commentListList.get(i3).getComPrice();
                                 if (temp_price.equals(0)) {
                                     //append the text in the correct color
@@ -248,14 +248,14 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
 
                                 //get back to each word
-                                break phase;
+                                break phrase;
                             }
 
                         }
                     }
 
-                    //if phase not detected, add space between the next word
-                    temp_phase.append(" ");
+                    //if phrase not detected, add space between the next word
+                    temp_phrase.append(" ");
 
                 }
             }
