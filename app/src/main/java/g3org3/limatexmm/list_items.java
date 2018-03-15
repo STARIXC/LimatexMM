@@ -8,14 +8,24 @@ public class list_items {
 
     private String title;
     private String subTitle;
-    private String price;
+    private Double price;
     private String more;
+    private Double more_value;
 
-    public list_items(String title, String subTitle, String price, String more) {
+    public list_items(String title, String subTitle, Double price, String more, Double more_value) {
         this.title = title;
         this.subTitle = subTitle;
-        this.price = price;
+        this.price =  price;
         this.more = more;
+        this.more_value = more_value;
+    }
+
+    public Double getMore_value() {
+        return more_value;
+    }
+
+    public void setMore_value(Double more_value) {
+        this.more_value = more_value;
     }
 
     public String getMore() {
@@ -42,11 +52,11 @@ public class list_items {
         this.subTitle = subTitle;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }

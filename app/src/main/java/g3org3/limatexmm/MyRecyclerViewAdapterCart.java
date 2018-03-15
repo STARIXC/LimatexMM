@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,11 +24,13 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
     private ItemClickListener mClickListener;
 
     private List<list_items> list_itemsList;
+    Context mContext;
 
     // data is passed into the constructor
     MyRecyclerViewAdapterCart(Context context, List<list_items> list_itemsList) {
         this.list_itemsList = list_itemsList;
         this.mInflater = LayoutInflater.from(context);
+        this.mContext = context;
     }
 
 
@@ -48,8 +51,23 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
 
         holder.cart_title.setText(item.getTitle());
         holder.cart_subTitle.setText(item.getSubTitle());
-        holder.cart_price.setText(item.getPrice() + " Lei");
+
+        String extraPrice = String.valueOf(item.getMore_value());
+        String prodPrice = String.valueOf(item.getPrice());
+
+        String temp_pharse = "";
+        if (Double.valueOf(extraPrice) > 0) {
+            temp_pharse = "(" + extraPrice.replace(".0","") + " lei extra) ";
+        }
+        temp_pharse = temp_pharse + prodPrice + " Lei";
+
+        holder.cart_price.setText(temp_pharse);
         holder.cart_more.setText(item.getMore());
+
+
+        holder.cart_more.setClickable(true);
+        holder.cart_more.setFocusable(true);
+
 
     }
 
@@ -77,6 +95,17 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
             cart_price = itemView.findViewById(R.id.cart_price);
             cart_remove = itemView.findViewById(R.id.cart_remove);
 
+
+            cart_more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, cart_more.getText(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+
+
+
             cart_remove.setOnClickListener(this);
          //   itemView.setOnClickListener(this);
         }
@@ -89,12 +118,12 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
 
 
     String getTotalPrice() {
-        int tempTotalPrice = 0;
+        double tempTotalPrice = 0;
         // for each item
         for (int i = 0, size = list_itemsList.size(); i < size; i++) {
             //get each item
             final list_items item = list_itemsList.get(i);
-            tempTotalPrice = tempTotalPrice + Integer.valueOf(item.getPrice());
+            tempTotalPrice = tempTotalPrice + item.getPrice() + item.getMore_value();
         }
 
         return String.valueOf(tempTotalPrice);
@@ -109,9 +138,9 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         return list_itemsList.get(id).getSubTitle();
     }
 
-    String getItemPrice(int id) {
+    double getItemPrice(int id) {
         return list_itemsList.get(id).getPrice();
-    }
+}
 
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {

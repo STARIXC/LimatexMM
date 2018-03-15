@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+//TODO:
+//REMOVE SEARCH
+//FIX TOTAL CART BUTTON
+//FIX dismiss DIALOG with random text
+//FIX EXTRA PRICE NOT BEING RECALCULATED
+
 
 public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
 
@@ -51,9 +59,11 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
     Dialog myDialog;
 
-    TextView deleteAll;
+    ImageButton deleteAll;
     Button nextButton;
     TextView totalPrice;
+    List<commentList> commentListList = new ArrayList<>();
+    List<SpannableString> commentNameList = new ArrayList<>();
 
     private List<String> lastSearches;
     // Create SharedPreferences and Editor
@@ -121,6 +131,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         cartUpdate();
 
 
+
         //populate + show categories list
         CreateCategories();
 
@@ -131,8 +142,18 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
         for (int i = 0; i < Lines.size(); i++) {
             //extract the strings
-            String com_name = Lines.get(i);
-            int com_price = Integer.valueOf(Lines.get(i + 1));
+            SpannableString com_name = new SpannableString(Lines.get(i));
+            Double com_price = Double.valueOf(Lines.get(i + 1));
+
+            if (com_price.equals(0.0)) {
+                //append the text in the correct color
+                com_name.setSpan(new BackgroundColorSpan(Color.rgb(140, 200, 240)), 0, com_name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else if (com_price.equals(3.0)) {
+                com_name.setSpan(new BackgroundColorSpan(Color.rgb(220, 190, 190)), 0, com_name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else if (com_price.equals(4.0)) {
+                com_name.setSpan(new BackgroundColorSpan(Color.rgb(255, 160, 160)), 0, com_name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
 
             // add item to category list
             commentList temp = new commentList(com_name, com_price);
@@ -141,11 +162,10 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             commentListList.add(temp);
 
             //separated list for autocomplet
-            commentNameList.add(temp.getComName());
+            commentNameList.add(com_name);
 
             i++;
         }
-
 
     }
 
@@ -159,157 +179,22 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     Button add;
     TextView count;
     Button remove;
+    TextView commentValue;
     Button done;
     MultiAutoCompleteTextView comment;
 
     String current_item_title;
     String current_item_subTitle;
-    String current_item_price;
+    double current_item_price;
     String current_item_more;
     int current_item_count;
+    double comment_value;
 
 
-    List<commentList> commentListList = new ArrayList<>();
-    List<String> commentNameList = new ArrayList<>();
 
+    MyArrayAdapter commentAdapter;
 
-    public void comment_color_text() {
-
-        //save comment text for later
-        String comment_all = comment.getText().toString().toLowerCase();
-
-        //split text for every space " "
-        String[] comment_split = comment_all.split(" ");
-
-        //save the used words here words for later
-        List<String> used_words = new ArrayList<>();
-
-        //declaring the new string that will replace the old one
-        SpannableStringBuilder temp_new = new SpannableStringBuilder();
-
-        //declare the phrase which will be analized
-        StringBuilder temp_phrase = new StringBuilder();
-        ;
-
-        //for each word in the text
-        for (int i = 0; i < comment_split.length; i++) {
-
-            //reset the analizing phrase
-            temp_phrase.delete(0, temp_phrase.length());
-
-
-            //here the for is returned after the first word + i*words was found
-            phrase:
-            //build phrase using the following 4 words
-            for (int i2 = 0; i2 < 5; i2++) {
-
-                //get the word id
-                int word_id = i + i2;
-
-                //check for used words, jump to the last used word + 1
-                if (used_words.contains(String.valueOf(word_id))) {
-                    //get back to each word
-                    break phrase;
-                }
-
-                //check if the word id exists
-                if (word_id < comment_split.length) {
-
-                    //add word to analized phrase
-                    temp_phrase.append(comment_split[word_id]);
-
-                    //filtrer phrase for commas
-                    String text_to_compare = temp_phrase.toString().replaceAll(",", "");
-                    Integer text_to_compare_w_count = text_to_compare.split(" ").length;
-
-                    if (text_to_compare_w_count > 1) {
-
-
-                        //check in the comment phrase list for the current analized phrase
-                        for (int i3 = 0; i3 < commentListList.size(); i3++) {
-
-                            //if the phrase exists
-                            if (commentListList.get(i3).getComName().equals(text_to_compare)) {
-
-                                for (int pw = 0; pw < text_to_compare_w_count; pw++) {
-                                    used_words.add(String.valueOf(word_id - pw));
-                                }
-
-
-                                //get the color of the phrase by checking the price
-                                Integer temp_price = commentListList.get(i3).getComPrice();
-                                if (temp_price.equals(0)) {
-                                    //append the text in the correct color
-                                    temp_new.append(commentListList.get(i3).getComName(), new BackgroundColorSpan(Color.rgb(255, 170, 170)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                } else {
-                                    temp_new.append(commentListList.get(i3).getComName(), new BackgroundColorSpan(Color.rgb(140, 200, 240)), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                }
-                                temp_new.append(", ");
-
-
-                                //get back to each word
-                                break phrase;
-                            }
-
-                        }
-                    }
-
-                    //if phrase not detected, add space between the next word
-                    temp_phrase.append(" ");
-
-                }
-            }
-        }
-
-        //for each word
-        for (int ia = 0; ia < comment_split.length; ia++) {
-            boolean used = false;
-            //for each used word
-            for (int ib = 0; ib < used_words.size(); ib++) {
-                if (used_words.get(ib).equals(String.valueOf(ia))) {
-                    //mark word as used;
-                    used = true;
-                }
-            }
-            //if word is not used, write it!
-            if (!used) {
-                temp_new.append(comment_split[ia]);
-            }
-        }
-
-
-        comment.setText(temp_new);
-        comment.setSelection(comment.length());
-
-        //get the focus back
-        //  comment.requestFocus();
-
-    }
-
-    private Handler mHandler;
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeCallbacks(mStatusChecker);
-    }
-
-    Runnable mStatusChecker = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                comment_color_text(); //this function can change value of mInterval.
-            } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                mHandler.postDelayed(mStatusChecker, 2500);
-            }
-        }
-    };
-
-
-    public void ShowPopup(String item_title, String item_subTitle, String item_price) {
+    public void ShowPopup(String item_title, String item_subTitle, double item_price) {
 
         current_item_title = item_title;
         current_item_subTitle = item_subTitle;
@@ -325,24 +210,48 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         remove = myDialog.findViewById(R.id.remove);
         comment = myDialog.findViewById(R.id.comment);
         done = myDialog.findViewById(R.id.done);
+        commentValue = myDialog.findViewById(R.id.commentValue);
 
 
-        ArrayAdapter<String> adapterText = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, commentNameList);
-        comment.setAdapter(adapterText);
+
+        List<commentList> cloneCommentListList = new ArrayList<>();
+       // cloneCommentListList = commentListList;
+        cloneCommentListList.addAll(commentListList);
+
+        Toast.makeText(getApplicationContext(), "clona: " + cloneCommentListList.size() + " originalu: " + commentListList.size(), Toast.LENGTH_SHORT).show();
+
+        commentAdapter = new MyArrayAdapter(this, R.layout.simple_dropdown_item, cloneCommentListList);
+        comment.setAdapter(commentAdapter);
         comment.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        comment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        comment_value = 0;
+
+        comment.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    comment.showDropDown();
-                }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                commentValue.setText(String.valueOf(comment_value) + " lei");
+
             }
         });
 
-
-        mHandler = new Handler();
-        mStatusChecker.run();
+        comment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                comment_value = comment_value + commentAdapter.getItem(i).getComPrice();
+                commentValue.setText(String.valueOf(comment_value));
+            }
+        });
 
 
         //TODO: comment list
@@ -361,13 +270,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             }
         });
 
-        myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //remove text color timer
-                mHandler.removeCallbacks(mStatusChecker);
-            }
-        });
 
         done.setOnClickListener(doneClickHandler);
         add.setOnClickListener(addClickHandler);
@@ -388,9 +290,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             myDialog.dismiss();
             current_item_more = comment.getText().toString();
             AddToCart_current();
-
-            //remove text color timer
-            mHandler.removeCallbacks(mStatusChecker);
         }
     };
 
@@ -418,7 +317,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
     // ADD CURRENT ITEM (FROM TEMP) to cart list
     public void AddToCart_current() {
-        list_items temp = new list_items(current_item_title, current_item_subTitle, current_item_price, current_item_more);
+        list_items temp = new list_items(current_item_title, current_item_subTitle, current_item_price, current_item_more, comment_value);
         for (int i = 0; i < current_item_count; i++) {
             list_itemsList_cart.add(temp);
         }
@@ -458,10 +357,10 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             //extract the strings
             String item_title = Lines.get(i);
             String item_subTitle = Lines.get(i + 1);
-            String item_price = Lines.get(i + 2);
+            Double item_price = Double.valueOf(Lines.get(i + 2));
 
             // add item to category list
-            list_items temp = new list_items(item_title, item_subTitle, item_price, "");
+            list_items temp = new list_items(item_title, item_subTitle, item_price, "", 0.0);
             list_itemsList.add(temp);
 
             i = i + 2;

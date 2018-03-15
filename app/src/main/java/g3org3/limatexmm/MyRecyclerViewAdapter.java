@@ -133,7 +133,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return list_itemsList.get(id).getSubTitle();
     }
 
-    String getItemPrice(int id) {
+    double getItemPrice(int id) {
         return list_itemsList.get(id).getPrice();
     }
 

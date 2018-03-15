@@ -30,14 +30,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.1" />
 
-    <android.support.v7.widget.SearchView
+    <Button
         android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:elevation="6dp"
         android:layout_marginBottom="1dp"
         android:layout_marginEnd="1dp"
-        android:background="@android:color/white"
+        android:text="Comenzile de azi (0)"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textAllCaps="true"
+        android:background="@drawable/ripple_button"
         app:layout_constraintBottom_toTopOf="@+id/rv_items"
         app:layout_constraintEnd_toStartOf="@+id/rv_cart"
         app:layout_constraintStart_toEndOf="@+id/back_button"
@@ -87,11 +91,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@android:color/white"
+        android:clipChildren="true"
+        android:clipToPadding="true"
         android:elevation="1dp"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/totalPrice"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toEndOf="@+id/rv_items"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.3" />
@@ -107,23 +113,25 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
+        android:textSize="17sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintStart_toEndOf="@+id/rv_items"
-        app:layout_constraintTop_toBottomOf="@+id/rv_cart"
-        app:layout_constraintWidth_percent="0.15" />
+        app:layout_constraintEnd_toStartOf="@id/deleteAll"
+        app:layout_constraintTop_toBottomOf="@+id/rv_cart" />
 
-    <TextView
+    <ImageButton
         android:id="@+id/deleteAll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryDark"
         android:elevation="2dp"
         android:gravity="center"
-        android:text="Sterge cos"
+        android:src="@drawable/ic_delete"
         android:clickable="true"
         android:focusable="true"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
@@ -131,9 +139,9 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/totalPrice"
         app:layout_constraintTop_toBottomOf="@+id/rv_cart"
-        app:layout_constraintWidth_percent="0.15" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.07" />
 
 
     <Button
@@ -153,7 +161,7 @@
         app:layout_constraintStart_toEndOf="@+id/rv_items"
         app:layout_constraintTop_toBottomOf="@+id/totalPrice"
         app:layout_constraintWidth_percent="0.3"
-        app:layout_constraintHeight_percent="0.2"/>
+        app:layout_constraintHeight_percent="0.15"/>
 
 
 </android.support.constraint.ConstraintLayout>
