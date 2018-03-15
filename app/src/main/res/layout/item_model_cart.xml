@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@color/colorWhite">
+
+    <ImageButton
+        android:id="@+id/cart_remove"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:elevation="2dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <TextView
+        android:id="@+id/cart_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDark"
+        android:layout_marginBottom="2dp"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="Pizza casei de postttttttttttttttttttttttttttttt"
+        android:textAllCaps="true"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cart_subTitle"
+        app:layout_constraintTop_toTopOf="@id/cart_remove"
+        app:layout_constraintStart_toEndOf="@id/cart_remove"
+        app:layout_constraintWidth_percent="0.6" />
+
+    <TextView
+        android:id="@+id/cart_subTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDark"
+        android:gravity="end|center"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:text="MARE"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.30"
+        app:layout_constraintStart_toEndOf="@id/cart_remove"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/cart_more"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="2dp"
+        android:background="@color/colorWhiteDark"
+        android:gravity="start|center"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp"
+        android:text="FARA CARNATI"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.30"
+        app:layout_constraintStart_toEndOf="@id/cart_subTitle"
+        app:layout_constraintWidth_percent="0.60" />
+
+    <TextView
+        android:id="@+id/cart_price"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDarker"
+        android:gravity="center"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:text="10 Lei"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="2dp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/cart_title"
+        app:layout_constraintTop_toTopOf="@id/cart_title"
+        app:layout_constraintBottom_toTopOf="@id/cart_more"
+        app:layout_constraintWidth_percent="0.25" />
+
+
+</android.support.constraint.ConstraintLayout>

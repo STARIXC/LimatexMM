@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:orientation="horizontal"
+    android:elevation="1dp"
+    tools:context="g3org3.limatexmm.finish">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_cart2"
+        android:focusable="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDark"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
+
+
+    <TextView
+        android:id="@+id/client_phone_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:text="Numarul de telefon:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+
+    <AutoCompleteTextView
+        android:id="@+id/client_phone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="3dp"
+        android:ems="10"
+        android:gravity="left|center"
+        android:hint="0721805840"
+        android:maxLength="10"
+        android:inputType="phone"
+        android:padding="10dp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="#70ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toBottomOf="@id/client_phone_label"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/client_name_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:text="Numarul de telefon:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/client_phone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/client_name"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="3dp"
+        android:ems="10"
+        android:gravity="left|center"
+        android:hint="Vasile Ion"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="#70ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/client_phone"
+        app:layout_constraintTop_toBottomOf="@id/client_name_label" />
+
+
+    <TextView
+        android:id="@+id/cliend_address_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:text="Adresa clientului:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toBottomOf="@id/client_phone"
+        app:layout_constraintWidth_percent="0.55" />
+
+    <EditText
+        android:id="@+id/client_address"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="3dp"
+        android:ems="10"
+        android:gravity="left|center"
+        android:hint="Bolintin Vale, str. Margaretelor, nr 12."
+        android:inputType="textPostalAddress"
+        android:padding="10dp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="#70ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toBottomOf="@id/cliend_address_label"
+        app:layout_constraintWidth_percent="0.55" />
+
+
+    <TextView
+        android:id="@+id/deliverSwitch_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:text="Livrare ?"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/cliend_address_label"
+        app:layout_constraintTop_toBottomOf="@id/client_name" />
+
+    <Button
+        android:id="@+id/deliverSwitch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="3dp"
+        android:text="Da"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@id/client_address"
+        app:layout_constraintTop_toBottomOf="@id/deliverSwitch_label" />
+
+
+    <TextView
+        android:id="@+id/dataBase_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:background="@color/colorWhiteDarker"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Client inexistent. Adaugat in baza de date!"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cancelOrder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toBottomOf="@id/client_address" />
+
+
+    <Button
+        android:id="@+id/cancelOrder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="3dp"
+        android:text="Anuleaza"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintTop_toBottomOf="@id/dataBase_label"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <Button
+        android:id="@+id/finishOrder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="3dp"
+        android:text="Trimite comanda!"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cancelOrder"
+        app:layout_constraintTop_toBottomOf="@id/dataBase_label" />
+
+</android.support.constraint.ConstraintLayout>

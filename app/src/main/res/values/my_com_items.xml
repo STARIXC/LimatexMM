@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="com_list">
+        <item>fara mozzarella</item>
+        <item>0</item>
+        <item>cu mozzarella extra</item>
+        <item>4</item>
+        <item>fara salam</item>
+        <item>0</item>
+        <item>cu salam extra</item>
+        <item>4</item>
+        <item>fara bacon</item>
+        <item>0</item>
+        <item>cu bacon extra</item>
+        <item>4</item>
+        <item>fara carnati</item>
+        <item>0</item>
+        <item>cu carnati extra</item>
+        <item>4</item>
+        <item>fara piept pui</item>
+        <item>0</item>
+        <item>cu piept pui extra</item>
+        <item>4</item>
+        <item>fara ton</item>
+        <item>0</item>
+        <item>cu ton extra</item>
+        <item>4</item>
+        <item>fara prosciuto</item>
+        <item>0</item>
+        <item>cu prosciuto extra</item>
+        <item>4</item>
+        <item>fara ciuperci</item>
+        <item>0</item>
+        <item>cu ciuperci extra</item>
+        <item>3</item>
+        <item>fara masline</item>
+        <item>0</item>
+        <item>cu masline extra</item>
+        <item>3</item>
+        <item>fara ardei gras</item>
+        <item>0</item>
+        <item>cu ardei gras extra</item>
+        <item>3</item>
+        <item>fara ceapa</item>
+        <item>0</item>
+        <item>cu ceapa extra</item>
+        <item>3</item>
+        <item>fara porump</item>
+        <item>0</item>
+        <item>cu porump extra</item>
+        <item>3</item>
+        <item>fara rosie</item>
+        <item>0</item>
+        <item>cu rosie extra</item>
+        <item>3</item>
+        <item>fara castraveti murati</item>
+        <item>0</item>
+        <item>cu castraveti murati extra</item>
+        <item>3</item>
+
+        <item>fara sos</item>
+        <item>0</item>
+        <item>fara ketchup</item>
+        <item>0</item>
+        <item>fara maioneza</item>
+        <item>0</item>
+        <item>fara maioneza usturoi</item>
+        <item>0</item>
+        <item>fara mustar</item>
+        <item>0</item>
+        <item>fara cartofi</item>
+        <item>0</item>
+
+        <item>cu ketchup dulce</item>
+        <item>0</item>
+        <item>cu ketchup picant</item>
+        <item>0</item>
+
+    </string-array>
+
+</resources>

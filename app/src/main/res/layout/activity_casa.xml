@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="1dp"
+    android:background="@color/colorPrimaryDark"
+    tools:context="g3org3.limatexmm.casa">
+
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:text="Inapoi"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/rv_items"
+        app:layout_constraintEnd_toStartOf="@+id/search_bar"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.1" />
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="6dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/rv_items"
+        app:layout_constraintEnd_toStartOf="@+id/rv_cart"
+        app:layout_constraintStart_toEndOf="@+id/back_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintWidth_percent="0.6" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_categories"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="6dp"
+        android:background="@color/colorAccent"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintHeight_percent="0.90"
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        app:layout_constraintWidth_percent="0.1" />
+
+    <in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView
+        android:id="@+id/rv_items"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:paddingTop="20dp"
+        android:elevation="6dp"
+        android:paddingEnd="30dp"
+        android:paddingStart="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextButton"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintStart_toEndOf="@id/rv_categories"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar"
+        app:layout_constraintWidth_percent="0.6"
+        app:setIndexBarColor="#e0e0e0"
+        app:setIndexBarCornerRadius="0"
+        app:setIndexBarTextColor="#9b0000"
+        app:setIndexBarTransparentValue="0.99"
+        app:setIndexTextSize="14"
+        app:setIndexbarWidth="22" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_cart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:elevation="1dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/totalPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintStart_toEndOf="@+id/rv_items"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/totalPrice"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDarker"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="Total: 150 lei"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintStart_toEndOf="@+id/rv_items"
+        app:layout_constraintTop_toBottomOf="@+id/rv_cart"
+        app:layout_constraintWidth_percent="0.15" />
+
+    <TextView
+        android:id="@+id/deleteAll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="Sterge cos"
+        android:clickable="true"
+        android:focusable="true"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/totalPrice"
+        app:layout_constraintTop_toBottomOf="@+id/rv_cart"
+        app:layout_constraintWidth_percent="0.15" />
+
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:text="Mai departe"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rv_items"
+        app:layout_constraintTop_toBottomOf="@+id/totalPrice"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.2"/>
+
+
+</android.support.constraint.ConstraintLayout>

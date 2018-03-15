@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "802889212382",
+    "firebase_url": "https://limatexmm.firebaseio.com",
+    "project_id": "limatexmm",
+    "storage_bucket": "limatexmm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802889212382:android:5bbb71e8df8f9f21",
+        "android_client_info": {
+          "package_name": "g3org3.limatexmm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802889212382-mvf4krvnuuqmkg4unrsvsjge7o4h58pr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "g3org3.limatexmm",
+            "certificate_hash": "4975545c504688dea233413a035983a70d7710e6"
+          }
+        },
+        {
+          "client_id": "802889212382-ur6hnpnbo44iv6oligm82rtn6fu6knm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaH9JSWBnqQWjs0G13kNqiB_KtK6lL7sE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802889212382-ur6hnpnbo44iv6oligm82rtn6fu6knm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

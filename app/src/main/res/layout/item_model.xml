@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    android:layout_height="50dp">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDark"
+        android:gravity="center"
+        android:text="Pizza casei de post"
+        android:textAllCaps="true"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintWidth_percent="0.58"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/subTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorWhiteDarker"
+        android:gravity="center"
+        android:text="mare"
+        android:paddingEnd="5dp"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintWidth_percent="0.17"/>
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:text="20 Lei"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhiteDark"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintStart_toEndOf="@id/subTitle"/>
+
+
+
+</android.support.constraint.ConstraintLayout>

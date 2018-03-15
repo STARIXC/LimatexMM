@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="800dp"
+    android:background="@color/colorWhite"
+    android:layout_height="200dp">
+
+
+    <Button
+        android:id="@+id/add"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ripple_button"
+        android:text="+"
+        android:textColor="@android:color/white"
+        android:textSize="40sp"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.20" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintHeight_percent="0.30"
+        app:layout_constraintTop_toBottomOf="@id/add"
+        app:layout_constraintWidth_percent="0.20" />
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="40sp"
+        android:text="_"
+        android:gravity="top|center"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ripple_button"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintTop_toBottomOf="@id/count"
+        app:layout_constraintWidth_percent="0.20" />
+
+
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/comment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:background="@color/colorWhiteDark"
+        android:gravity="center"
+        android:text=""
+        android:hint="Detalii comanda!"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/add"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintWidth_percent="0.60" />
+
+
+    <Button
+        android:id="@+id/done"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="30sp"
+        android:text="Gata"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ripple_button"
+        app:layout_constraintStart_toEndOf="@id/comment"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
+
+</android.support.constraint.ConstraintLayout>
