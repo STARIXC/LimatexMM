@@ -40,10 +40,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 //TODO:
-//REMOVE SEARCH
-//FIX TOTAL CART BUTTON
-//FIX dismiss DIALOG with random text
-//FIX EXTRA PRICE NOT BEING RECALCULATED
+//FILL MENU_ADD DESIGN NOT BEEING SYMETRIC
+//FIX EXTRA PRICE NOT BEING RECALCULATED in MENU_ADD
+//FIX APP CRASH when exiting MENU_ADD without any comment (dismiss)
 
 
 public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
@@ -253,13 +252,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             }
         });
 
-
-        //TODO: comment list
-        //- substract price from total price if type
-        //- filter nonList items
-        //- color item based on type
-        //- create list (internaly) ~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //- create list (externaly) + machine learning
 
 
         myDialog.setOnShowListener(new DialogInterface.OnShowListener() {
