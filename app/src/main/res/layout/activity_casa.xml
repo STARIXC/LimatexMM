@@ -5,60 +5,21 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:elevation="1dp"
     android:background="@color/colorPrimaryDark"
+    android:elevation="1dp"
     tools:context="g3org3.limatexmm.casa">
 
-
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/ripple_button"
-        android:elevation="6dp"
-        android:gravity="center"
-        android:text="Inapoi"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/rv_items"
-        app:layout_constraintEnd_toStartOf="@+id/search_bar"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.1" />
-
-    <Button
-        android:id="@+id/search_bar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:elevation="6dp"
-        android:layout_marginBottom="1dp"
-        android:layout_marginEnd="1dp"
-        android:text="Comenzile de azi (0)"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
-        android:textAllCaps="true"
-        android:background="@drawable/ripple_button"
-        app:layout_constraintBottom_toTopOf="@+id/rv_items"
-        app:layout_constraintEnd_toStartOf="@+id/rv_cart"
-        app:layout_constraintStart_toEndOf="@+id/back_button"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintWidth_percent="0.6" />
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_categories"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation="6dp"
         android:background="@color/colorAccent"
         android:clipToPadding="false"
-        android:paddingStart="8dp"
+        android:elevation="7dp"
         android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         app:layout_constraintHeight_percent="0.90"
         app:layout_constraintTop_toBottomOf="@id/back_button"
         app:layout_constraintWidth_percent="0.1" />
@@ -68,15 +29,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@android:color/white"
-        android:paddingTop="20dp"
-        android:elevation="6dp"
-        android:paddingEnd="30dp"
+        android:elevation="5dp"
+        android:paddingEnd="50dp"
         android:paddingStart="20dp"
+        android:paddingTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintHeight_percent="0.9"
         app:layout_constraintStart_toEndOf="@id/rv_categories"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar"
+        app:layout_constraintTop_toBottomOf="@+id/today_orders"
         app:layout_constraintWidth_percent="0.6"
         app:setIndexBarColor="#e0e0e0"
         app:setIndexBarCornerRadius="0"
@@ -116,8 +77,8 @@
         android:textSize="17sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
-        app:layout_constraintStart_toEndOf="@+id/rv_items"
         app:layout_constraintEnd_toStartOf="@id/deleteAll"
+        app:layout_constraintStart_toEndOf="@+id/rv_items"
         app:layout_constraintTop_toBottomOf="@+id/rv_cart" />
 
     <ImageButton
@@ -125,23 +86,61 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryDark"
-        android:elevation="2dp"
-        android:gravity="center"
-        android:src="@drawable/ic_delete"
         android:clickable="true"
+        android:elevation="2dp"
         android:focusable="true"
+        android:gravity="center"
         android:padding="10dp"
         android:scaleType="fitCenter"
+        android:src="@drawable/ic_delete"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_cart"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_percent="0.07" />
+
+
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:text="Inapoi"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/rv_items"
+        app:layout_constraintEnd_toStartOf="@+id/today_orders"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.1" />
+
+    <Button
+        android:id="@+id/today_orders"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ripple_button"
+        android:elevation="8dp"
+        android:text="Comenzile de azi (0)"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@+id/rv_items"
+        app:layout_constraintEnd_toStartOf="@+id/rv_cart"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toEndOf="@+id/back_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.6" />
 
 
     <Button
@@ -158,10 +157,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintStart_toEndOf="@+id/rv_items"
         app:layout_constraintTop_toBottomOf="@+id/totalPrice"
-        app:layout_constraintWidth_percent="0.3"
-        app:layout_constraintHeight_percent="0.15"/>
+        app:layout_constraintWidth_percent="0.3" />
 
 
 </android.support.constraint.ConstraintLayout>

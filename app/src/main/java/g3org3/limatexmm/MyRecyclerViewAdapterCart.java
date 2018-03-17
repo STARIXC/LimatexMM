@@ -49,8 +49,7 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         // set string for button
         final list_items item = list_itemsList.get(position);
 
-        holder.cart_title.setText(item.getTitle());
-        holder.cart_subTitle.setText(item.getSubTitle());
+        holder.cart_title.setText((position + 1) +". " +item.getTitle());
 
         String extraPrice = String.valueOf(item.getMore_value());
         String prodPrice = String.valueOf(item.getPrice());
@@ -62,7 +61,13 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         temp_pharse = temp_pharse + prodPrice + " Lei";
 
         holder.cart_price.setText(temp_pharse);
-        holder.cart_more.setText(item.getMore());
+
+        String finalS = item.getSubTitle();
+        if (item.getMore().length() > 1) {
+            finalS = finalS +" | " + item.getMore();
+        }
+
+        holder.cart_more.setText(finalS);
 
 
         holder.cart_more.setClickable(true);
@@ -81,7 +86,6 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView cart_title;
-        TextView cart_subTitle;
         TextView cart_more;
         TextView cart_price;
         ImageButton cart_remove;
@@ -90,7 +94,6 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
             super(itemView);
 
             cart_title = itemView.findViewById(R.id.cart_title);
-            cart_subTitle = itemView.findViewById(R.id.cart_subTitle);
             cart_more = itemView.findViewById(R.id.cart_more);
             cart_price = itemView.findViewById(R.id.cart_price);
             cart_remove = itemView.findViewById(R.id.cart_remove);

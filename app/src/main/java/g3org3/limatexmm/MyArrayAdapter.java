@@ -16,15 +16,15 @@ import java.util.List;
  * Created by meg3o on 3/15/2018.
  */
 
-public class MyArrayAdapter extends ArrayAdapter<commentList> {
+public class MyArrayAdapter extends ArrayAdapter<SpannableString> {
 
     private LayoutInflater layoutInflater;
-    List<commentList> mcommentLists;
+    List<SpannableString> mcommentLists;
 
     private Filter mFilter = new Filter() {
         @Override
         public SpannableString convertResultToString(Object resultValue) {
-            return ((commentList) resultValue).getComName();
+            return ((SpannableString) resultValue);
         }
 
         @Override
@@ -32,11 +32,11 @@ public class MyArrayAdapter extends ArrayAdapter<commentList> {
             FilterResults results = new FilterResults();
 
             if (constraint != null) {
-                ArrayList<commentList> suggestions = new ArrayList<commentList>();
-                for (commentList commentList : mcommentLists) {
+                ArrayList<SpannableString> suggestions = new ArrayList<SpannableString>();
+                for (SpannableString comment : mcommentLists) {
                     // Note: change the "contains" to "startsWith" if you only want starting matches
-                    if (commentList.getComName().toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                        suggestions.add(commentList);
+                    if (comment.toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        suggestions.add(comment);
                     }
                 }
 
@@ -52,7 +52,7 @@ public class MyArrayAdapter extends ArrayAdapter<commentList> {
             clear();
             if (results != null && results.count > 0) {
                 // we have filtered results
-                addAll((ArrayList<commentList>) results.values);
+                addAll((ArrayList<SpannableString>) results.values);
             } else {
                 // no filter, add entire original list back in
               //  addAll(mcommentLists);
@@ -61,10 +61,10 @@ public class MyArrayAdapter extends ArrayAdapter<commentList> {
         }
     };
 
-    public MyArrayAdapter(Context context, int textViewResourceId, List<commentList> commentLists) {
+    public MyArrayAdapter(Context context, int textViewResourceId, List<SpannableString> commentLists) {
         super(context, textViewResourceId, commentLists);
         // copy all the commentLists into a master list
-        mcommentLists = new ArrayList<commentList>(commentLists.size());
+        mcommentLists = new ArrayList<SpannableString>(commentLists.size());
         mcommentLists.addAll(commentLists);
         layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -81,10 +81,10 @@ public class MyArrayAdapter extends ArrayAdapter<commentList> {
             view = layoutInflater.inflate(R.layout.simple_dropdown_item, null);
         }
 
-        commentList commentList = getItem(position);
+        SpannableString comment = getItem(position);
 
         TextView name = (TextView) view.findViewById(R.id.textDD);
-        name.setText(commentList.getComName());
+        name.setText(comment);
 
         return view;
     }

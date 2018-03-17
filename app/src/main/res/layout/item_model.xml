@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/colorWhite"
+    android:paddingBottom="5dp"
     android:layout_height="50dp">
 
     <TextView
@@ -47,7 +48,6 @@
         android:text="20 Lei"
         android:textAlignment="center"
         android:textColor="@color/colorWhiteDark"
-        android:textAllCaps="true"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintWidth_percent="0.25"

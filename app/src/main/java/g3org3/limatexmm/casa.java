@@ -21,8 +21,11 @@ import android.text.TextWatcher;
 import android.text.method.KeyListener;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +41,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //TODO:
 //FILL MENU_ADD DESIGN NOT BEEING SYMETRIC
@@ -47,52 +52,38 @@ import java.util.TimerTask;
 
 public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
 
+
     MyRecyclerViewAdapter adapter;
     in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView recyclerView;
-
     MyRecyclerViewAdapterCateg adapter2;
     RecyclerView recyclerView2;
-
     MyRecyclerViewAdapterCart adapter3;
     RecyclerView recyclerView3;
-
     Dialog myDialog;
-
     ImageButton deleteAll;
     Button nextButton;
     TextView totalPrice;
-    List<commentList> commentListList = new ArrayList<>();
-    List<SpannableString> commentNameList = new ArrayList<>();
-
-    private List<String> lastSearches;
-    // Create SharedPreferences and Editor
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor sharedEditor;
-    private List<list_items> list_itemsList;
-    //  int numberOfColumns;
+    List<SpannableString> commentListList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_casa);
 
-        //History
-        sharedPref = getSharedPreferences("history", Context.MODE_PRIVATE);
-        sharedEditor = sharedPref.edit();
 
-
-        // set up the RecyclerView
+        //
         recyclerView = findViewById(R.id.rv_items);
         recyclerView2 = findViewById(R.id.rv_categories);
         recyclerView3 = findViewById(R.id.rv_cart);
-
         totalPrice = findViewById(R.id.totalPrice);
         nextButton = findViewById(R.id.nextButton);
         deleteAll = findViewById(R.id.deleteAll);
 
+
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        //Register Delete all cart button
         deleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +93,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         });
 
 
+        //Register Finish order button
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,7 +122,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         cartUpdate();
 
 
-
         //populate + show categories list
         CreateCategories();
 
@@ -142,7 +133,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         for (int i = 0; i < Lines.size(); i++) {
             //extract the strings
             SpannableString com_name = new SpannableString(Lines.get(i));
-            Double com_price = Double.valueOf(Lines.get(i + 1));
+            Double com_price = getPriceCom(com_name.toString());
 
             if (com_price.equals(0.0)) {
                 //append the text in the correct color
@@ -153,17 +144,9 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
                 com_name.setSpan(new BackgroundColorSpan(Color.rgb(255, 160, 160)), 0, com_name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
+            //add to list
+            commentListList.add(com_name);
 
-            // add item to category list
-            commentList temp = new commentList(com_name, com_price);
-
-            //add to list for prices/colors
-            commentListList.add(temp);
-
-            //separated list for autocomplet
-            commentNameList.add(com_name);
-
-            i++;
         }
 
     }
@@ -189,9 +172,21 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     int current_item_count;
     double comment_value;
 
-
-
     MyArrayAdapter commentAdapter;
+
+    public Double getPriceCom(String item_name) {
+        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(item_name);
+        Double temp_price = 0.0;
+        try {
+            while (m.find()) {
+                temp_price = temp_price + Double.valueOf(m.group(1));
+            }
+        } catch (NumberFormatException e) {
+
+        }
+        return temp_price;
+    }
+
 
     public void ShowPopup(String item_title, String item_subTitle, double item_price) {
 
@@ -203,7 +198,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         myDialog.setContentView(R.layout.item_add);
         myDialog.setTitle("More");
 
-
         add = myDialog.findViewById(R.id.add);
         count = myDialog.findViewById(R.id.count);
         remove = myDialog.findViewById(R.id.remove);
@@ -211,13 +205,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         done = myDialog.findViewById(R.id.done);
         commentValue = myDialog.findViewById(R.id.commentValue);
 
-
-
-        List<commentList> cloneCommentListList = new ArrayList<>();
-       // cloneCommentListList = commentListList;
+        List<SpannableString> cloneCommentListList = new ArrayList<>();
         cloneCommentListList.addAll(commentListList);
-
-        Toast.makeText(getApplicationContext(), "clona: " + cloneCommentListList.size() + " originalu: " + commentListList.size(), Toast.LENGTH_SHORT).show();
 
         commentAdapter = new MyArrayAdapter(this, R.layout.simple_dropdown_item, cloneCommentListList);
         comment.setAdapter(commentAdapter);
@@ -225,7 +214,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
 
         comment_value = 0;
-
         comment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -239,19 +227,22 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
             @Override
             public void afterTextChanged(Editable editable) {
-                commentValue.setText(String.valueOf(comment_value) + " lei");
-
+                String final_price = String.valueOf(getPriceCom(editable.toString())) + " lei";
+                commentValue.setText(final_price);
             }
         });
 
-        comment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                comment_value = comment_value + commentAdapter.getItem(i).getComPrice();
-                commentValue.setText(String.valueOf(comment_value));
+            public void onDismiss(DialogInterface dialogInterface) {
+                commentAdapter.clear();
+                comment.setAdapter(null);
+                current_item_count = 0;
+                comment.setText("");
+                comment.clearFocus();
             }
         });
-
 
 
         myDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -309,10 +300,35 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
     // ADD CURRENT ITEM (FROM TEMP) to cart list
     public void AddToCart_current() {
+
+        //add items
         list_items temp = new list_items(current_item_title, current_item_subTitle, current_item_price, current_item_more, comment_value);
         for (int i = 0; i < current_item_count; i++) {
             list_itemsList_cart.add(temp);
         }
+
+        //show custom TOAST
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_added,  null);
+
+        TextView text = layout.findViewById(R.id.text);
+
+        String finalt = current_item_count + " " + current_item_title;
+        if (current_item_count > 1) {
+            finalt = finalt + " adaugate!";
+        } else {
+            finalt = finalt + " adaugat!";
+        }
+
+        text.setText(finalt);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+        //update cart
         cartUpdate();
 
     }
@@ -337,6 +353,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     }
 
 
+    boolean current_list_dialog;
+
     public void ViewList(String list_name) {
 
         int id = this.getResources().getIdentifier(list_name, "array", this.getPackageName());
@@ -345,7 +363,10 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         //crate a list for RecyclerView adapter
         ArrayList<list_items> list_itemsList = new ArrayList<>();
 
-        for (int i = 0; i < Lines.size(); i++) {
+        //read dialog boolean
+        current_list_dialog = Boolean.valueOf(Lines.get(0));
+
+        for (int i = 1; i < Lines.size() - 1; i++) {
             //extract the strings
             String item_title = Lines.get(i);
             String item_subTitle = Lines.get(i + 1);
@@ -371,7 +392,17 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     //////// CLICK LISTENER FOR RECYCLER VIEW ITEMS
     @Override
     public void onItemClick(View view, int position) {
-        ShowPopup(adapter.getItemTitle(position), adapter.getItemSubTitle(position), adapter.getItemPrice(position));
+        if (current_list_dialog) {
+            ShowPopup(adapter.getItemTitle(position), adapter.getItemSubTitle(position), adapter.getItemPrice(position));
+        } else {
+            current_item_title = adapter.getItemTitle(position);
+            current_item_subTitle = adapter.getItemSubTitle(position);
+            current_item_price = adapter.getItemPrice(position);
+            current_item_more = "";
+            current_item_count = 1;
+            comment_value = 0;
+            AddToCart_current();
+        }
     }
 
 
