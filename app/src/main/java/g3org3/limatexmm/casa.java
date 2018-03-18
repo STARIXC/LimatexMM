@@ -53,6 +53,8 @@ import java.util.regex.Pattern;
 public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
 
 
+    public static final String CART_VALUE_EX = "";
+
     MyRecyclerViewAdapter adapter;
     in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView recyclerView;
     MyRecyclerViewAdapterCateg adapter2;
@@ -62,6 +64,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     Dialog myDialog;
     ImageButton deleteAll;
     Button nextButton;
+    Button back_button;
     TextView totalPrice;
     List<SpannableString> commentListList = new ArrayList<>();
 
@@ -78,7 +81,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         totalPrice = findViewById(R.id.totalPrice);
         nextButton = findViewById(R.id.nextButton);
         deleteAll = findViewById(R.id.deleteAll);
-
+back_button = findViewById(R.id.back_button);
 
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -93,15 +96,31 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         });
 
 
+        //register back button
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         //Register Finish order button
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String TotalValue = adapter3.getTotalPrice();
 
-                Intent myIntent = new Intent(casa.this, finish.class);
-                //   myIntent.putExtra("final_cart_list", list_itemsList_cart); //Optional parameters
-                startActivity(myIntent);
+                if (Double.valueOf(TotalValue) > 1.0) {
+                    Intent myIntent = new Intent(casa.this, finish.class);
 
+                    String cart_value = TotalValue;
+
+                    myIntent.putExtra(CART_VALUE_EX, cart_value);
+
+                    startActivity(myIntent);
+                } else {
+                    customToast("Cosul este gol!");
+                }
 
             }
         });
@@ -148,6 +167,9 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             commentListList.add(com_name);
 
         }
+
+        ViewList("Pizza");
+
 
     }
 
@@ -241,6 +263,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
                 current_item_count = 0;
                 comment.setText("");
                 comment.clearFocus();
+                dialogInterface.dismiss();
+
             }
         });
 
@@ -307,11 +331,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             list_itemsList_cart.add(temp);
         }
 
-        //show custom TOAST
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_added,  null);
-
-        TextView text = layout.findViewById(R.id.text);
 
         String finalt = current_item_count + " " + current_item_title;
         if (current_item_count > 1) {
@@ -320,6 +339,20 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             finalt = finalt + " adaugat!";
         }
 
+
+        customToast(finalt);
+
+        //update cart
+        cartUpdate();
+
+    }
+
+    public void customToast(String finalt) {
+        //show custom TOAST
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_added, null);
+
+        TextView text = layout.findViewById(R.id.text);
         text.setText(finalt);
 
         Toast toast = new Toast(getApplicationContext());
@@ -327,9 +360,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
-
-        //update cart
-        cartUpdate();
 
     }
 

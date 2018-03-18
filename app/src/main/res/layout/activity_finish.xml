@@ -5,28 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
-    android:orientation="horizontal"
     android:elevation="1dp"
+    android:orientation="horizontal"
     tools:context="g3org3.limatexmm.finish">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_cart2"
-        android:focusable="true"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorWhiteDark"
-        android:padding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25" />
 
 
     <TextView
         android:id="@+id/client_phone_label"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:gravity="bottom"
@@ -35,9 +22,9 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.25" />
 
 
     <AutoCompleteTextView
@@ -50,8 +37,8 @@
         android:ems="10"
         android:gravity="left|center"
         android:hint="0721805840"
-        android:maxLength="10"
         android:inputType="phone"
+        android:maxLength="10"
         android:padding="10dp"
         android:textAllCaps="true"
         android:textColor="@color/colorWhite"
@@ -59,9 +46,9 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
         app:layout_constraintTop_toBottomOf="@id/client_phone_label"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.25" />
 
     <TextView
         android:id="@+id/client_name_label"
@@ -72,7 +59,7 @@
         android:layout_marginTop="20dp"
         android:gravity="bottom"
         android:padding="10dp"
-        android:text="Numarul de telefon:"
+        android:text="Numele clientului:"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +93,7 @@
 
 
     <TextView
-        android:id="@+id/cliend_address_label"
+        android:id="@+id/client_address_label"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="20dp"
@@ -117,10 +104,11 @@
         android:text="Adresa clientului:"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
         app:layout_constraintTop_toBottomOf="@id/client_phone"
-        app:layout_constraintWidth_percent="0.55" />
+        tools:layout_editor_absoluteX="260dp" />
 
     <EditText
         android:id="@+id/client_address"
@@ -140,10 +128,11 @@
         android:textColorHint="#70ffffff"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
-        app:layout_constraintTop_toBottomOf="@id/cliend_address_label"
-        app:layout_constraintWidth_percent="0.55" />
+        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
+        app:layout_constraintTop_toBottomOf="@id/client_address_label"
+        tools:layout_editor_absoluteX="260dp" />
 
 
     <TextView
@@ -159,9 +148,11 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/client_phone"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/cliend_address_label"
-        app:layout_constraintTop_toBottomOf="@id/client_name" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.25" />
 
     <Button
         android:id="@+id/deliverSwitch"
@@ -173,12 +164,12 @@
         android:elevation="3dp"
         android:text="Da"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/client_address"
-        app:layout_constraintTop_toBottomOf="@id/deliverSwitch_label" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deliverSwitch_label"
+        app:layout_constraintWidth_percent="0.25" />
 
 
     <TextView
@@ -188,6 +179,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorWhiteDarker"
         android:elevation="3dp"
         android:gravity="center"
@@ -196,27 +188,51 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/cancelOrder"
+        app:layout_constraintBottom_toTopOf="@id/finishOrder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
+        app:layout_constraintStart_toEndOf="@id/totalLabel"
         app:layout_constraintTop_toBottomOf="@id/client_address" />
 
+
+    <TextView
+        android:id="@+id/totalLabel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:lines="5"
+        android:padding="5dp"
+        android:text="Cost produse: xxx lei \n Minim Atins! \n\n Total comanda: \nxxx lei"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cancelOrder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deliverSwitch"
+        app:layout_constraintWidth_percent="0.25" />
 
     <Button
         android:id="@+id/cancelOrder"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
         android:background="@drawable/ripple_button"
-        android:elevation="3dp"
-        android:text="Anuleaza"
+        android:elevation="4dp"
+        android:text="Inapoi la cos"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/rv_cart2"
-        app:layout_constraintTop_toBottomOf="@id/dataBase_label"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHeight_percent="0.13"
+        app:layout_constraintTop_toBottomOf="@id/totalLabel"
+        app:layout_constraintWidth_percent="0.25" />
+
 
     <Button
         android:id="@+id/finishOrder"
@@ -230,8 +246,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toEndOf="@id/cancelOrder"
-        app:layout_constraintTop_toBottomOf="@id/dataBase_label" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

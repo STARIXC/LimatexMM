@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="citys">
+        <item>Bolintin Vale</item>
+        <item>20</item>
+
+        <item>Crivina</item>
+        <item>50</item>
+
+        <item>Malu Spart</item>
+        <item>60</item>
+
+        <item>Palanca</item>
+        <item>60</item>
+
+        <item>Bolintin Deal</item>
+        <item>80</item>
+
+        <item>Stoinesti</item>
+        <item>80</item>
+
+        <item>Ulmi</item>
+        <item>80</item>
+
+        <item>Floresti</item>
+        <item>100</item>
+
+        <item>Ogrezeni</item>
+        <item>100</item>
+
+        <item>Ghionea</item>
+        <item>100</item>
+
+        <item>Roata</item>
+        <item>100</item>
+
+        <item>Gionea</item>
+        <item>100</item>
+
+        <item>Poenari</item>
+        <item>80</item>
+
+        <item>Mosteni</item>
+        <item>80</item>
+
+        <item>Icoana</item>
+        <item>80</item>
+
+
+    </string-array>
+</resources>
