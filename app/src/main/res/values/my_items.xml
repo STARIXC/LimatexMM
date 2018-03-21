@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="Pizza">
-        <item>True</item>  <!--Necesita dialog-->
+        <item>1</item>  <!--Necesita dialog-->
 
         <item>Pizza Pollo e Funghi</item>
         <item>mica</item>
@@ -91,7 +91,7 @@
     </string-array>
 
     <string-array name="Sosuri">
-        <item>False</item> <!--Nu necesita dialog-->
+        <item>0</item> <!--Nu necesita dialog-->
 
         <item>Sos ketchup</item>
         <item>10g</item>
@@ -107,7 +107,7 @@
     </string-array>
 
     <string-array name="Bauturi">
-        <item>False</item> <!--Nu necesita dialog-->
+        <item>0</item> <!--Nu necesita dialog-->
 
         <item>Fanta</item>
         <item>Ciob</item>

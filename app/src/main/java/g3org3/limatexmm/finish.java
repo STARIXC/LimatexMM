@@ -1,27 +1,22 @@
 package g3org3.limatexmm;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.UserHandle;
-import android.support.annotation.ColorRes;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -34,15 +29,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.security.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,33 +54,19 @@ public class finish extends AppCompatActivity {
     TextView totalLabel;
     Boolean deliver = true;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     boolean connected = false;
 
     List<userList> clients_extracted;
     List<String> reg_phone_numbers;
 
 
-    private void writeNewUser(String user_addr, String user_name, String user_phone) {
-
-        //get current date
-        Date userJoin = new Date();
-
-        userList userList = new userList(user_addr, user_name, user_phone, "1", userJoin, "0");
-        String docId = db.collection("clients").document().getId();
-        // Add a new document with a generated ID
-        db.collection("clients").document(docId).set(userList);
-
-    }
-
     public void db_connect() {
         if (!connected) {
             dataBase_label.setText("Nu se poate conecta la baza de date !");
-            client_phone.setEnabled(false);
-            client_name.setEnabled(false);
-            client_address.setEnabled(false);
-            finishOrder.setEnabled(false);
+            //   client_phone.setEnabled(false);
+            //    client_name.setEnabled(false);
+            //      client_address.setEnabled(false);
+            //    finishOrder.setEnabled(false);
 
             client_phone.setBackgroundColor(Color.GRAY);
             client_name.setBackgroundColor(Color.GRAY);
@@ -119,6 +98,8 @@ public class finish extends AppCompatActivity {
     Double minimum_current = 0.0;
     Double cart_value = 0.0;
     String last_city = "";
+
+
     public void check_minimum_city(String address) {
 
         //populate comments list
@@ -132,8 +113,8 @@ public class finish extends AppCompatActivity {
             //search for city name
             if (address.toLowerCase().contains(Lines.get(i).toLowerCase())) {
                 last_city = Lines.get(i);
-                minimum_current = Double.valueOf(Lines.get(i+1));
-                if (cart_value > minimum_current){
+                minimum_current = Double.valueOf(Lines.get(i + 1));
+                if (cart_value > minimum_current) {
                     meet_minimum = true;
                 }
                 break;
@@ -142,7 +123,6 @@ public class finish extends AppCompatActivity {
             //jump over minimum order value
             i++;
         }
-
 
 
         calculate_total();
@@ -200,13 +180,207 @@ public class finish extends AppCompatActivity {
         }
 
     }
-    public static int getThemeAccentColor (final Context context) {
-        final TypedValue value = new TypedValue ();
-        context.getTheme ().resolveAttribute (R.attr.colorPrimaryDark, value, true);
+
+
+    public void customToast(String finalt) {
+        //show custom TOAST
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_added, null);
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(finalt);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+
+    public void clear_form() {
+        client_phone.setText("");
+        client_name.setText("");
+        client_address.setText("");
+    }
+
+    Boolean order_placed;
+    //Integer steps;
+    Integer errors;
+
+    // usage: SendOrder(
+    public void SendOrder(ArrayList<listItems> list, userList currentUser) {
+        customToast("Se trimite ...");
+
+
+        //disable button durring the process
+        finishOrder.setEnabled(false);
+
+        Date curDate = new Date();
+
+        Integer curDeliver = 0;
+        if (deliverSwitch.getText().toString().contains("DA")) {
+            curDeliver = 1;
+        }
+
+        //    orderList orderList = new orderList(list, currentUser, curDate, curDeliver);
+
+
+        final String docId = db.collection("orders").document().getId();
+
+
+        order_placed = false;
+       // steps = 0;
+        errors = 0;
+
+        //ADD ORDER ITEMS to Collection "allOrders" in individual document ids
+        //for each Order Item
+        for (int it = 0; it < list.size(); it++) {
+
+            //convert item from list to indivitual item
+            listItems orderItem = new listItems(list.get(it).getItemTitle(), list.get(it).getItemSubtitle(), list.get(it).getItemPrice(), list.get(it).getItemMore(), list.get(it).getItemMorevalue(), list.get(it).getItemPrepare());
+
+            final String docIdFi = db.collection("orders").document(docId).collection("allOrders").document().getId();
+            db.collection("orders").document(docId).collection("allOrders").document(docIdFi).set(orderItem)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            errors++;
+                        }
+                    });
+
+        }
+
+        //ADD User to Collection "userOrder" in one single document
+
+        final String docIdSe = db.collection("orders").document(docId).collection("userOrder").document().getId();
+        db.collection("orders").document(docId).collection("userOrder").document(docIdSe).set(currentUser)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errors++;
+                    }
+                });
+
+
+        //Add Additional infos about the order in Collection Additional
+        additionalList adList = new additionalList(curDate, curDeliver, "In desfasurare");
+
+        final String docIdTh = db.collection("orders").document(docId).collection("additionalList").document().getId();
+        db.collection("orders").document(docId).collection("additionalList").document(docIdTh).set(adList)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errors++;
+                    }
+                });
+
+
+        //Add filling null in order for the document to exist
+        Map<String, Object> fakeData = new HashMap<>();
+        fakeData.put("filling", "null");
+        db.collection("orders").document(docId).set(fakeData);
+
+
+        //order has been placed
+        if (errors < 1) {
+
+                dataBase_label.setText("Comanda adaugata ! :" + docId);
+
+                //enable button after the process completed
+                finishOrder.setEnabled(true);
+
+                //clear the form
+                clear_form();
+
+                //set order_placed as true
+                order_placed = true;
+
+                //Wait a bit
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //exit activity
+                        casa.justFinished = true;
+                        finish();
+                    }
+                }, 500);
+
+        } else {
+            dataBase_label.setText("EROARE!");
+        }
+
+
+        //Register new client
+        //if the order have been placed
+        if (order_placed) {
+
+
+            //if the client is NEW
+            if (currentUser.getUserOrders().equals(0)) {
+
+                // Write user to basedata
+
+                //get current date
+                Date userJoin = new Date();
+
+                userList userList = new userList(currentUser.getUserAddr(), currentUser.getUserName(), currentUser.getUserPhone(), 1, userJoin, 0);
+                String docIdCl = db.collection("clients").document().getId();
+                // Add a new document with a generated ID
+                db.collection("clients").document(docIdCl).set(userList)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                dataBase_label.append("\n Noul client a fost adaugat in baza de date !");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                dataBase_label.append("\n Eroare: Noul client nu a fost salvat in baza de date!");
+                            }
+                        });
+
+
+            } else {
+
+                //check if user id is found!
+                if (current_user_docId.length() < 1) {
+                    dataBase_label.append(" \n " + current_user_docId);
+                    dataBase_label.append(" \n Eroare fatala, user existent dar fara ID!");
+                    finishOrder.setEnabled(false);
+                    return;
+                }
+
+                DocumentReference user_profile = db.collection("clients").document(current_user_docId);
+                user_profile.update("userOrders", current_user_orders + 1)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                dataBase_label.append("\n Profilul clientului a fost actualizat!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                dataBase_label.append("\n Eroare: nu sa putut modifica profilul clientului!");
+                            }
+                        });
+
+            }
+
+        }
+    }
+
+
+    public static int getThemeAccentColor(final Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, value, true);
         return value.data;
     }
 
-    public void calculate_total(){
+    public void calculate_total() {
 
         SpannableStringBuilder temp_span = new SpannableStringBuilder();
         temp_span.append("Produse: " + cart_value + " lei \n\n", new UnderlineSpan(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -233,8 +407,12 @@ public class finish extends AppCompatActivity {
         totalLabel.setText(temp_span);
 
 
-
     }
+
+    ArrayList<listItems> list_items_intent = new ArrayList<>();
+    Integer current_user_orders = 0;
+    String current_user_docId = "";
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,9 +425,13 @@ public class finish extends AppCompatActivity {
         minimum_current = 0.0;
 
         // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        cart_value = Double.valueOf(intent.getStringExtra(casa.CART_VALUE_EX));
+        cart_value = Double.valueOf(getIntent().getStringExtra(casa.CART_VALUE_EX));
 
+        // get the cart list
+
+        //   Intent intent = getIntent();
+        // list_items_intent = getIntent().putParcelableArrayListExtra("final_cart_list");
+        list_items_intent = (ArrayList<listItems>) getIntent().getSerializableExtra("final_cart_list");
 
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -288,19 +470,22 @@ public class finish extends AppCompatActivity {
         });
 
 
+        finishOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                userList curUser = new userList(client_address.getText().toString(), client_name.getText().toString(), client_phone.getText().toString(), current_user_orders, new Date(), 0);
+                SendOrder(list_items_intent, curUser);
+            }
+        });
+
+
         cancelOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-
-
-        /*
-                writeNewUser("Poenari", "Elena", "07218032213");
-                dataBase_label.setText("Adaugat in baza de date: ");
-                Toast.makeText(getApplicationContext(), "ADDED!", Toast.LENGTH_SHORT).show();
-        */
 
 
         //create list to store clients
@@ -310,10 +495,11 @@ public class finish extends AppCompatActivity {
         reg_phone_numbers = new ArrayList<>();
 
         //Get the database
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         connected = false;
         db_connect();
+
 
         //enter the collection clients // get every document
         db.collection("clients").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -321,6 +507,9 @@ public class finish extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot document : task.getResult()) {
+
+                        Log.e("Working Orders id", ":" + document.getData());
+
                         //get values inside document
                         userList userList = document.toObject(g3org3.limatexmm.userList.class);
 
@@ -331,9 +520,10 @@ public class finish extends AppCompatActivity {
                         reg_phone_numbers.add(userList.getUserPhone());
 
                         connected = true;
-                        //show message about basedata
-                        db_connect();
                     }
+                    //show message about basedata
+                    db_connect();
+
                 } else {
                     connected = false;
                     //show message about basedata
@@ -381,7 +571,6 @@ public class finish extends AppCompatActivity {
         });
 
 
-
         //lose focus after text is correct
         client_phone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -394,12 +583,17 @@ public class finish extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                //Reset current user orders when phone number is focused and changed
+                current_user_orders = 0;
+
+                //Lose focus// hide keyboard when the number is completed
                 if (client_phone.getText().length() == 10) {
                     client_phone.clearFocus();
                     // Close keyboard
                     ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
                 }
 
+                //Valide other forms/inputs
                 check_forms();
 
             }
@@ -410,6 +604,7 @@ public class finish extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
 
+                //if focus is on phonenumber
                 if (b) {
                     // Open keyboard
                     ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(client_phone, InputMethodManager.SHOW_FORCED);
@@ -426,30 +621,61 @@ public class finish extends AppCompatActivity {
                     //if number IS VALID
                     //Search it in extracted DB
 
-
+                    //Enable user UI in case there is no phone detected
                     client_name.setEnabled(true);
                     client_address.setEnabled(true);
 
+                    //Search for each client in basedata for the current phone number inserted
                     for (int i = 0; i < clients_extracted.size(); i++) {
 
-                        //  if (i == i) {
                         //NEED TO add mod for not stressing UI too much
                         dataBase_label.setText(i + "/" + clients_extracted.size());
-                        // }
 
                         if (clients_extracted.get(i).getUserPhone().contains(client_phone.getText().toString())) {
+
+                            //Autocomplete Client name in UI
                             client_name.setText(clients_extracted.get(i).getUserName());
+
+                            //Autocomplete Client address in UI
                             client_address.setText(clients_extracted.get(i).getUserAddr());
 
+                            //Get client join date
                             Date temp_date = clients_extracted.get(i).getUserJoin();
+
+                            //Get current date
                             Date temp_date2 = new Date();
 
+                            //Calculate the days from when he joined
                             long diff = temp_date2.getTime() - temp_date.getTime();
-
                             String jDays = String.valueOf(diff / 1000 / 60 / 60 / 24);
 
-                            dataBase_label.setText("Finalizeaza comanda, Stiu pe " + clients_extracted.get(i).getUserName() + " de " + jDays + " zile, are " + clients_extracted.get(i).getUserOrders() + " comenzi la noi.");
+                            //Get client orders count
+                            Integer client_orders_ex = clients_extracted.get(i).getUserOrders();
 
+                            //Set infotaiment label text
+                            dataBase_label.setText("Finalizeaza comanda, Stiu pe " + clients_extracted.get(i).getUserName() + " de " + jDays + " zile, are " + String.valueOf(client_orders_ex) + " comenzi la noi.");
+
+                            //save current user oders
+                            current_user_orders = client_orders_ex;
+
+                            //Get current user docID
+                            db.collection("clients").whereEqualTo("userPhone", client_phone.getText().toString())
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    current_user_docId = document.getId();
+                                                }
+                                            } else {
+                                                dataBase_label.setText("Eroare fatala, id-ul clientului nu se poate gasi");
+                                            }
+                                        }
+                                    });
+
+
+                            //disable user actions to changing client name,address when the number is already in database;
                             client_name.setEnabled(false);
                             client_address.setEnabled(false);
 
@@ -460,13 +686,13 @@ public class finish extends AppCompatActivity {
                             break; //stop searching
                         }
                         if (i == clients_extracted.size() - 1) {
+                            //Set infotaiment label text
                             dataBase_label.setText(":(  Clientul nu exista, adauga datele si finalizeaza comanda pentru a-l adauga!");
                         }
                     }
                 }
             }
         });
-
 
 
     }

@@ -26,10 +26,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private ArrayList<Integer> mSectionPositions;
 
 
-    private List<list_items> list_itemsList;
+    private List<listItems> list_itemsList;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapter(Context context, List<list_items> list_itemsList) {
+    MyRecyclerViewAdapter(Context context, List<listItems> list_itemsList) {
         this.list_itemsList = list_itemsList;
         this.mInflater = LayoutInflater.from(context);
     }
@@ -49,13 +49,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         for (int i = 0, size = list_itemsList.size(); i < size; i++) {
 
             //get each item
-            final list_items item = list_itemsList.get(i);
+            final listItems item = list_itemsList.get(i);
 
             //get the char from the first word
-            String section = String.valueOf(item.getTitle().toUpperCase().charAt(0));
+            String section = String.valueOf(item.getItemTitle().toUpperCase().charAt(0));
 
             //split the item title
-            String[] words = item.getTitle().split(" ");
+            String[] words = item.getItemTitle().split(" ");
 
             // if there are 2 words
             if (words.length >= 1) {
@@ -89,11 +89,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // set string for button
-        final list_items item = list_itemsList.get(position);
+        final listItems item = list_itemsList.get(position);
 
-        holder.myTextView.setText(item.getTitle());
-        holder.myTextView2.setText(item.getSubTitle());
-        holder.myTextView3.setText(item.getPrice() + " Lei");
+        holder.myTextView.setText(item.getItemTitle());
+        holder.myTextView2.setText(item.getItemSubtitle());
+        holder.myTextView3.setText(item.getItemPrice() + " Lei");
 
     }
 
@@ -126,15 +126,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     // convenience method for getting data at click position
     String getItemTitle(int id) {
-        return list_itemsList.get(id).getTitle();
+        return list_itemsList.get(id).getItemTitle();
     }
 
     String getItemSubTitle(int id) {
-        return list_itemsList.get(id).getSubTitle();
+        return list_itemsList.get(id).getItemSubtitle();
     }
 
     double getItemPrice(int id) {
-        return list_itemsList.get(id).getPrice();
+        return list_itemsList.get(id).getItemPrice();
     }
 
     // allows clicks events to be caught

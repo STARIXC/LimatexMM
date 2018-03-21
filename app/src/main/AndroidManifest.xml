@@ -16,13 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".casa"
-            android:parentActivityName=".acasa">
-        </activity>
-
-        <activity android:name=".finish"
-            android:parentActivityName=".casa">
-        </activity>
+        <activity
+            android:name=".casa"
+            android:parentActivityName=".acasa"></activity>
+        <activity
+            android:name=".finish"
+            android:parentActivityName=".casa"></activity>
+        <activity android:name=".orders"
+            android:parentActivityName=".casa"></activity>
     </application>
 
 </manifest>

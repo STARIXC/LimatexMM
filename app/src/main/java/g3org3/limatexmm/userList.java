@@ -11,12 +11,12 @@ class userList {
     private String userAddr;
     private String userName;
     private String userPhone;
-    private String userOrders;
+    private Integer userOrders;
     private Date userJoin;
-    private String userDeny;
+    private Integer userDeny;
 
 
-    public userList(String userAddr, String userName, String userPhone, String userOrders, Date userJoin, String userDeny) {
+    public userList(String userAddr, String userName, String userPhone, Integer userOrders, Date userJoin, Integer userDeny) {
         this.userAddr = userAddr;
         this.userName = userName;
         this.userPhone = userPhone;
@@ -29,29 +29,28 @@ class userList {
 
     }
 
+    public Integer getUserOrders() {
+        return userOrders;
+    }
+
+    public void setUserOrders(Integer userOrders) {
+        this.userOrders = userOrders;
+    }
+
+    public Integer getUserDeny() {
+        return userDeny;
+    }
+
+    public void setUserDeny(Integer userDeny) {
+        this.userDeny = userDeny;
+    }
+
     public Date getUserJoin() {
         return userJoin;
     }
 
     public void setUserJoin(Date userJoin) {
         this.userJoin = userJoin;
-    }
-
-    public String getUserOrders() {
-        return userOrders;
-    }
-
-    public void setUserOrders(String userOrders) {
-        this.userOrders = userOrders;
-    }
-
-
-    public String getUserDeny() {
-        return userDeny;
-    }
-
-    public void setUserDeny(String userDeny) {
-        this.userDeny = userDeny;
     }
 
     public String getUserAddr() {

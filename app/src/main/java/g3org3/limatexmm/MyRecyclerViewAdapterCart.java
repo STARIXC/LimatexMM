@@ -23,11 +23,11 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
-    private List<list_items> list_itemsList;
+    private List<listItems> list_itemsList;
     Context mContext;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapterCart(Context context, List<list_items> list_itemsList) {
+    MyRecyclerViewAdapterCart(Context context, List<listItems> list_itemsList) {
         this.list_itemsList = list_itemsList;
         this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
@@ -47,24 +47,24 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // set string for button
-        final list_items item = list_itemsList.get(position);
+        final listItems item = list_itemsList.get(position);
 
-        holder.cart_title.setText((position + 1) +". " +item.getTitle());
+        holder.cart_title.setText((position + 1) +". " +item.getItemTitle());
 
-        String extraPrice = String.valueOf(item.getMore_value());
-        String prodPrice = String.valueOf(item.getPrice());
+        String extraPrice = String.valueOf(item.getItemMorevalue());
+        String prodPrice = String.valueOf(item.getItemPrice() + item.getItemMorevalue());
 
         String temp_pharse = "";
         if (Double.valueOf(extraPrice) > 0) {
             temp_pharse = "(" + extraPrice.replace(".0","") + " lei extra) ";
         }
-        temp_pharse = temp_pharse + prodPrice + " Lei";
+        temp_pharse = temp_pharse + prodPrice  + " Lei";
 
         holder.cart_price.setText(temp_pharse);
 
-        String finalS = item.getSubTitle();
-        if (item.getMore().length() > 1) {
-            finalS = finalS +" | " + item.getMore();
+        String finalS = item.getItemSubtitle();
+        if (item.getItemMore().length() > 1) {
+            finalS = finalS +" | " + item.getItemMore();
         }
 
         holder.cart_more.setText(finalS);
@@ -125,8 +125,8 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         // for each item
         for (int i = 0, size = list_itemsList.size(); i < size; i++) {
             //get each item
-            final list_items item = list_itemsList.get(i);
-            tempTotalPrice = tempTotalPrice + item.getPrice() + item.getMore_value();
+            final listItems item = list_itemsList.get(i);
+            tempTotalPrice = tempTotalPrice + item.getItemPrice() + item.getItemMorevalue();
         }
 
         return String.valueOf(tempTotalPrice);
@@ -134,15 +134,15 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
 
     // convenience method for getting data at click position
     String getItemTitle(int id) {
-        return list_itemsList.get(id).getTitle();
+        return list_itemsList.get(id).getItemTitle();
     }
 
     String getItemSubTitle(int id) {
-        return list_itemsList.get(id).getSubTitle();
+        return list_itemsList.get(id).getItemSubtitle();
     }
 
     double getItemPrice(int id) {
-        return list_itemsList.get(id).getPrice();
+        return list_itemsList.get(id).getItemPrice();
 }
 
     // allows clicks events to be caught

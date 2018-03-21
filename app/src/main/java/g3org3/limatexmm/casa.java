@@ -1,36 +1,23 @@
 package g3org3.limatexmm;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
@@ -39,8 +26,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +39,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
 
     public static final String CART_VALUE_EX = "";
+    public static boolean justFinished = false;
 
     MyRecyclerViewAdapter adapter;
     in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView recyclerView;
@@ -64,10 +50,26 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     Dialog myDialog;
     ImageButton deleteAll;
     Button nextButton;
+    Button today_orders;
     Button back_button;
     TextView totalPrice;
     List<SpannableString> commentListList = new ArrayList<>();
 
+    //when resuming from finish order
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //if the order was finished
+        if (justFinished) {
+            //clean the cart list
+            deleteAll.performClick();
+            justFinished = false;
+            customToast("Comanda finalizata !", true);
+        }
+
+    }
+
+    //when entering activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         totalPrice = findViewById(R.id.totalPrice);
         nextButton = findViewById(R.id.nextButton);
         deleteAll = findViewById(R.id.deleteAll);
-back_button = findViewById(R.id.back_button);
+        back_button = findViewById(R.id.back_button);
+        today_orders = findViewById(R.id.today_orders);
 
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -95,6 +98,14 @@ back_button = findViewById(R.id.back_button);
             }
         });
 
+
+        today_orders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(casa.this, orders.class);
+                startActivity(myIntent);
+            }
+        });
 
         //register back button
         back_button.setOnClickListener(new View.OnClickListener() {
@@ -113,13 +124,14 @@ back_button = findViewById(R.id.back_button);
                 if (Double.valueOf(TotalValue) > 1.0) {
                     Intent myIntent = new Intent(casa.this, finish.class);
 
-                    String cart_value = TotalValue;
+                    myIntent.putExtra(CART_VALUE_EX, TotalValue);
 
-                    myIntent.putExtra(CART_VALUE_EX, cart_value);
+                    myIntent.putExtra("final_cart_list",list_itemsList_cart);
+
 
                     startActivity(myIntent);
                 } else {
-                    customToast("Cosul este gol!");
+                    customToast("Cosul este gol!", false);
                 }
 
             }
@@ -189,10 +201,10 @@ back_button = findViewById(R.id.back_button);
 
     String current_item_title;
     String current_item_subTitle;
-    double current_item_price;
+    Double current_item_price;
     String current_item_more;
     int current_item_count;
-    double comment_value;
+    Double comment_value;
 
     MyArrayAdapter commentAdapter;
 
@@ -235,7 +247,7 @@ back_button = findViewById(R.id.back_button);
         comment.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
 
-        comment_value = 0;
+        comment_value = 0.0;
         comment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -249,7 +261,8 @@ back_button = findViewById(R.id.back_button);
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String final_price = String.valueOf(getPriceCom(editable.toString())) + " lei";
+                comment_value = getPriceCom(editable.toString());
+                String final_price = String.valueOf(comment_value) + " lei";
                 commentValue.setText(final_price);
             }
         });
@@ -319,14 +332,14 @@ back_button = findViewById(R.id.back_button);
     };
 
     // global cart list
-    ArrayList<list_items> list_itemsList_cart = new ArrayList<>();
+    ArrayList<listItems> list_itemsList_cart = new ArrayList<>();
 
 
     // ADD CURRENT ITEM (FROM TEMP) to cart list
     public void AddToCart_current() {
 
         //add items
-        list_items temp = new list_items(current_item_title, current_item_subTitle, current_item_price, current_item_more, comment_value);
+        listItems temp = new listItems(current_item_title, current_item_subTitle, current_item_price, current_item_more, comment_value, current_list_dialog);
         for (int i = 0; i < current_item_count; i++) {
             list_itemsList_cart.add(temp);
         }
@@ -340,14 +353,15 @@ back_button = findViewById(R.id.back_button);
         }
 
 
-        customToast(finalt);
+        customToast(finalt, false);
 
         //update cart
         cartUpdate();
 
     }
 
-    public void customToast(String finalt) {
+
+    public void customToast(String finalt, Boolean longer) {
         //show custom TOAST
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.item_added, null);
@@ -357,7 +371,10 @@ back_button = findViewById(R.id.back_button);
 
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        if (longer) {
+            toast.setDuration(Toast.LENGTH_LONG);
+        }
         toast.setView(layout);
         toast.show();
 
@@ -383,7 +400,7 @@ back_button = findViewById(R.id.back_button);
     }
 
 
-    boolean current_list_dialog;
+    Integer current_list_dialog;
 
     public void ViewList(String list_name) {
 
@@ -391,10 +408,11 @@ back_button = findViewById(R.id.back_button);
         List<String> Lines = Arrays.asList(getResources().getStringArray(id));
 
         //crate a list for RecyclerView adapter
-        ArrayList<list_items> list_itemsList = new ArrayList<>();
+        ArrayList<listItems> list_itemsList = new ArrayList<>();
 
         //read dialog boolean
-        current_list_dialog = Boolean.valueOf(Lines.get(0));
+        current_list_dialog = Integer.valueOf(Lines.get(0));
+
 
         for (int i = 1; i < Lines.size() - 1; i++) {
             //extract the strings
@@ -403,7 +421,7 @@ back_button = findViewById(R.id.back_button);
             Double item_price = Double.valueOf(Lines.get(i + 2));
 
             // add item to category list
-            list_items temp = new list_items(item_title, item_subTitle, item_price, "", 0.0);
+            listItems temp = new listItems(item_title, item_subTitle, item_price, "", 0.0, current_list_dialog);
             list_itemsList.add(temp);
 
             i = i + 2;
@@ -422,7 +440,7 @@ back_button = findViewById(R.id.back_button);
     //////// CLICK LISTENER FOR RECYCLER VIEW ITEMS
     @Override
     public void onItemClick(View view, int position) {
-        if (current_list_dialog) {
+        if (current_list_dialog.equals(1)) {
             ShowPopup(adapter.getItemTitle(position), adapter.getItemSubTitle(position), adapter.getItemPrice(position));
         } else {
             current_item_title = adapter.getItemTitle(position);
@@ -430,7 +448,8 @@ back_button = findViewById(R.id.back_button);
             current_item_price = adapter.getItemPrice(position);
             current_item_more = "";
             current_item_count = 1;
-            comment_value = 0;
+            //current_list_dialog = 0; is already 0
+            comment_value = 0.0;
             AddToCart_current();
         }
     }
