@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,12 @@ import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,6 +93,14 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         deleteAll = findViewById(R.id.deleteAll);
         back_button = findViewById(R.id.back_button);
         today_orders = findViewById(R.id.today_orders);
+
+
+        //Get the database
+        db = FirebaseFirestore.getInstance();
+
+        //update today_orders button text
+        getTodayOrders();
+
 
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -204,6 +220,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     Double current_item_price;
     String current_item_more;
     int current_item_count;
+    FirebaseFirestore db;
     Double comment_value;
 
     MyArrayAdapter commentAdapter;
@@ -379,6 +396,20 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         toast.show();
 
     }
+
+    public void getTodayOrders() {
+
+        db.collection("orders").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Integer allIdsD = task.getResult().size() + 1;
+                    today_orders.setText("Comenzi in baza de date: " + String.valueOf(allIdsD));
+                }
+            }
+        });
+    }
+
 
     public void CreateCategories() {
 

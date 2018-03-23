@@ -1,6 +1,6 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#440000">
-    <item android:drawable="@color/colorGreen" />
+    <item android:drawable="@color/colorYellow" />
     <item
         android:id="@android:id/mask"
         android:drawable="@android:color/white" />

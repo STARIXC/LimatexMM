@@ -2,6 +2,7 @@ package g3org3.limatexmm;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -59,15 +60,18 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         final orderListBig item = orderListBigList.get(position);
 
 
+        holder.orderID.setText("ID comanda: " + item.getDocID());
+
         holder.delivery_label.setText(item.getAdditionalSimple().getOrderStatus());
 
         if (item.getAdditionalSimple().getOrderDeliver().equals(1)) {
             holder.delivery_info_label.setText("Fara livrare!");
         } else {
             holder.delivery_info_label.setText("Livrare la: ");
-            holder.delivery_info_label.append(item.getUserSimple().getUserName() + "(" + item.getUserSimple().getUserOrders() + ") " + item.getUserSimple().getUserAddr());
+            holder.delivery_info_label.append(item.getUserSimple().getUserAddr());
         }
 
+        holder.delivery_name.setText(item.getUserSimple().getUserName() + "\n" + item.getUserSimple().getUserPhone());
 
         //Get current date
         Date temp_date2 = new Date();
@@ -89,10 +93,23 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         long diff = temp_date2.getTime() - item.getAdditionalSimple().getOrderDate().getTime();
         String jMins = String.valueOf(diff / 1000 / 60);
 
-        if (item.getAdditionalSimple().getOrderStatus().equals("In desfasurare!")){
-            finalDate.append("\n Au trecut " + jMins + " minute");
+        if (item.getAdditionalSimple().getOrderStatus().toLowerCase().contains("desfasurare")){
+            finalDate.append("\nAu trecut " + jMins + " minute");
         } else {
             finalDate.append("...");
+        }
+
+        if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("finalizata")){
+            holder.delivery_label.setBackgroundColor(Color.rgb(255, 110, 0));
+            holder.delivery_info_label.setBackgroundColor(Color.rgb(255, 110, 0));
+            holder.delivery_label.setTextColor(Color.WHITE);
+            holder.delivery_info_label.setTextColor(Color.WHITE);
+
+        } else if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("nefinalizata!")) {
+            holder.delivery_label.setBackgroundColor(Color.rgb(183, 36, 61));
+            holder.delivery_info_label.setBackgroundColor(Color.rgb(183, 36, 61));
+            holder.delivery_label.setTextColor(Color.WHITE);
+            holder.delivery_info_label.setTextColor(Color.WHITE);
         }
 
         holder.data_label.setText(finalDate);
@@ -104,6 +121,8 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         StringBuilder finalItems = new StringBuilder();
         for (int i = 0; i < maxi; i++) {
             finalItems.append(item.getOrderList().get(i).getItemTitle());
+            finalItems.append(", ");
+            finalItems.append(item.getOrderList().get(i).getItemSubtitle());
             finalItems.append("\n");
         }
         finalItems.append("(click pentru toata lista)");
@@ -193,6 +212,8 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         TextView data_label;
         TextView total_label;
         TextView order_label;
+        TextView orderID;
+        TextView delivery_name;
 
 
         ViewHolder(View itemView) {
@@ -208,6 +229,8 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             data_label = itemView.findViewById(R.id.data_label);
             total_label = itemView.findViewById(R.id.total_label);
             order_label = itemView.findViewById(R.id.order_label);
+            orderID = itemView.findViewById(R.id.orderID);
+            delivery_name = itemView.findViewById(R.id.delivery_name);
 
 
             //  cart_remove.setOnClickListener(this);
