@@ -3,19 +3,16 @@ package g3org3.limatexmm;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,15 +57,15 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         final orderListBig item = orderListBigList.get(position);
 
 
-        holder.orderID.setText("ID comanda: " + item.getDocID());
+      //  holder.orderID.setText("ID comanda: " + item.getDocID());
 
         holder.delivery_label.setText(item.getAdditionalSimple().getOrderStatus());
 
-        if (item.getAdditionalSimple().getOrderDeliver().equals(1)) {
+        if (item.getAdditionalSimple().getOrderDeliver().equals(0)) {
             holder.delivery_info_label.setText("Fara livrare!");
         } else {
             holder.delivery_info_label.setText("Livrare la: ");
-            holder.delivery_info_label.append(item.getUserSimple().getUserAddr());
+            holder.delivery_info_label.append(item.getUserSimple().getUserAddrCurrent());
         }
 
         holder.delivery_name.setText(item.getUserSimple().getUserName() + "\n" + item.getUserSimple().getUserPhone());
@@ -102,21 +99,49 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("finalizata")){
             holder.delivery_label.setBackgroundColor(Color.rgb(255, 110, 0));
             holder.delivery_info_label.setBackgroundColor(Color.rgb(255, 110, 0));
+            holder.data_label.setBackgroundColor(Color.rgb(255, 110, 0));
+            holder.order_label.setBackgroundColor(Color.rgb(255, 110, 0));
             holder.delivery_label.setTextColor(Color.WHITE);
             holder.delivery_info_label.setTextColor(Color.WHITE);
+            holder.data_label.setTextColor(Color.WHITE);
+            holder.order_label.setTextColor(Color.WHITE);
+
+            holder.complete_button.setEnabled(false);
+            holder.deny_button.setEnabled(false);
+            holder.complete_button.setText(item.getDocID());
+            holder.deny_button.setText("");
+            holder.complete_button.setTextSize(13);
+
+            holder.delivery_name.setBackgroundColor(Color.rgb(112, 112, 112));
+            holder.total_label.setBackgroundColor(Color.rgb(112, 112, 112));
+
 
         } else if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("nefinalizata!")) {
             holder.delivery_label.setBackgroundColor(Color.rgb(183, 36, 61));
             holder.delivery_info_label.setBackgroundColor(Color.rgb(183, 36, 61));
+            holder.data_label.setBackgroundColor(Color.rgb(183, 36, 61));
+            holder.order_label.setBackgroundColor(Color.rgb(183, 36, 61));
             holder.delivery_label.setTextColor(Color.WHITE);
             holder.delivery_info_label.setTextColor(Color.WHITE);
+            holder.data_label.setTextColor(Color.WHITE);
+            holder.order_label.setTextColor(Color.WHITE);
+
+            holder.complete_button.setEnabled(false);
+            holder.deny_button.setEnabled(false);
+            holder.complete_button.setText(item.getDocID());
+            holder.complete_button.setTextSize(13);
+            holder.deny_button.setText("");
+
+            holder.delivery_name.setBackgroundColor(Color.rgb(112, 112, 112));
+            holder.total_label.setBackgroundColor(Color.rgb(112, 112, 112));
+
         }
 
         holder.data_label.setText(finalDate);
 
         Integer maxi = item.getOrderList().size();
-        if (maxi > 2) {
-            maxi = 2;
+        if (maxi > 3) {
+            maxi = 3;
         }
         StringBuilder finalItems = new StringBuilder();
         for (int i = 0; i < maxi; i++) {
@@ -125,7 +150,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             finalItems.append(item.getOrderList().get(i).getItemSubtitle());
             finalItems.append("\n");
         }
-        finalItems.append("(click pentru toata lista)");
+        finalItems.append("\n(click pentru toata lista)");
 
         holder.order_label.setText(finalItems);
 
@@ -144,7 +169,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             @Override
             public void onClick(View view) {
 
-                 Toast.makeText(mContext, "Comanda: " + item.getOrderList().toString(), Toast.LENGTH_LONG).show();
+                 Toast.makeText(mContext, "Comanda: Aici toate pizzele", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -212,7 +237,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         TextView data_label;
         TextView total_label;
         TextView order_label;
-        TextView orderID;
+      //  TextView orderID;
         TextView delivery_name;
 
 
@@ -229,12 +254,9 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             data_label = itemView.findViewById(R.id.data_label);
             total_label = itemView.findViewById(R.id.total_label);
             order_label = itemView.findViewById(R.id.order_label);
-            orderID = itemView.findViewById(R.id.orderID);
+         //   orderID = itemView.findViewById(R.id.orderID);
             delivery_name = itemView.findViewById(R.id.delivery_name);
 
-
-            //  cart_remove.setOnClickListener(this);
-            //   itemView.setOnClickListener(this);
         }
 
         @Override

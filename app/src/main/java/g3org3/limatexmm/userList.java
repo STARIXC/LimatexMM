@@ -2,13 +2,16 @@ package g3org3.limatexmm;
 
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by meg3o on 3/13/2018.
  */
 
 class userList {
-    private String userAddr;
+    private List<String> userAddr;
+    private String userAddrCurrent;
+    private Integer userAddrCurrentTime;
     private String userName;
     private String userPhone;
     private Integer userOrders;
@@ -16,8 +19,10 @@ class userList {
     private Integer userDeny;
 
 
-    public userList(String userAddr, String userName, String userPhone, Integer userOrders, Date userJoin, Integer userDeny) {
+    public userList(List<String> userAddr,String userAddrCurrent,Integer userAddrCurrentTime, String userName, String userPhone, Integer userOrders, Date userJoin, Integer userDeny) {
         this.userAddr = userAddr;
+        this.userAddrCurrent= userAddrCurrent;
+        this.userAddrCurrentTime= userAddrCurrentTime;
         this.userName = userName;
         this.userPhone = userPhone;
         this.userOrders = userOrders;
@@ -27,6 +32,22 @@ class userList {
 
     public userList() {
 
+    }
+
+    public Integer getUserAddrCurrentTime() {
+        return userAddrCurrentTime;
+    }
+
+    public void setUserAddrCurrentTime(Integer userAddrCurrentTime) {
+        this.userAddrCurrentTime = userAddrCurrentTime;
+    }
+
+    public String getUserAddrCurrent() {
+        return userAddrCurrent;
+    }
+
+    public void setUserAddrCurrent(String userAddrCurrent) {
+        this.userAddrCurrent = userAddrCurrent;
     }
 
     public Integer getUserOrders() {
@@ -53,11 +74,11 @@ class userList {
         this.userJoin = userJoin;
     }
 
-    public String getUserAddr() {
+    public List<String> getUserAddr() {
         return userAddr;
     }
 
-    public void setUserAddr(String userAddr) {
+    public void setUserAddr(List<String> userAddr) {
         this.userAddr = userAddr;
     }
 

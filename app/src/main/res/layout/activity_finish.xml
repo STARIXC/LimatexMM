@@ -110,29 +110,45 @@
         app:layout_constraintTop_toBottomOf="@id/client_phone"
         tools:layout_editor_absoluteX="260dp" />
 
-    <EditText
+
+    <Spinner
+        android:id="@+id/spinnerAddress"
+        android:background="@color/colorPrimary"
+        android:theme="@style/spStyle"
+        android:layout_width="0dp"
+        android:elevation="1dp"
+        android:textSize="20sp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.1"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
+        app:layout_constraintWidth_percent="0.45"
+        app:layout_constraintTop_toBottomOf="@id/client_address_label" />
+
+
+    <Button
         android:id="@+id/client_address"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:background="@color/colorPrimaryDark"
+        android:clickable="true"
         android:elevation="3dp"
         android:ems="10"
-        android:gravity="left|center"
-        android:hint="Bolintin Vale, str. Margaretelor, nr 12."
-        android:inputType="textPostalAddress"
+        android:focusable="true"
+        android:gravity="center"
         android:padding="10dp"
+        android:text="Adauga adresa!"
         android:textAllCaps="true"
         android:textColor="@color/colorWhite"
-        android:textColorHint="#70ffffff"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintStart_toEndOf="@id/deliverSwitch"
-        app:layout_constraintTop_toBottomOf="@id/client_address_label"
-        tools:layout_editor_absoluteX="260dp" />
+        app:layout_constraintStart_toEndOf="@id/spinnerAddress"
+        app:layout_constraintTop_toBottomOf="@id/client_address_label" />
 
 
     <TextView
@@ -180,10 +196,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:lines="10"
         android:background="@color/colorWhiteDarker"
         android:elevation="3dp"
         android:gravity="center"
+        android:lines="10"
         android:padding="10dp"
         android:text="Client inexistent. Adaugat in baza de date!"
         android:textColor="@color/colorPrimaryDark"
@@ -229,8 +245,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHeight_percent="0.13"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalLabel"
         app:layout_constraintWidth_percent="0.25" />
 
@@ -247,8 +263,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toEndOf="@id/cancelOrder"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/cancelOrder" />
 
 </android.support.constraint.ConstraintLayout>

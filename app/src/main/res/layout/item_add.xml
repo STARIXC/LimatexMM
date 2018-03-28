@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="800dp"
+    android:background="#70000000"
+    android:clipToPadding="true"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="0dp"
+    android:layout_height="0dp"
     android:background="@color/colorWhite"
-    android:layout_height="200dp">
+    android:elevation="4dp"
+    android:clipToPadding="true"
+    app:layout_constraintHeight_percent="0.4"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginTop="30dp"
+    app:layout_constraintWidth_percent="0.8">
 
 
     <Button
@@ -14,7 +30,7 @@
         android:background="@drawable/ripple_button"
         android:text="+"
         android:textColor="@android:color/white"
-        android:textSize="40sp"
+        android:textSize="35sp"
         app:layout_constraintHeight_percent="0.35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.20" />
@@ -37,8 +53,8 @@
         android:id="@+id/remove"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:textSize="40sp"
-        android:text="_"
+        android:textSize="35sp"
+        android:text="-"
         android:gravity="top|center"
         android:textColor="@android:color/white"
         android:background="@drawable/ripple_button"
@@ -94,5 +110,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_percent="0.2" />
+
+</android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

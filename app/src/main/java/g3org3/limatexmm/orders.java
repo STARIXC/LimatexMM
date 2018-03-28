@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -90,14 +92,18 @@ public class orders extends AppCompatActivity {
 
         allOrders = new ArrayList<>();
 
+        //getting the maximum colloms for screen
 
-        rv_orders.setLayoutManager(new LinearLayoutManager(this));
+        rv_orders.setLayoutManager(new GridLayoutManager(this,2));
+
+       // rv_orders.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyRecyclerViewAdapterOrders(this, allOrders);
 
         rv_orders.setAdapter(adapter);
 
 
-        customToast("Se incarca...", true);
+        customToast("Se incarca...", false);
+
 
 
         db.collection("orders").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -106,14 +112,29 @@ public class orders extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot document : task.getResult()) {
 
-                        documentsIDs.add(document.getId());
-                        public_id = document.getId();
+                           orderListBig orderModel = document.toObject(orderListBig.class);
+
+                        if (orderModel.getAdditionalSimple().getOrderStatus().toLowerCase().contains("desfasurare")) {
+                            //add the order to the allOrder List
+                            allOrders.add(0, orderModel);
+
+                        } else {
+                            //add the order to the allOrder List
+                            allOrders.add(orderModel);
+                        }
+
+
+                           documentsIDs.add(document.getId());
 
                     }
                     Integer allIdsD = task.getResult().size();
 
                     if (allIdsD.equals(documentsIDs.size())) {
-                        readDocs();
+
+                        back_button.setText("Inapoi la casa | " + String.valueOf(allIdsD) + " comenzi incarcate!");
+
+                        adapter.notifyDataSetChanged();
+
                     }
                 }
             }
@@ -121,10 +142,14 @@ public class orders extends AppCompatActivity {
 
     }
 
+    /*
+
     Integer allIds = 0;
 
     public void readUsers() {
         //extract USER
+
+
 
 
         db.collection("orders").document(public_id).collection("userOrder").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -224,6 +249,10 @@ public class orders extends AppCompatActivity {
             }
         });
     }
+
+
+    */
+
 }
 
 

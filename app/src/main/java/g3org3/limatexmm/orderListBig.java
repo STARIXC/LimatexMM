@@ -8,10 +8,14 @@ import java.util.List;
 
 public class orderListBig {
 
-  private List<listItems> orderList;
-  private userList userSimple;
-    private additionalList additionalSimple;
-    private String docID;
+  List<listItems> orderList;
+ userList userSimple;
+    additionalList additionalSimple;
+    String docID;
+
+    public orderListBig() {
+
+    }
 
     public orderListBig(List<listItems> orderList, userList userSimple, additionalList additionalSimple, String docID){
         this.orderList = orderList;

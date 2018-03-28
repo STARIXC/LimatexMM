@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
@@ -245,7 +247,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         current_item_subTitle = item_subTitle;
         current_item_price = item_price;
 
-        myDialog = new Dialog(this);
+        myDialog = new Dialog(this,android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         myDialog.setContentView(R.layout.item_add);
         myDialog.setTitle("More");
 
@@ -393,6 +395,10 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             toast.setDuration(Toast.LENGTH_LONG);
         }
         toast.setView(layout);
+
+
+
+
         toast.show();
 
     }
@@ -404,7 +410,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Integer allIdsD = task.getResult().size() + 1;
-                    today_orders.setText("Comenzi in baza de date: " + String.valueOf(allIdsD));
+                    today_orders.setText("Comenzi in baza de date: " + String.valueOf(allIdsD - 1));
                 }
             }
         });
