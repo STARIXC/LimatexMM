@@ -44,6 +44,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,11 +55,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class finish extends AppCompatActivity {
@@ -209,8 +215,9 @@ public class finish extends AppCompatActivity {
     }
 
 
-    public void customToast(String finalt) {
-        //show custom TOAST
+
+    public void customToast(String finalt, Boolean longer) {
+
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.item_added, null);
 
@@ -220,6 +227,9 @@ public class finish extends AppCompatActivity {
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setDuration(Toast.LENGTH_SHORT);
+        if (longer) {
+            toast.setDuration(Toast.LENGTH_LONG);
+        }
         toast.setView(layout);
         toast.show();
 
@@ -283,7 +293,7 @@ public class finish extends AppCompatActivity {
     public void checkAddress(String fullAddr) {
 
         if (isPopUp) {
-            customToast("Se calculeaza distanta...");
+            customToast("Se calculeaza distanta...",false);
         }
 
         String temp_addr = fullAddr.replace(" ", "+").trim();
@@ -318,25 +328,40 @@ public class finish extends AppCompatActivity {
                             if (dist < 40000) {
                                 currentLocationTime = last_distTime / 60;
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa: " + dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta");
+                                    customToast("Distanta catre adresa: " + dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta",false);
                                     doneAddStep = true;
                                     done.setText("Adauga!");
                                 }
+
                             } else {
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa selectata este mult prea mare: " + dist / 100 + " km!");
+                                    customToast("Distanta catre adresa selectata este mult prea mare: " + dist / 100 + " km!",false);
                                 }
                             }
 
                         } else {
-                            customToast("Nu am putu gasi adresa!");
+                            if (isPopUp) {
+                                customToast("Strada nu a fost gasita, se considera doar orasul", true);
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isPopUp) {
+                                        checkAddress(spinnerCity.getSelectedItem().toString());
+                                    } else {
+                                        String tempp = spinnerAddress.getSelectedItem().toString();
+                                        checkAddress(tempp.substring(0,tempp.indexOf(",,")));
+                                    }
+                                }
+                            }, 1600);
+
                         }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customToast("E123: Fara raspuns de la server!");
+                customToast("E123: Fara raspuns de la server!",true);
             }
         });
 
@@ -347,36 +372,40 @@ public class finish extends AppCompatActivity {
 
 
     public void SendOrder(ArrayList<listItems> list, userList currentUser) {
-        customToast("Se trimite ...");
-
+        customToast("Se trimite ...", false);
 
         //disable button durring the process
         finishOrder.setEnabled(false);
-
-        Date curDate = new Date();
 
         Integer curDeliver = 0;
         if (deliver) {
             curDeliver = 1;
         }
 
-        final String docId = db.collection("orders").document().getId();
         errors = 0;
 
+        //set order status by searching for Need to be prepared variable
+        String orderStatus = "De ridicat";
+        Boolean containsPrepare = false;
+        for (int ai = 0; ai < list.size(); ai++) {
+            if (list.get(ai).getItemPrepare() == 1) {
+                containsPrepare = true;
+            }
+        }
+        if (containsPrepare) {
+            orderStatus = "In bucatarie";
+        }
 
-        //NEW METHOD:
 
-        additionalList adList = new additionalList(curDate, curDeliver, "In desfasurare");
+        additionalList adList = new additionalList(curDeliver, orderStatus, new Date());
 
-        orderListBig docData = new orderListBig(list, currentUser, adList, docId);
+        String date = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, 2).format(new Date());
 
-        db.collection("orders").document(docId).set(docData)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        errors++;
-                    }
-                });
+        orderListBig docData = new orderListBig(list, currentUser, adList, date);
+
+        DatabaseReference ref = database.getReference("pizza/orders/" + date);
+        ref.setValue(docData);
+
 
         //checking if the order has been placed:
 
@@ -384,7 +413,7 @@ public class finish extends AppCompatActivity {
         //order has been placed
         if (errors < 1) {
 
-            dataBase_label.setText("Comanda adaugata ! :" + docId);
+            dataBase_label.setText("Comanda adaugata ! :" + date);
 
             //enable button after the process completed
             finishOrder.setEnabled(true);
@@ -555,68 +584,72 @@ public class finish extends AppCompatActivity {
 
 
             address.addTextChangedListener(new TextWatcher() {
-                                               @Override
-                                               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                               }
+                }
 
-                                               @Override
-                                               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                                               }
+                }
 
-                                               @Override
-                                               public void afterTextChanged(Editable editable) {
+                @Override
+                public void afterTextChanged(Editable editable) {
 
-                                                   doneAddStep = false;
-                                                   done.setText("Inainte");
-                                               }
-                                           });
+                    doneAddStep = false;
+                    done.setText("Inainte");
+                }
+            });
 
-                    done.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+            done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                            //formulate full address;
-                            String tempS = spinnerCity.getSelectedItem().toString() + ", " + address.getText().toString();
-                            if (!clientAddr.contains(address.getText().toString())) {
-                                if (tempS.length() > 10) {
-                                    if (!doneAddStep) {
-                                        checkAddress(tempS);
-                                    } else {
-                                        myDialog.dismiss();
-                                        clientAddr.add(tempS);
-                                        //apply changes
-                                        cAddr.notifyDataSetChanged();
+                    //formulate full address;
+                    String tempS = spinnerCity.getSelectedItem().toString() + ", " + address.getText().toString();
+                    if (!clientAddr.contains(address.getText().toString())) {
+                        if (tempS.length() > 10) {
+                            if (!doneAddStep) {
+                                checkAddress(tempS);
+                            } else {
+                                myDialog.dismiss();
+                                clientAddr.add(tempS);
+                                //apply changes
+                                cAddr.notifyDataSetChanged();
 
-                                        db.collection("clients").whereEqualTo("userPhone", client_phone.getText().toString())
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (DocumentSnapshot document : task.getResult()) {
+                                db.collection("clients").whereEqualTo("userPhone", client_phone.getText().toString())
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (DocumentSnapshot document : task.getResult()) {
 
-                                                                DocumentReference user_profile = db.collection("clients").document(document.getId());
-                                                                user_profile.update("userAddr", clientAddr)
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void aVoid) {
-                                                                                Toast.makeText(getApplicationContext(), "Noua adresa a clientului adaugata!", Toast.LENGTH_SHORT).show();
-                                                                                spinnerAddress.setSelection(clientAddr.size(), true);
-                                                                            }
-                                                                        });
+                                                        DocumentReference user_profile = db.collection("clients").document(document.getId());
+                                                        user_profile.update("userAddr", clientAddr)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Toast.makeText(getApplicationContext(), "Noua adresa a clientului adaugata!", Toast.LENGTH_SHORT).show();
+                                                                    //    try {
+                                                                  //          spinnerAddress.setSelection(clientAddr.size(), true);
+                                                                    //    } catch (Exception e) {
+                                                                    //        Log.e("~~~~~", String.valueOf(clientAddr.size()));
+                                                                    //    }
+                                                                    }
+                                                                });
 
-                                                            }
-                                                        }
                                                     }
-                                                });
-                                    }
+                                                }
+                                            }
+                                        });
+                            }
 
-                                } //item too short
-                            } //item already exists
-                        }
-                    });
+                        } //item too short
+                    } //item already exists
+                }
+            });
 
 
             myDialog.show();
@@ -625,6 +658,7 @@ public class finish extends AppCompatActivity {
     }
 
     Integer currentLocationTime = 0;
+    FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -662,7 +696,7 @@ public class finish extends AppCompatActivity {
 
 
         clientAddr = new ArrayList<>();
-        cAddr = new ArrayAdapter<String>(this, R.layout.simple_dropdown_item, clientAddr);
+        cAddr = new ArrayAdapter<String>(this, R.layout.simple_dropdown_item_finish, clientAddr);
 
 
         spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -702,8 +736,9 @@ public class finish extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (deliver) {
-                    deliverSwitch.setText("NU");
-                    deliverSwitch.setBackgroundResource(R.drawable.ripple_button_darker);
+                    deliverSwitch.setText("Fara livrare");
+                    deliverSwitch.setBackgroundResource(R.drawable.ripple_button_yellow);
+                    totalLabel.setBackgroundResource(R.drawable.ripple_button_yellow);
                     deliver = false;
                     client_address.setVisibility(View.GONE);
                     spinnerAddress.setVisibility(View.GONE);
@@ -711,8 +746,9 @@ public class finish extends AppCompatActivity {
                     check_minimum_city("");
 
                 } else {
-                    deliverSwitch.setText("DA");
+                    deliverSwitch.setText("Cu Livrare");
                     deliverSwitch.setBackgroundResource(R.drawable.ripple_button);
+                    totalLabel.setBackgroundResource(R.drawable.ripple_button_darker);
                     client_address.setVisibility(View.VISIBLE);
                     spinnerAddress.setVisibility(View.VISIBLE);
                     client_address_label.setVisibility(View.VISIBLE);
@@ -732,7 +768,7 @@ public class finish extends AppCompatActivity {
                     curAddr = (String) spinnerAddress.getSelectedItem();
                 }
 
-                userList curUser = new userList(clientAddr, curAddr, currentLocationTime , client_name.getText().toString(), client_phone.getText().toString(), current_user_orders, new Date(), 0);
+                userList curUser = new userList(clientAddr, curAddr, currentLocationTime, client_name.getText().toString(), client_phone.getText().toString(), current_user_orders, new Date(), 0);
                 SendOrder(list_items_intent, curUser);
             }
         });
@@ -754,6 +790,9 @@ public class finish extends AppCompatActivity {
 
         //Get the database
         db = FirebaseFirestore.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+
 
         connected = false;
         db_connect();

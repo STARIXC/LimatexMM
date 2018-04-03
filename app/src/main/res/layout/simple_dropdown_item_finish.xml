@@ -6,7 +6,6 @@
     android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
     android:singleLine="true"
     android:paddingTop="6dp"
-    android:background="@color/colorWhite"
     android:paddingBottom="6dp"
     android:textSize="19sp"
     android:layout_width="match_parent"

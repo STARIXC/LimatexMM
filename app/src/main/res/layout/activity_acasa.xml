@@ -17,12 +17,12 @@
             android:layout_centerHorizontal="true" />
 
     <Button
+        android:id="@+id/casaButton"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_alignEnd="@id/centerBarrier"
         android:layout_alignParentStart="true"
         android:fontFamily="sans-serif"
-        android:onClick="showC"
         android:text="Casa"
         android:textColor="@android:color/white"
         android:textAlignment="center"
@@ -36,7 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignStart="@id/centerBarrier"
         android:fontFamily="sans-serif"
-        android:text="Bucatarie"
+        android:text="Administrator"
         android:textColor="@android:color/white"
         android:textAlignment="center"
         android:textSize="40sp"

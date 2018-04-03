@@ -11,25 +11,25 @@ public class orderListBig {
   List<listItems> orderList;
  userList userSimple;
     additionalList additionalSimple;
-    String docID;
+    String dateSimple;
 
     public orderListBig() {
 
     }
 
-    public orderListBig(List<listItems> orderList, userList userSimple, additionalList additionalSimple, String docID){
+    public orderListBig(List<listItems> orderList, userList userSimple, additionalList additionalSimple, String dateSimple){
         this.orderList = orderList;
         this.userSimple = userSimple;
         this.additionalSimple = additionalSimple;
-        this.docID =docID;
+        this.dateSimple =dateSimple;
     }
 
-    public String getDocID() {
-        return docID;
+    public String getDateSimple() {
+        return dateSimple;
     }
 
-    public void setDocID(String docID) {
-        this.docID = docID;
+    public void setDateSimple(String dateSimple) {
+        this.dateSimple = dateSimple;
     }
 
     public List<listItems> getOrderList() {

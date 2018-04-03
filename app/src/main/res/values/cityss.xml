@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cityss">
-        <item>Bolintin Vale</item>
-        <item>Crivina</item>
-        <item>Malu Spart</item>
-        <item>Palanca</item>
-        <item>Bolintin Deal</item>
-        <item>Stoinesti</item>
-        <item>Ulmi</item>
-        <item>Floresti</item>
-        <item>Ogrezeni</item>
-        <item>Ghionea</item>
-        <item>Roata</item>
-        <item>Gionea</item>
-        <item>Poenari</item>
-        <item>Icoana</item>
+        <item>Bolintin Vale, Giurgiu,,</item>
+        <item>Crivina, Giurgiu,,</item>
+        <item>Malu Spart, Giurgiu,,</item>
+        <item>Palanca, Giurgiu,,</item>
+        <item>Bolintin Deal, Giurgiu,,</item>
+        <item>Stoinesti, Giurgiu,,</item>
+        <item>Ulmi, Giurgiu,,</item>
+        <item>Floresti, Giurgiu,,</item>
+        <item>Ogrezeni, Giurgiu,,</item>
+        <item>Ghionea, Giurgiu,,</item>
+        <item>Roata, Giurgiu,,</item>
+        <item>Gionea, Giurgiu,,</item>
+        <item>Poenari, Giurgiu,,</item>
+        <item>Icoana, Giurgiu,,</item>
     </string-array>
 </resources>

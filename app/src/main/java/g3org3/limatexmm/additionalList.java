@@ -7,14 +7,22 @@ import java.util.Date;
  */
 
 public class additionalList {
-    private Date orderDate;
     private Integer orderDeliver;
     private String orderStatus;
+    private Date orderDate;
 
-    public additionalList(Date orderDate, Integer orderDeliver, String orderStatus){
-        this.orderDate = orderDate;
+    public additionalList(Integer orderDeliver, String orderStatus,Date orderDate){
         this.orderDeliver = orderDeliver;
         this.orderStatus = orderStatus;
+        this.orderDate = orderDate;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
     public String getOrderStatus() {
@@ -27,14 +35,6 @@ public class additionalList {
 
     public additionalList() {
 
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
     }
 
     public Integer getOrderDeliver() {

@@ -1,147 +1,95 @@
 package g3org3.limatexmm;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 
-//public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecyclerViewAdapterOrders.ViewHolder> {
+    private static final int UNSELECTED = -1;
 
-    //  private String[] mData = new String[0];
-    private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
-
+    private RecyclerView recyclerView;
     private List<orderListBig> orderListBigList;
-    Context mContext;
+    private Context mContext;
+    private LayoutInflater mInflater;
+    private int selectedItem = UNSELECTED;
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
 
-    // data is passed into the constructor
-    MyRecyclerViewAdapterOrders(Context context, List<orderListBig> orderListBigList) {
+    private Boolean more = false;
+    public Boolean batchSelected = false;
+
+    public MyRecyclerViewAdapterOrders(Context context, List<orderListBig> orderListBigList, RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
         this.orderListBigList = orderListBigList;
-        this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
+        // this.mInflater = LayoutInflater.from(context);
     }
 
-
-    // inflates the cell layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_order, parent, false);
-        return new ViewHolder(view);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_order2, parent, false);
+        return new ViewHolder(itemView);
     }
 
-    // binds the data to the textview in each cell
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        // set string for button
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.bind();
         final orderListBig item = orderListBigList.get(position);
 
-
-      //  holder.orderID.setText("ID comanda: " + item.getDocID());
-
-        holder.delivery_label.setText(item.getAdditionalSimple().getOrderStatus());
-
+        //Write the delivery Address (if needed)
         if (item.getAdditionalSimple().getOrderDeliver().equals(0)) {
-            holder.delivery_info_label.setText("Fara livrare!");
+            holder.deliveryAddress.setText("Fara livrare!");
         } else {
-            holder.delivery_info_label.setText("Livrare la: ");
-            holder.delivery_info_label.append(item.getUserSimple().getUserAddrCurrent());
+            holder.deliveryAddress.setText(item.getUserSimple().getUserAddrCurrent());
         }
 
-        holder.delivery_name.setText(item.getUserSimple().getUserName() + "\n" + item.getUserSimple().getUserPhone());
+        //Write client informations
+        holder.deliveryName.setText(item.getUserSimple().getUserName());
+        holder.deliveryPhone.setText(item.getUserSimple().getUserPhone());
 
-        //Get current date
-        Date temp_date2 = new Date();
-
-
-        StringBuilder finalDate = new StringBuilder();
-        finalDate.append("Data: ");
-        finalDate.append(item.getAdditionalSimple().getOrderDate().getDay());
-        finalDate.append(".");
-        finalDate.append(item.getAdditionalSimple().getOrderDate().getMonth());
-        finalDate.append(".");
-        finalDate.append(item.getAdditionalSimple().getOrderDate().getYear());
-        finalDate.append("  ");
-        finalDate.append(item.getAdditionalSimple().getOrderDate().getHours());
-        finalDate.append(":");
-        finalDate.append(item.getAdditionalSimple().getOrderDate().getMinutes());
-
-        //Calculate the days from when he joined
-        long diff = temp_date2.getTime() - item.getAdditionalSimple().getOrderDate().getTime();
-        String jMins = String.valueOf(diff / 1000 / 60);
-
-        if (item.getAdditionalSimple().getOrderStatus().toLowerCase().contains("desfasurare")){
-            finalDate.append("\nAu trecut " + jMins + " minute");
-        } else {
-            finalDate.append("...");
-        }
-
-        if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("finalizata")){
-            holder.delivery_label.setBackgroundColor(Color.rgb(255, 110, 0));
-            holder.delivery_info_label.setBackgroundColor(Color.rgb(255, 110, 0));
-            holder.data_label.setBackgroundColor(Color.rgb(255, 110, 0));
-            holder.order_label.setBackgroundColor(Color.rgb(255, 110, 0));
-            holder.delivery_label.setTextColor(Color.WHITE);
-            holder.delivery_info_label.setTextColor(Color.WHITE);
-            holder.data_label.setTextColor(Color.WHITE);
-            holder.order_label.setTextColor(Color.WHITE);
-
-            holder.complete_button.setEnabled(false);
-            holder.deny_button.setEnabled(false);
-            holder.complete_button.setText(item.getDocID());
-            holder.deny_button.setText("");
-            holder.complete_button.setTextSize(13);
-
-            holder.delivery_name.setBackgroundColor(Color.rgb(112, 112, 112));
-            holder.total_label.setBackgroundColor(Color.rgb(112, 112, 112));
-
-
-        } else if (item.getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals("nefinalizata!")) {
-            holder.delivery_label.setBackgroundColor(Color.rgb(183, 36, 61));
-            holder.delivery_info_label.setBackgroundColor(Color.rgb(183, 36, 61));
-            holder.data_label.setBackgroundColor(Color.rgb(183, 36, 61));
-            holder.order_label.setBackgroundColor(Color.rgb(183, 36, 61));
-            holder.delivery_label.setTextColor(Color.WHITE);
-            holder.delivery_info_label.setTextColor(Color.WHITE);
-            holder.data_label.setTextColor(Color.WHITE);
-            holder.order_label.setTextColor(Color.WHITE);
-
-            holder.complete_button.setEnabled(false);
-            holder.deny_button.setEnabled(false);
-            holder.complete_button.setText(item.getDocID());
-            holder.complete_button.setTextSize(13);
-            holder.deny_button.setText("");
-
-            holder.delivery_name.setBackgroundColor(Color.rgb(112, 112, 112));
-            holder.total_label.setBackgroundColor(Color.rgb(112, 112, 112));
-
-        }
-
-        holder.data_label.setText(finalDate);
-
+        //Write order
         Integer maxi = item.getOrderList().size();
-        if (maxi > 3) {
-            maxi = 3;
+        if (maxi > 2) {
+            maxi = 2;
         }
         StringBuilder finalItems = new StringBuilder();
         for (int i = 0; i < maxi; i++) {
@@ -150,48 +98,190 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             finalItems.append(item.getOrderList().get(i).getItemSubtitle());
             finalItems.append("\n");
         }
-        finalItems.append("\n(click pentru toata lista)");
+        finalItems.append("(...)");
 
-        holder.order_label.setText(finalItems);
+        if (item.getOrderList().size() > 2){
+            finalItems.append(" inca " + String.valueOf(item.getOrderList().size()) + " produse");
+        }
 
+        holder.orderLabel.setText(finalItems);
+
+
+        //Write Total Order Value
         Double totalPrice = 0.0;
         for (int i2 = 0; i2 < item.getOrderList().size(); i2++) {
             totalPrice = totalPrice + item.getOrderList().get(i2).getItemPrice() + item.getOrderList().get(i2).getItemMorevalue();
         }
 
-        holder.total_label.setText(String.valueOf(totalPrice) + " lei");
+        holder.totalLabel.setText("Total: " + String.valueOf(totalPrice) + " lei");
 
-        additionalId = "";
+        //Get current date
+        Date temp_date2 = new Date();
 
-        holder.order_label.setClickable(true);
-        holder.order_label.setFocusable(true);
-        holder.order_label.setOnClickListener(new View.OnClickListener() {
+        Date item_date = item.additionalSimple.getOrderDate();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(item_date);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int mins = calendar.get(Calendar.MINUTE);
+        int secs = calendar.get(Calendar.SECOND);
+
+
+        holder.idLabel.setText("Nr.C: " + String.valueOf(String.valueOf(hours) + String.valueOf(mins) + String.valueOf(secs)));
+
+        //Write time passed
+        long diff = temp_date2.getTime() - item_date.getTime();
+        String jMins = String.valueOf(diff / 1000 / 60);
+        Integer jMinsI = Integer.valueOf(jMins);
+
+        //if item require deliver
+        if (item.getAdditionalSimple().getOrderDeliver().equals(1)) {
+            //display the time passed + time to deliver
+            holder.timeLabel.setText(String.valueOf(jMinsI + item.getUserSimple().getUserAddrCurrentTime()));
+            holder.timeLabelS.setVisibility(View.VISIBLE);
+            holder.timeLabelS.setText("(" + item.getUserSimple().getUserAddrCurrentTime()+")");
+        } else {
+            //display only the time passed
+            holder.timeLabel.setText(String.valueOf(jMinsI));
+            holder.timeLabelS.setVisibility(View.GONE);
+        }
+
+
+        Drawable clone = mContext.getResources().getDrawable(R.drawable.simple_circle).getConstantState().newDrawable();
+        Integer finalVal = Integer.valueOf(holder.timeLabel.getText().toString());
+
+        if (finalVal < 10) {
+            clone.setColorFilter(Color.rgb(114, 160, 16), PorterDuff.Mode.MULTIPLY);
+        } else if (finalVal >= 10 && finalVal < 25) {
+            clone.setColorFilter(Color.rgb(206, 192, 0), PorterDuff.Mode.MULTIPLY);
+        } else if (finalVal >= 25 && finalVal < 40) {
+            clone.setColorFilter(Color.rgb(221, 111, 37), PorterDuff.Mode.MULTIPLY);
+        } else if (finalVal >= 40 && finalVal < 60) {
+            clone.setColorFilter(Color.rgb(219, 65, 65), PorterDuff.Mode.MULTIPLY);
+        } else if (finalVal >= 60 && finalVal < 2000) {
+            clone.setColorFilter(Color.rgb(96, 29, 87), PorterDuff.Mode.MULTIPLY);
+        }
+
+        holder.timeLabel.setBackground(clone);
+
+
+        //connect to database
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("pizza/orders/" + item.dateSimple + "/additionalSimple/orderStatus");
+
+        holder.denyButton.setText("Anuleaza comanda!");
+        holder.denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ref.setValue("Anulata");
+            }
+        });
 
-                 Toast.makeText(mContext, "Comanda: Aici toate pizzele", Toast.LENGTH_LONG).show();
+        //Different every order
+        if (item.getAdditionalSimple().getOrderStatus().equals("De livrat")) {
+            holder.barColor.setBackgroundColor(Color.rgb(110, 159, 239));
+            holder.completeButton.setText("Comanda e in masina!");
+            holder.completeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ref.setValue("Pe drum");
+                }
+            });
+        } else if (item.getAdditionalSimple().getOrderStatus().equals("Pe drum")) {
+            holder.barColor.setBackgroundColor(Color.rgb(249, 160, 104));
+            holder.completeButton.setText("Livrat la client!");
+            holder.completeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ref.setValue("Completata");
+                }
+            });
+
+        } else if (item.getAdditionalSimple().getOrderStatus().equals("De ridicat")) {
+            holder.barColor.setBackgroundColor(Color.rgb(236, 104, 249));
+            holder.completeButton.setText("Ridicat de client !");
+            holder.completeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ref.setValue("Completata");
+                }
+            });
+        } else if (item.getAdditionalSimple().getOrderStatus().equals("In bucatarie")) {
+            if (item.getAdditionalSimple().getOrderDeliver() > 0) {
+                holder.barColor.setBackgroundColor(Color.rgb(94, 219, 173));
+                holder.completeButton.setText("Gata de Livrat!");
+                holder.completeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ref.setValue("De livrat");
+                    }
+                });
+            } else {
+                holder.barColor.setBackgroundColor(Color.rgb(94, 214, 219));
+                holder.completeButton.setText("Gata de Ridicat!");
+                holder.completeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ref.setValue("De ridicat");
+                    }
+                });
+            }
+        }
+
+        final StringBuilder allOrder = new StringBuilder();
+        for (int i = 0; i< item.getOrderList().size(); i++) {
+            String nr = String.valueOf((i+1));
+            allOrder.append(nr + ") ");
+            allOrder.append(item.getOrderList().get(i).getItemTitle());
+            allOrder.append(", ");
+            allOrder.append(item.getOrderList().get(i).getItemSubtitle());
+            allOrder.append("      ");
+        }
+
+
+        holder.expandOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!more) {
+                    more = true;
+                    holder.moreView.setVisibility(View.VISIBLE);
+                    holder.moreView.setText(allOrder);
+                } else {
+                    more = false;
+                    holder.moreView.setVisibility(View.GONE);
+
+                }
             }
         });
 
 
-        holder.complete_button.setOnClickListener(new View.OnClickListener() {
+        holder.aboveButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "Se finalizeaza comanda...", Toast.LENGTH_LONG).show();
-               ModifyOrder("Finalizata", item.getDocID());
+            public boolean onLongClick(View view) {
+                if (!batchSelected) {
+                    batchSelected = true;
+                    holder.expandButton.setVisibility(View.VISIBLE);
+                } else {
+                    batchSelected = false;
+                    holder.expandButton.setVisibility(View.INVISIBLE);
+                }
+                return true;
             }
         });
 
-        holder.deny_button.setOnClickListener(new View.OnClickListener() {
+        holder.aboveButtonS.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "Se marcheaza ca nefinalizeaza ...", Toast.LENGTH_LONG).show();
-                ModifyOrder("Nefinalizata!", item.getDocID());
+            public void onClick(View v) {
+                holder.aboveButton.performLongClick();
             }
         });
+
+
     }
 
-    String additionalId;
+
+
+
 
     // total number of cells
     @Override
@@ -199,81 +289,116 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         return orderListBigList.size();
     }
 
-    public void ModifyOrder(final String endText, final String itemID){
-        db.collection("orders").document(itemID).collection("additionalList").whereEqualTo("orderStatus", "In desfasurare")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-
-                                additionalId = document.getId();
-
-
-                            }
-
-                            DocumentReference user_profile = db.collection("orders").document(itemID).collection("additionalList").document(additionalId);
-                            user_profile.update("orderStatus", endText)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            //refresh me
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }
-
-    FirebaseFirestore db;
-
-    // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        Button complete_button;
-        Button deny_button;
-        TextView delivery_label;
-        TextView delivery_info_label;
-        TextView data_label;
-        TextView total_label;
-        TextView order_label;
-      //  TextView orderID;
-        TextView delivery_name;
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ExpandableLayout.OnExpansionUpdateListener {
+        private ExpandableLayout expandableLayout;
+        private ImageButton expandButton;
+        Button completeButton;
+        Button denyButton;
+        TextView deliveryAddress;
+        TextView totalLabel;
+        TextView orderLabel;
+        TextView idLabel;
+        TextView deliveryName;
+        TextView timeLabel;
+        TextView deliveryPhone;
+        View barColor;
+        TextView timeLabelS;
+        Button expandOrderButton;
+        TextView moreView;
+        View aboveButtonS;
+        View aboveButton;
+        android.support.constraint.ConstraintLayout topView;
 
 
-        ViewHolder(View itemView) {
+
+        public ViewHolder(View itemView) {
             super(itemView);
 
-            //Get the database
-            db = FirebaseFirestore.getInstance();
+            completeButton = itemView.findViewById(R.id.completeButton);
+            denyButton = itemView.findViewById(R.id.denyButton);
+            deliveryAddress = itemView.findViewById(R.id.deliveryAddress);
+            totalLabel = itemView.findViewById(R.id.totalLabel);
+            orderLabel = itemView.findViewById(R.id.orderLabel);
+            idLabel = itemView.findViewById(R.id.idLabel);
+            deliveryName = itemView.findViewById(R.id.deliveryName);
+            timeLabel = itemView.findViewById(R.id.timeLabel);
+            deliveryPhone = itemView.findViewById(R.id.deliveryPhone);
+            barColor = itemView.findViewById(R.id.barColor);
+            topView = itemView.findViewById(R.id.topView);
+            expandOrderButton = itemView.findViewById(R.id.expandOrderButton);
+            timeLabelS = itemView.findViewById(R.id.timeLabelS);
+            moreView = itemView.findViewById(R.id.moreView);
+            aboveButton = itemView.findViewById(R.id.aboveButton);
+            expandableLayout = itemView.findViewById(R.id.expandableLayout);
+            expandableLayout.setInterpolator(new DecelerateInterpolator());
+            expandableLayout.setOnExpansionUpdateListener(this);
+            expandButton = itemView.findViewById(R.id.expandButton);
+            aboveButtonS = itemView.findViewById(R.id.aboveButtonS);
 
-            complete_button = itemView.findViewById(R.id.complete_button);
-            deny_button = itemView.findViewById(R.id.deny_button);
-            delivery_label = itemView.findViewById(R.id.delivery_label);
-            delivery_info_label = itemView.findViewById(R.id.delivery_info_label);
-            data_label = itemView.findViewById(R.id.data_label);
-            total_label = itemView.findViewById(R.id.total_label);
-            order_label = itemView.findViewById(R.id.order_label);
-         //   orderID = itemView.findViewById(R.id.orderID);
-            delivery_name = itemView.findViewById(R.id.delivery_name);
 
+            aboveButton.setOnClickListener(this);
+        }
+
+        public void bind() {
+            int position = getAdapterPosition();
+            boolean isSelected = position == selectedItem;
+            aboveButton.setSelected(isSelected);
+            expandableLayout.setExpanded(isSelected, false);
         }
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
+            if (holder != null) {
+                holder.aboveButton.setSelected(false);
+                holder.expandableLayout.collapse();
+
+                // WhiteDark
+                holder.topView.setBackgroundColor(Color.rgb(244, 244, 244));
+                holder.completeButton.setBackgroundColor(Color.rgb(244, 244, 244));
+                holder.denyButton.setBackgroundColor(Color.rgb(244, 244, 244));
+                holder.expandOrderButton.setBackgroundColor(Color.rgb(244, 244, 244));
+
+                if(more){
+                    holder.expandOrderButton.performClick();
+                }
+
+                if(batchSelected){
+                    holder.aboveButton.performLongClick();
+                }
+
+            }
+
+            int position = getAdapterPosition();
+            if (position == selectedItem) {
+                selectedItem = UNSELECTED;
+
+
+            } else {
+                aboveButton.setSelected(true);
+                expandableLayout.expand();
+
+                if(batchSelected){
+                    aboveButton.performLongClick();
+                }
+
+                // White
+                topView.setBackgroundColor(Color.rgb(255, 255, 255));
+                completeButton.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
+                denyButton.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
+                expandOrderButton.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
+
+                selectedItem = position;
+            }
+        }
+
+        @Override
+        public void onExpansionUpdate(float expansionFraction, int state) {
+            if (state == ExpandableLayout.State.EXPANDING) {
+                recyclerView.smoothScrollToPosition(getAdapterPosition());
+            }
         }
     }
-
-
-    // allows clicks events to be caught
-
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
-    }
 }
+
+

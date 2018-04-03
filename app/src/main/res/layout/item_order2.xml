@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <View
+        android:id="@+id/barColor"
+        android:layout_width="fill_parent"
+        android:background="#fff000"
+        android:layout_height="10dp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/colorWhiteDark">
+
+        <TextView
+            android:id="@+id/orderLabel"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@android:color/transparent"
+            android:clipToPadding="true"
+            android:gravity="left|center"
+            android:lines="3"
+            android:text="Pizza Casei \nPizza de post \nPizza mojo"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toStartOf="@id/totalLabel"
+            app:layout_constraintStart_toEndOf="@id/deliveryPhone"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/deliveryName"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="30dp"
+            android:clipToPadding="true"
+            android:gravity="center|left|bottom"
+            android:lines="3"
+            android:paddingBottom="5dp"
+            android:text="OPREA GEORGE"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintStart_toEndOf="@id/timeLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.2" />
+
+        <TextView
+            android:id="@+id/deliveryPhone"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:clipToPadding="true"
+            android:gravity="center|left|bottom"
+            android:lines="3"
+            android:paddingBottom="6dp"
+            android:text="0721805840"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13dp"
+            app:layout_constraintEnd_toStartOf="@id/orderLabel"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintStart_toEndOf="@id/deliveryName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/deliveryAddress"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="40dp"
+            android:clipToPadding="true"
+            android:gravity="center|left|top"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:text="Bolintin Vale, Str florilor, nr 12"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toStartOf="@id/orderLabel"
+            app:layout_constraintStart_toEndOf="@id/timeLabel"
+            app:layout_constraintTop_toBottomOf="@id/deliveryName" />
+
+        <TextView
+            android:id="@+id/totalLabel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="5dp"
+            android:clipToPadding="true"
+            android:gravity="center"
+            android:lines="3"
+            android:padding="10dp"
+            android:paddingStart="15dp"
+            android:text="Total: 200 lei"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.23" />
+
+
+        <TextView
+            android:id="@+id/idLabel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:layout_marginEnd="5dp"
+            android:text="Nr.C: 140322"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintTop_toBottomOf="@id/totalLabel"
+            app:layout_constraintWidth_percent="0.23" />
+
+
+        <TextView
+            android:id="@+id/timeLabel"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/simple_circle"
+            android:clipToPadding="true"
+            android:gravity="center"
+            android:elevation="1dp"
+            android:text="30"
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeLabelS"
+            android:layout_width="40dp"
+            android:elevation="2dp"
+            android:layout_height="40dp"
+            android:text="+19"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="50dp"
+            android:background="@drawable/simple_circle_darker"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/timeLabel"
+            />
+
+        <TextView
+            android:id="@+id/moreView"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@color/colorWhite"
+            android:elevation="3dp"
+            android:gravity="center|left"
+            android:paddingEnd="30dp"
+            android:paddingStart="30dp"
+            android:visibility="invisible"
+            android:singleLine="false"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/expandButton"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@color/colorWhite"
+            android:elevation="4dp"
+            android:visibility="invisible"
+            android:padding="5dp"
+            android:alpha="0.6"
+            android:src="@drawable/ic_check"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/aboveButton"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.85"
+            app:layout_constraintStart_toEndOf="@id/aboveButtonS"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/aboveButtonS"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:focusable="true"
+            app:layout_constraintEnd_toStartOf="@id/aboveButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:id="@+id/expandableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorWhite"
+        app:el_duration="200"
+        app:el_expanded="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <Button
+                android:id="@+id/expandOrderButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ripple_button_white"
+                android:clipToPadding="true"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Arata tot"
+                android:textSize="13sp"
+                app:layout_constraintStart_toEndOf="@id/denyButton"
+                app:layout_constraintWidth_percent="0.25" />
+
+            <Button
+                android:id="@+id/completeButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ripple_button_white"
+                android:clipToPadding="true"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="Finalizeaza"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
+
+            <Button
+                android:id="@+id/denyButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ripple_button_white"
+                android:clipToPadding="true"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Nefinalizata"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/completeButton"
+                app:layout_constraintWidth_percent="0.25" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
+
+
+</LinearLayout>
+

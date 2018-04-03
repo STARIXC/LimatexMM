@@ -61,13 +61,13 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     ImageButton deleteAll;
     Button nextButton;
     Button today_orders;
-    Button back_button;
+ //   Button back_button;
     TextView totalPrice;
     List<SpannableString> commentListList = new ArrayList<>();
 
     //when resuming from finish order
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         //if the order was finished
         if (justFinished) {
@@ -93,15 +93,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         totalPrice = findViewById(R.id.totalPrice);
         nextButton = findViewById(R.id.nextButton);
         deleteAll = findViewById(R.id.deleteAll);
-        back_button = findViewById(R.id.back_button);
+      //  back_button = findViewById(R.id.back_button);
         today_orders = findViewById(R.id.today_orders);
-
-
-        //Get the database
-        db = FirebaseFirestore.getInstance();
-
-        //update today_orders button text
-        getTodayOrders();
 
 
         //Force screen Landscape
@@ -126,12 +119,12 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         });
 
         //register back button
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+      //  back_button.setOnClickListener(new View.OnClickListener() {
+      //      @Override
+       //     public void onClick(View view) {
+       //         finish();
+      //      }
+       // });
 
         //Register Finish order button
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +137,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
                     myIntent.putExtra(CART_VALUE_EX, TotalValue);
 
-                    myIntent.putExtra("final_cart_list",list_itemsList_cart);
+                    myIntent.putExtra("final_cart_list", list_itemsList_cart);
 
 
                     startActivity(myIntent);
@@ -247,7 +240,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         current_item_subTitle = item_subTitle;
         current_item_price = item_price;
 
-        myDialog = new Dialog(this,android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        myDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         myDialog.setContentView(R.layout.item_add);
         myDialog.setTitle("More");
 
@@ -397,23 +390,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         toast.setView(layout);
 
 
-
-
         toast.show();
 
-    }
-
-    public void getTodayOrders() {
-
-        db.collection("orders").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    Integer allIdsD = task.getResult().size() + 1;
-                    today_orders.setText("Comenzi in baza de date: " + String.valueOf(allIdsD - 1));
-                }
-            }
-        });
     }
 
 

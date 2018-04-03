@@ -1,13 +1,17 @@
 package g3org3.limatexmm;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.Drawable;
+import android.opengl.Visibility;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,38 +19,46 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class orders extends AppCompatActivity {
 
+    //declaring views
     Button back_button;
+    Button driverButton;
+    Button deliverButton;
+    Button kitchenButton;
+    Button readyButton;
+
+    com.getbase.floatingactionbutton.FloatingActionsMenu moreButton;
+    com.getbase.floatingactionbutton.FloatingActionButton firstButton;
+    com.getbase.floatingactionbutton.FloatingActionButton secondButton;
+    //  com.getbase.floatingactionbutton.FloatingActionButton refreshButton;
+
     RecyclerView rv_orders;
     MyRecyclerViewAdapterOrders adapter;
-    FirebaseFirestore db;
-
-    List<String> documentsIDs;
-
-    ArrayList<listItems> ordersList;
-
     ArrayList<orderListBig> allOrders;
-
-    userList userSimple;
-    additionalList additionalSimple;
-
-    String public_id;
+    FirebaseDatabase database;
+    DatabaseReference ref;
+    orderListBigList hashMap;
+    Boolean loaded = false;
+    Integer currentView = 2;
+    Context mContext;
 
 
     public void customToast(String finalt, Boolean longer) {
-        //show custom TOAST
+
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.item_added, null);
 
@@ -65,17 +77,37 @@ public class orders extends AppCompatActivity {
     }
 
 
+    public static int getPrimaryColor(final Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimary, value, true);
+        return value.data;
+    }
+
+    public static int getPrimaryDarkerColor(final Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, value, true);
+        return value.data;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
-
 
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         back_button = findViewById(R.id.back_button);
         rv_orders = findViewById(R.id.rv_orders);
+        driverButton = findViewById(R.id.driverButton);
+        kitchenButton = findViewById(R.id.kitchenButton);
+        readyButton = findViewById(R.id.readyButton);
+        deliverButton = findViewById(R.id.deliverButton);
+
+        moreButton = findViewById(R.id.moreButton);
+        firstButton = findViewById(R.id.firstButton);
+        secondButton = findViewById(R.id.secondButton);
+        //   refreshButton = findViewById(R.id.refreshButton);
 
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,174 +117,279 @@ public class orders extends AppCompatActivity {
         });
 
         //connect to database
-        db = FirebaseFirestore.getInstance();
-
-        //initialize documentsIDs list
-        documentsIDs = new ArrayList<>();
-
-        allOrders = new ArrayList<>();
-
-        //getting the maximum colloms for screen
-
-        rv_orders.setLayoutManager(new GridLayoutManager(this,2));
-
-       // rv_orders.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MyRecyclerViewAdapterOrders(this, allOrders);
-
-        rv_orders.setAdapter(adapter);
-
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference("pizza");
 
         customToast("Se incarca...", false);
 
 
-
-        db.collection("orders").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mContext = this;
+        back_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-
-                           orderListBig orderModel = document.toObject(orderListBig.class);
-
-                        if (orderModel.getAdditionalSimple().getOrderStatus().toLowerCase().contains("desfasurare")) {
-                            //add the order to the allOrder List
-                            allOrders.add(0, orderModel);
-
-                        } else {
-                            //add the order to the allOrder List
-                            allOrders.add(orderModel);
-                        }
-
-
-                           documentsIDs.add(document.getId());
-
-                    }
-                    Integer allIdsD = task.getResult().size();
-
-                    if (allIdsD.equals(documentsIDs.size())) {
-
-                        back_button.setText("Inapoi la casa | " + String.valueOf(allIdsD) + " comenzi incarcate!");
-
-                        adapter.notifyDataSetChanged();
-
-                    }
-                }
+            public void onClick(View view) {
+                finish();
             }
         });
 
-    }
-
-    /*
-
-    Integer allIds = 0;
-
-    public void readUsers() {
-        //extract USER
-
-
-
-
-        db.collection("orders").document(public_id).collection("userOrder").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        deliverButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        //for each order
+            public void onClick(View view) {
+                deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
+                driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                currentView = 1;
+                filterList();
+            }
+        });
+        driverButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
+                readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                currentView = 2;
+                filterList();
+            }
+        });
+        readyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
+                kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                currentView = 3;
+                filterList();
+            }
+        });
+        kitchenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
+                currentView = 4;
+                filterList();
+            }
+        });
 
-                        //extract the inside of the document
-                        userSimple = document.toObject(g3org3.limatexmm.userList.class);
+        allOrders = new ArrayList<>();
+        updateList();
 
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                hashMap = dataSnapshot.getValue(orderListBigList.class);
+
+                //convert hashmap object to list
+                try {
+                    allOrders = new ArrayList<orderListBig>(hashMap.getOrders().values());
+                    loaded = true;
+                    kitchenButton.performClick();
+                } catch (Exception E) {
+                    customToast("Nici o comanda adaugata!", false);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedItems = new ArrayList<>();
+                for (int i = 0; i < allOrders.size(); i++) {
+                   if (rv_orders.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.expandButton).isShown()) {
+                       selectedItems.add(i);
                     }
-                    //extract ADDITIONAL
-                    db.collection("orders").document(public_id).collection("additionalList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot document : task.getResult()) {
-                                    //for each order
+                }
 
-                                    //extract the inside of the document
-                                    additionalSimple = document.toObject(additionalList.class);
+                finishSelected();
+
+            }
+        });
+
+        firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedItems = new ArrayList<>();
+                for (int i = 0; i < allOrders.size(); i++) {
+                    if (rv_orders.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.expandButton).isShown()) {
+                        selectedItems.add(i);
+                    }
+                }
+
+                finishSelected();
+
+            }
+        });
 
 
-                                }
-                                //extract the inside of the document
-                                //after all steps
+        //add refresh timer
+        Thread t = new Thread() {
 
-                                //build the model for the allOrders List
-
-                                orderListBig orderModel = new orderListBig(ordersList, userSimple, additionalSimple, public_id);
-
-
-                                if (orderModel.getAdditionalSimple().getOrderStatus().toLowerCase().contains("desfasurare")) {
-                                    //add the order to the allOrder List
-                                    allOrders.add(0, orderModel);
-
-                                } else {
-                                    //add the order to the allOrder List
-                                    allOrders.add(orderModel);
-                                }
-
-                                //refresh the list
-                                back_button.setText("Inapoi la casa | Se incarca: " + String.valueOf(allIds + 1) + " din " + documentsIDs.size());
-
-                                //if current ids scanned are not all the documents
-                                if (!allIds.equals(documentsIDs.size() - 1)) {
-                                    allIds++;
-                                    readDocs();
-                                } else {
-                                    back_button.setText("Inapoi la casa | " + String.valueOf(allIds + 1) + " comenzi incarcate!");
-                                    adapter.notifyDataSetChanged();
-                                    //ending
-                                }
-
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(30000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                           //     filterList();
                             }
-                        }
-                    });
+                        });
+                    }
+                } catch (InterruptedException e) {
                 }
             }
-        });
+        };
+
+        t.start();
+
+
+    }
+
+    List<Integer> selectedItems;
+    //  FirebaseDatabase databasee;
+    private DatabaseReference reff;
+
+    public void finishSelected() {
+        //connect to database
+        //  databasee = FirebaseDatabase.getInstance();
+        for (int i = 0; i < selectedItems.size(); i++) {
+            reff = database.getReference("pizza/orders/" + allOrders.get(i).dateSimple + "/additionalSimple/orderStatus");
+            if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("De livrat")) {
+                reff.setValue("Pe drum");
+            } else if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("Pe drum")) {
+                reff.setValue("Completata");
+            } else if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("De ridicat")) {
+                reff.setValue("Completata");
+            } else if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("In bucatarie")) {
+                if (allOrders.get(i).getAdditionalSimple().getOrderDeliver() > 0) {
+                    reff.setValue("De livrat");
+                } else {
+                    reff.setValue("De ridicat");
+                }
+            }
+        }
+
+    }
+
+    public void hideFABs() {
+        if (firstButton.isShown()) {
+            moreButton.collapse();
+        }
     }
 
 
-    public void readDocs() {
+    public void refreshFABs() {
+        if (currentView.equals(1)) {
+            //De livrat
+            firstButton.setTitle("Pe drum");
+        } else if (currentView.equals(2)) {
+            //Pe drum
+            firstButton.setTitle("Livrate");
 
-        //get document id
-        public_id = documentsIDs.get(allIds);
+        } else if (currentView.equals(3)) {
+            //De ridicat
+            firstButton.setTitle("Ridicate");
 
-        //initialize the Order list
-        ordersList = new ArrayList<>();
+        } else if (currentView.equals(4)) {
+            //In bucatarie
+            firstButton.setTitle("Pregatite!");
 
-        //extract
-        //extract ALL ORDER ITEMS
+        }
+    }
 
-        db.collection("orders").document(public_id).collection("allOrders").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        //for each order
-
-                        //extract the inside of the document as a listItems
-                        listItems orderSimple = document.toObject(g3org3.limatexmm.listItems.class);
-
-                        //add the current item to the global list
-                        ordersList.add(orderSimple);
-                    }
-
-                    Integer allOrd = task.getResult().size();
-
-                    if (allOrd.equals(ordersList.size())) {
-                        readUsers();
-                    }
-                }
-            }
-        });
+    public void updateList() {
+        //update UI
+        // rv_orders.setLayoutManager(new GridLayoutManager(this, 2));
+        rv_orders.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MyRecyclerViewAdapterOrders(this, allOrders, rv_orders);
+        rv_orders.setAdapter(adapter);
+        back_button.setText("<");
     }
 
 
-    */
+    public void filterList() {
+        if (loaded) {
+            //filter & order allOrders List
+            //show only in transit orders
 
+            //clear the list
+            allOrders.clear();
+
+            //regain all items
+            allOrders = new ArrayList<orderListBig>(hashMap.getOrders().values());
+
+            String searchStatus = "";
+            if (currentView.equals(1)) {
+                searchStatus = "De livrat";
+            } else if (currentView.equals(2)) {
+                searchStatus = "Pe drum";
+            } else if (currentView.equals(3)) {
+                searchStatus = "De ridicat";
+            } else if (currentView.equals(4)) {
+                searchStatus = "In bucatarie";
+            }
+
+
+            for (int i = 0; i < allOrders.size(); i++) {
+
+                if (!allOrders.get(i).getAdditionalSimple().getOrderStatus().toLowerCase().trim().equals(searchStatus.toLowerCase().trim())) {
+                    //remove unnecesary items
+                    allOrders.remove(i);
+                    i--;
+                }
+            }
+
+            Collections.sort(allOrders, new TimeComparator());
+
+            hideFABs();
+
+            refreshFABs();
+
+            //update UI
+            updateList();
+
+        }
+    }
+
+
+    //TODO: filter orders only for non-finalized ones
+
+}
+
+ class TimeComparator implements Comparator<orderListBig> {
+
+    public int compare(orderListBig time1, orderListBig time2) {
+
+        Date temp_date2 = new Date();
+
+        Date item_date = time1.additionalSimple.getOrderDate();
+        long diff = temp_date2.getTime() - item_date.getTime();
+        String jMins = String.valueOf(diff / 1000 / 60);
+        Integer jMinsI = Integer.valueOf(jMins);
+        jMinsI = jMinsI + time1.userSimple.getUserAddrCurrentTime();
+
+
+        Date item_date2 = time2.additionalSimple.getOrderDate();
+        long diff2 = temp_date2.getTime() - item_date2.getTime();
+        String jMins2 = String.valueOf(diff2 / 1000 / 60);
+        Integer jMinsI2 = Integer.valueOf(jMins2);
+        jMinsI2 = jMinsI2 + time2.userSimple.getUserAddrCurrentTime();
+
+
+        return jMinsI.compareTo(jMinsI2);
+    }
 }
 
 
