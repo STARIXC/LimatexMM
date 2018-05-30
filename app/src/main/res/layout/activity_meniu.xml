@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhiteDark"
+    tools:context=".meniu">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@color/colorWhite"
+            app:title="Acasa">
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <Button
+        android:id="@+id/casa"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ripple_button"
+        android:drawableEnd="@drawable/ic_shopping_cart_black_24dp"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/colorWhite"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Casa"
+        android:textColor="@color/colorWhite"
+        android:textSize="70px"
+        app:layout_constraintBottom_toTopOf="@id/midSpace"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:background="@color/colorWhite"
+        android:drawableLeft="@drawable/ic_info_black_24dp"
+        android:drawablePadding="2dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Adauga comenzile clientilor"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@id/casa"
+        app:layout_constraintStart_toStartOf="@id/casa"
+        app:layout_constraintTop_toBottomOf="@id/casa" />
+
+    <Button
+        android:id="@+id/bucatarie"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ripple_button_yellow"
+        android:drawableEnd="@drawable/ic_restaurant_black_24dp"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/colorWhite"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Bucatarie"
+        android:textColor="@color/colorWhite"
+        android:textSize="70px"
+        app:layout_constraintBottom_toTopOf="@id/midSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:background="@color/colorWhite"
+        android:drawableLeft="@drawable/ic_info_black_24dp"
+        android:drawablePadding="2dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Vezi ecranul din bucatarie"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@id/bucatarie"
+        app:layout_constraintStart_toStartOf="@id/bucatarie"
+        app:layout_constraintTop_toBottomOf="@id/bucatarie" />
+
+    <Button
+        android:id="@+id/monitor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/ripple_button_darker"
+        android:drawableEnd="@drawable/ic_desktop_windows_black_24dp"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/colorWhite"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Monitor"
+        android:textColor="@color/colorWhite"
+        android:textSize="70px"
+        app:layout_constraintBottom_toTopOf="@id/midSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:background="@color/colorWhite"
+        android:drawableLeft="@drawable/ic_info_black_24dp"
+        android:drawablePadding="2dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Vezi toate comenzile de astazi"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@id/monitor"
+        app:layout_constraintStart_toStartOf="@id/monitor"
+        app:layout_constraintTop_toBottomOf="@id/monitor" />
+
+
+    <Button
+        android:id="@+id/admin"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ripple_button_white"
+        android:drawableEnd="@drawable/ic_person_outline_black_24dp"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Administrator"
+        android:textSize="60px"
+        app:layout_constraintBottom_toTopOf="@id/botSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <View
+        android:id="@+id/botSpace"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.15" />
+
+    <View
+        android:id="@+id/midSpace"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/admin"
+        app:layout_constraintHeight_percent="0.2" />
+
+
+</android.support.constraint.ConstraintLayout>

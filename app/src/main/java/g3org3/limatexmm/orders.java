@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,21 +31,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class orders extends AppCompatActivity {
 
     //declaring views
-    Button back_button;
     Button driverButton;
     Button deliverButton;
     Button kitchenButton;
     Button readyButton;
+    android.support.v7.widget.Toolbar appBar;
 
     com.getbase.floatingactionbutton.FloatingActionsMenu moreButton;
     com.getbase.floatingactionbutton.FloatingActionButton firstButton;
     com.getbase.floatingactionbutton.FloatingActionButton secondButton;
-    //  com.getbase.floatingactionbutton.FloatingActionButton refreshButton;
 
     RecyclerView rv_orders;
     MyRecyclerViewAdapterOrders adapter;
@@ -55,6 +56,7 @@ public class orders extends AppCompatActivity {
     Boolean loaded = false;
     Integer currentView = 2;
     Context mContext;
+    String currentDate = "";
 
 
     public void customToast(String finalt, Boolean longer) {
@@ -76,19 +78,6 @@ public class orders extends AppCompatActivity {
 
     }
 
-
-    public static int getPrimaryColor(final Context context) {
-        final TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, value, true);
-        return value.data;
-    }
-
-    public static int getPrimaryDarkerColor(final Context context) {
-        final TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, value, true);
-        return value.data;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +86,6 @@ public class orders extends AppCompatActivity {
         //Force screen Landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        back_button = findViewById(R.id.back_button);
         rv_orders = findViewById(R.id.rv_orders);
         driverButton = findViewById(R.id.driverButton);
         kitchenButton = findViewById(R.id.kitchenButton);
@@ -109,70 +97,69 @@ public class orders extends AppCompatActivity {
         secondButton = findViewById(R.id.secondButton);
         //   refreshButton = findViewById(R.id.refreshButton);
 
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
+        appBar = findViewById(R.id.appBar);
+        this.setSupportActionBar(appBar);
+
+
 
         //connect to database
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference("pizza");
-
-        customToast("Se incarca...", false);
-
+        currentDate = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
+        ref = database.getReference("pizza/" + currentDate);
 
         mContext = this;
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         deliverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
-                driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
-                readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
-                kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
-                currentView = 1;
-                filterList();
+                if (loaded) {
+                    deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
+                    driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                    readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                    kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
+                    currentView = 1;
+                    filterList();
+                }
             }
         });
         driverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (loaded) {
                 deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
                 readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 currentView = 2;
                 filterList();
+                }
             }
         });
         readyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                    if (loaded) {
                 deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
                 kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 currentView = 3;
                 filterList();
+                    }
             }
         });
         kitchenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (loaded) {
                 deliverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 driverButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 readyButton.setBackground(getResources().getDrawable(R.drawable.ripple_button));
                 kitchenButton.setBackground(getResources().getDrawable(R.drawable.ripple_button_darker));
                 currentView = 4;
                 filterList();
+                }
             }
         });
 
@@ -186,11 +173,12 @@ public class orders extends AppCompatActivity {
 
                 //convert hashmap object to list
                 try {
-                    allOrders = new ArrayList<orderListBig>(hashMap.getOrders().values());
+                    allOrders = new ArrayList<>(hashMap.getOrders().values());
                     loaded = true;
                     kitchenButton.performClick();
-                } catch (Exception E) {
-                    customToast("Nici o comanda adaugata!", false);
+               } catch (Exception E) {
+                    customToast("Nici o comanda gasita azi!", false);
+                   //  Toast.makeText(getApplicationContext(), "Eroare: " + E.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -216,7 +204,7 @@ public class orders extends AppCompatActivity {
             }
         });
 
-        firstButton.setOnClickListener(new View.OnClickListener() {
+        secondButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectedItems = new ArrayList<>();
@@ -226,7 +214,7 @@ public class orders extends AppCompatActivity {
                     }
                 }
 
-                finishSelected();
+                cancelSelected();
 
             }
         });
@@ -239,10 +227,11 @@ public class orders extends AppCompatActivity {
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(30000);
+                        Thread.sleep(10000);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                adapter.notifyDataSetChanged();
                            //     filterList();
                             }
                         });
@@ -261,11 +250,20 @@ public class orders extends AppCompatActivity {
     //  FirebaseDatabase databasee;
     private DatabaseReference reff;
 
+    public void cancelSelected() {
+
+        for (int i = 0; i < selectedItems.size(); i++) {
+            reff = database.getReference("pizza/" + currentDate + "/orders/" + allOrders.get(i).dateSimple.substring(8, 14) + "/additionalSimple/orderStatus");
+            reff.setValue("Anulata");
+        }
+
+    }
+
     public void finishSelected() {
         //connect to database
         //  databasee = FirebaseDatabase.getInstance();
         for (int i = 0; i < selectedItems.size(); i++) {
-            reff = database.getReference("pizza/orders/" + allOrders.get(i).dateSimple + "/additionalSimple/orderStatus");
+            reff = database.getReference("pizza/" + currentDate + "/orders/" + allOrders.get(i).dateSimple.substring(8,14) + "/additionalSimple/orderStatus");
             if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("De livrat")) {
                 reff.setValue("Pe drum");
             } else if (allOrders.get(i).getAdditionalSimple().getOrderStatus().equals("Pe drum")) {
@@ -315,7 +313,6 @@ public class orders extends AppCompatActivity {
         rv_orders.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyRecyclerViewAdapterOrders(this, allOrders, rv_orders);
         rv_orders.setAdapter(adapter);
-        back_button.setText("<");
     }
 
 
@@ -351,6 +348,9 @@ public class orders extends AppCompatActivity {
                 }
             }
 
+
+
+
             Collections.sort(allOrders, new TimeComparator());
 
             hideFABs();
@@ -371,24 +371,27 @@ public class orders extends AppCompatActivity {
  class TimeComparator implements Comparator<orderListBig> {
 
     public int compare(orderListBig time1, orderListBig time2) {
+try {
+    Date temp_date2 = new Date();
 
-        Date temp_date2 = new Date();
-
-        Date item_date = time1.additionalSimple.getOrderDate();
-        long diff = temp_date2.getTime() - item_date.getTime();
-        String jMins = String.valueOf(diff / 1000 / 60);
-        Integer jMinsI = Integer.valueOf(jMins);
-        jMinsI = jMinsI + time1.userSimple.getUserAddrCurrentTime();
-
-
-        Date item_date2 = time2.additionalSimple.getOrderDate();
-        long diff2 = temp_date2.getTime() - item_date2.getTime();
-        String jMins2 = String.valueOf(diff2 / 1000 / 60);
-        Integer jMinsI2 = Integer.valueOf(jMins2);
-        jMinsI2 = jMinsI2 + time2.userSimple.getUserAddrCurrentTime();
+    Date item_date = time1.additionalSimple.getOrderDate();
+    long diff = temp_date2.getTime() - item_date.getTime();
+    String jMins = String.valueOf(diff / 1000 / 60);
+    Integer jMinsI = Integer.valueOf(jMins);
+    jMinsI = jMinsI + time1.userSimple.getUserAddrCurrentTime();
 
 
-        return jMinsI.compareTo(jMinsI2);
+    Date item_date2 = time2.additionalSimple.getOrderDate();
+    long diff2 = temp_date2.getTime() - item_date2.getTime();
+    String jMins2 = String.valueOf(diff2 / 1000 / 60);
+    Integer jMinsI2 = Integer.valueOf(jMins2);
+    jMinsI2 = jMinsI2 + time2.userSimple.getUserAddrCurrentTime();
+
+
+    return jMinsI2.compareTo(jMinsI);
+} catch (Exception E) {
+    return 0;
+}
     }
 }
 

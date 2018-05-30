@@ -11,12 +11,15 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
+        <item name="android:fontFamily">@font/work_sans</item>
+        <item name="fontFamily">@font/work_sans</item>
+
     </style>
 
 
-    <style name="spStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:background">@color/colorPrimary</item>
+    <style name="spStyle" parent="AppTheme">
+       <!-- <item name="android:textColor">@color/colorD</item> -->
+        <item name="android:background">@color/colorWhiteDark</item>
         <item name="android:textSize">20sp</item>
     </style>
 

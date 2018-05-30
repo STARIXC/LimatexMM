@@ -6,123 +6,587 @@
         <item>Pizza Pollo e Funghi</item>
         <item>mica</item>
         <item>14.5</item>
+        <item>pizza1</item>
         <item>Pizza Pollo e Funghi</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>19</item>
+        <item>pizza1</item>
 
         <item>Pizza Con Pollo</item>
         <item>mica</item>
         <item>16</item>
+        <item>pizza1</item>
         <item>Pizza Con Pollo</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>21</item>
+        <item>pizza1</item>
 
         <item>Pizza Tonno</item>
         <item>mica</item>
         <item>16</item>
+        <item>pizza1</item>
         <item>Pizza Tonno</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>21</item>
+        <item>pizza1</item>
 
         <item>Pizza Taraneasca</item>
         <item>mica</item>
         <item>16</item>
+        <item>pizza1</item>
         <item>Pizza Taraneasca</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>20</item>
+        <item>pizza1</item>
 
         <item>Pizza Mexicana</item>
         <item>mica</item>
         <item>15</item>
+        <item>pizza1</item>
         <item>Pizza Mexicana</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>19</item>
+        <item>pizza1</item>
 
         <item>Pizza Vegetariana</item>
         <item>mica</item>
         <item>14</item>
+        <item>pizza1</item>
         <item>Pizza Vegetariana</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>17</item>
+        <item>pizza1</item>
 
         <item>Pizza Margherita</item>
         <item>mica</item>
         <item>12</item>
+        <item>pizza1</item>
         <item>Pizza Margherita</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>15</item>
+        <item>pizza1</item>
 
         <item>Pizza Mixta</item>
         <item>mica</item>
         <item>15</item>
+        <item>pizza1</item>
         <item>Pizza Mixta</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>20</item>
+        <item>pizza1</item>
 
         <item>Pizza Prosciutto e Funghi</item>
         <item>mica</item>
         <item>18.5</item>
+        <item>pizza1</item>
         <item>Pizza Prosciutto e Funghi</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>24</item>
+        <item>pizza1</item>
 
         <item>Pizza Quatro Stagioni</item>
         <item>mica</item>
         <item>15</item>
+        <item>pizza1</item>
         <item>Pizza Quatro Stagioni</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>20</item>
+        <item>pizza1</item>
 
         <item>Pizza Quatro Formagiio</item>
         <item>mica</item>
         <item>15</item>
+        <item>pizza1</item>
         <item>Pizza Quatro Formagiio</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>20</item>
+        <item>pizza1</item>
 
         <item>Pizza Formagiio e Prosciutto</item>
         <item>mica</item>
         <item>19</item>
+        <item>pizza1</item>
         <item>Pizza Formagiio e Prosciutto</item>
-        <item>! mare</item>
+        <item>MARE!</item>
         <item>25</item>
+        <item>pizza1</item>
 
+        <item>Pizza Capriciosa</item>
+        <item>mica</item>
+        <item>17</item>
+        <item>pizza1</item>
+        <item>Pizza Capriciosa</item>
+        <item>MARE!</item>
+        <item>22</item>
+        <item>pizza1</item>
+
+        <item>Pizza Deliciosa</item>
+        <item>mica</item>
+        <item>16</item>
+        <item>pizza1</item>
+        <item>Pizza Deliciosa</item>
+        <item>MARE!</item>
+        <item>20</item>
+        <item>pizza1</item>
+
+        <item>Pizza Casei</item>
+        <item>mica</item>
+        <item>18</item>
+        <item>pizza1</item>
+        <item>Pizza Casei</item>
+        <item>MARE!</item>
+        <item>25</item>
+        <item>pizza1</item>
+
+        <item>Pizza Jhony</item>
+        <item>mica</item>
+        <item>18</item>
+        <item>pizza1</item>
+        <item>Pizza Jhony</item>
+        <item>MARE!</item>
+        <item>23</item>
+        <item>pizza1</item>
+
+        <item>Pizza De post</item>
+        <item>mica</item>
+        <item>13</item>
+        <item>pizza1</item>
+        <item>Pizza De post</item>
+        <item>MARE!</item>
+        <item>15</item>
+        <item>pizza1</item>
+
+        <item>Pizza Mojo</item>
+        <item>mica</item>
+        <item>17</item>
+        <item>pizza1</item>
+        <item>Pizza Mojo</item>
+        <item>MARE!</item>
+        <item>22</item>
+        <item>pizza1</item>
+
+        <item>Pizza Carnivora</item>
+        <item>mica</item>
+        <item>19</item>
+        <item>pizza1</item>
+        <item>Pizza Carnivora</item>
+        <item>MARE!</item>
+        <item>27</item>
+        <item>pizza1</item>
+
+        <item>Pizza Chorizo</item>
+        <item>mica</item>
+        <item>17</item>
+        <item>pizza1</item>
+        <item>Pizza Chorizo</item>
+        <item>MARE!</item>
+        <item>21</item>
+        <item>pizza1</item>
 
     </string-array>
 
     <string-array name="Sosuri">
         <item>0</item> <!--Nu necesita dialog-->
 
-        <item>Sos ketchup</item>
+        <item>Sos ketchup dulce</item>
         <item>10g</item>
-        <item>3</item>
+        <item>1.5</item>
+        <item>ketchup</item>
+
+        <item>Sos ketchup picant</item>
+        <item>10g</item>
+        <item>1.5</item>
+        <item>ketchup</item>
 
         <item>Sos maioneza</item>
         <item>10g</item>
         <item>3</item>
+        <item>ketchup</item>
 
         <item>Sos usturoi</item>
         <item>10g</item>
-        <item>3</item>
+        <item>4</item>
+        <item>ketchup</item>
+
+        <item>Mustar</item>
+        <item>10g</item>
+        <item>1.5</item>
+        <item>ketchup</item>
     </string-array>
 
     <string-array name="Bauturi">
         <item>0</item> <!--Nu necesita dialog-->
 
-        <item>Fanta</item>
-        <item>Ciob</item>
-        <item>5</item>
-
         <item>Cola</item>
-        <item>Ciob</item>
-        <item>5</item>
+        <item>0.33l</item>
+        <item>2.5</item>
+        <item>cola</item>
+
+        <item>Fanta</item>
+        <item>0.33l</item>
+        <item>2.5</item>
+        <item>cola</item>
 
         <item>Pepsi</item>
-        <item>Ciob</item>
+        <item>0.33l</item>
+        <item>2.5</item>
+        <item>cola</item>
+
+        <item>Cola</item>
+        <item>0.5l</item>
+        <item>3.5</item>
+        <item>cola</item>
+
+        <item>Fanta</item>
+        <item>0.5l</item>
+        <item>3.5</item>
+        <item>cola</item>
+
+        <item>Pepsi</item>
+        <item>0.5l</item>
+        <item>3.5</item>
+        <item>cola</item>
+
+        <item>Cola</item>
+        <item>1.25l</item>
+        <item>4.5</item>
+        <item>cola</item>
+
+        <item>Fanta</item>
+        <item>1.25l</item>
+        <item>4.5</item>
+        <item>cola</item>
+
+        <item>Pepsi</item>
+        <item>1.25l</item>
+        <item>4.5</item>
+        <item>cola</item>
+		
+        <item>Pepsi</item>
+        <item>0.25l</item>
+        <item>2.5</item>
+        <item>cola</item>
+		
+        <item>Prigat</item>
+        <item>0.5l</item>
+        <item>3.5</item>
+        <item>cola</item>
+		
+        <item>Prigat Nectar</item>
+        <item>0.25l</item>
+        <item>3</item>
+        <item>cola</item>
+		
+        <item>Nestea</item>
+        <item>0.5l</item>
+        <item>4</item>
+        <item>cola</item>
+		
+        <item>Nestea</item>
+        <item>1.5l</item>
+        <item>6</item>
+        <item>cola</item>
+		
+        <item>Borsec</item>
+        <item>0.5l</item>
+        <item>2.5</item>
+        <item>cola</item>
+		
+        <item>Borsec</item>
+        <item>1.5l</item>
+        <item>3.5</item>
+        <item>cola</item>
+		
+        <item>Borsec</item>
+        <item>2l</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Bergenbier</item>
+        <item>doza</item>
+        <item>3</item>
+        <item>pizza1</item>
+
+        <item>Bergenbier</item>
+        <item>0.33l</item>
+        <item>3</item>
+        <item>pizza1</item>
+		
+        <item>Bergenbier F.A.L.</item>
+        <item>doza</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Bergenbier Fresh</item>
+        <item>doza</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Timisoreana</item>
+        <item>doza</item>
+        <item>3</item>
+        <item>pizza1</item>
+		
+        <item>Becks</item>
+        <item>0.33l</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Becks</item>
+        <item>doza</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Ursus</item>
+        <item>0.33l</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Ursus</item>
+        <item>doza</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Stella Artois</item>
+        <item>doza</item>
         <item>5</item>
+        <item>pizza1</item>
+		
+        <item>Stella Artois</item>
+        <item>0.33l</item>
+        <item>4.5</item>
+        <item>pizza1</item>
+		
+        <item>Tuborg</item>
+        <item>0.33l</item>
+        <item>3.5</item>
+        <item>pizza1</item>
+		
+        <item>Haineken</item>
+        <item>0.33l</item>
+        <item>4.5</item>
+        <item>pizza1</item>
+		
+        <item>Red Bull</item>
+        <item>0.25l</item>
+        <item>7</item>
+        <item>pizza1</item>
+		
+        <item>Hell</item>
+        <item>0.25l</item>
+        <item>2.5</item>
+        <item>pizza1</item>
+		
 
     </string-array>
 
+    <string-array name="Grill">
+        <item>1</item> <!--necesita dialog-->
 
+        <item>Piept de pui la gratar</item>
+        <item>200g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Muschi file de porc</item>
+        <item>200g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Ceafa porc</item>
+        <item>200g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Pulpe pui dezosate</item>
+        <item>200g</item>
+        <item>7</item>
+        <item>pizza1</item>
+        <item>Pulpe pui superioare cu os</item>
+        <item>200g</item>
+        <item>7</item>
+        <item>pizza1</item>
 
+    </string-array>
+
+    <string-array name="Altele">
+        <item>1</item>  <!--necesita dialog-->
+
+        <item>Snitel Porc</item>
+        <item>170g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Snitel Pui</item>
+        <item>170g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Snitel Crocant Pui</item>
+        <item>180g</item>
+        <item>10</item>
+        <item>pizza1</item>
+        <item>Crochete Pui</item>
+        <item>200g</item>
+        <item>11</item>
+        <item>pizza1</item>
+        <item>Crochete crocante Pui</item>
+        <item>200g</item>
+        <item>11.5</item>
+        <item>pizza1</item>
+        <item>Aripioare Pui</item>
+        <item>200g</item>
+        <item>8.5</item>
+        <item>pizza1</item>
+        <item>Aripioare Picante Pui</item>
+        <item>200g</item>
+        <item>9.5</item>
+        <item>pizza1</item>
+        <item>Pui Shanghai</item>
+        <item>200g</item>
+        <item>12.5</item>
+        <item>pizza1</item>
+        <item>Cartofi Pai</item>
+        <item>200g</item>
+        <item>4</item>
+        <item>pizza1</item>
+        <item>Cartofi Pai cu Parmezan</item>
+        <item>210g</item>
+        <item>6.5</item>
+        <item>pizza1</item>
+        <item>Cartofi Pai cu Cascaval</item>
+        <item>220g</item>
+        <item>6</item>
+        <item>pizza1</item>
+        <item>Focaccia</item>
+        <item>135g</item>
+        <item>3</item>
+        <item>pizza1</item>
+        <item>Focaccia usturoi parmezan</item>
+        <item>135g</item>
+        <item>5</item>
+        <item>pizza1</item>
+
+    </string-array>
+	
+    <string-array name="Meniuri">
+        <item>1</item>  <!--necesita dialog-->
+
+        <item>Meniu Pui shanghai</item>
+        <item> </item>
+        <item>17</item>
+        <item>pizza1</item>
+        <item>Meniu snitel porc</item>
+        <item> </item>
+        <item>14.5</item>
+        <item>pizza1</item>
+        <item>Meniu Snitel pui</item>
+        <item> </item>
+        <item>14.5</item>
+        <item>pizza1</item>
+        <item>Meniu Piept pui</item>
+        <item> </item>
+        <item>14</item>
+        <item>pizza1</item>
+        <item>Meniu Aripioare</item>
+        <item> </item>
+        <item>13</item>
+        <item>pizza1</item>
+        <item>Meniu Aripioare picante</item>
+        <item> </item>
+        <item>14</item>
+        <item>pizza1</item>
+        <item>Meniu Carnaciori</item>
+        <item> </item>
+        <item>14</item>
+        <item>pizza1</item>
+		
+    </string-array>
+
+	<string-array name="Burgers">
+        <item>1</item>  <!--necesita dialog-->
+
+        <item>Snitel Porc</item>
+        <item>220g</item>
+        <item>8</item>
+        <item>pizza1</item>
+        <item>Snitel Pui</item>
+        <item>220g</item>
+        <item>8</item>
+        <item>pizza1</item>
+        <item>Hamburger Vita</item>
+        <item>310g</item>
+        <item>10</item>
+        <item>pizza1</item>
+		
+    </string-array>
+	
+		<string-array name="Salate">
+        <item>1</item>  <!--necesita dialog-->
+
+        <item>Salata Bulgareasca</item>
+        <item>350g</item>
+        <item>16</item>
+            <item>pizza1</item>
+        <item>Salata Piept Pui</item>
+        <item>350g</item>
+        <item>15</item>
+            <item>pizza1</item>
+        <item>Salata cu Ton</item>
+        <item>350g</item>
+        <item>15</item>
+            <item>pizza1</item>
+        <item>Salata Delicioasa</item>
+        <item>370g</item>
+        <item>18</item>
+            <item>pizza1</item>
+        <item>Salata Greceasca</item>
+        <item>350g</item>
+        <item>15</item>
+            <item>pizza1</item>
+        <item>Salata Asortata</item>
+        <item>150g</item>
+        <item>7</item>
+            <item>pizza1</item>
+        <item>Salata de Varza</item>
+        <item>150g</item>
+        <item>4</item>
+            <item>pizza1</item>
+        <item>Salata Ardei copti, branza</item>
+        <item>270g</item>
+        <item>18</item>
+            <item>pizza1</item>
+        <item>Salata de Paste</item>
+        <item>300g</item>
+        <item>16</item>
+            <item>pizza1</item>
+        <item>Paste cu Ton</item>
+        <item>420g</item>
+        <item>18</item>
+            <item>pizza1</item>
+        <item>Salata Fattoush</item>
+        <item>250g</item>
+        <item>20</item>
+            <item>pizza1</item>
+		
+    </string-array>
+	
+	<string-array name="Focaccia">
+        <item>1</item>  <!--necesita dialog-->
+
+        <item>Piept Pui cu cartofi</item>
+        <item>400g</item>
+        <item>10</item>
+        <item>pizza1</item>
+        <item>Snitel de pui cu cartofi</item>
+        <item>410g</item>
+        <item>10</item>
+        <item>pizza1</item>
+        <item>Muschi file la gratar cu cartofi</item>
+        <item>400g</item>
+        <item>10</item>
+        <item>pizza1</item>
+        <item>Snitel de porc cu cartofi</item>
+        <item>410g</item>
+        <item>10</item>
+        <item>pizza1</item>
+		
+    </string-array>
+	
+	
 </resources>

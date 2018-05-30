@@ -1,13 +1,21 @@
 package g3org3.limatexmm;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,10 +23,15 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -35,9 +48,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.widget.LinearLayout.HORIZONTAL;
 
 //TODO:
 //FILL MENU_ADD DESIGN NOT BEEING SYMETRIC
@@ -52,7 +70,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     public static boolean justFinished = false;
 
     MyRecyclerViewAdapter adapter;
-    in.myinnos.alphabetsindexfastscrollrecycler.IndexFastScrollRecyclerView recyclerView;
+    RecyclerView recyclerView;
     MyRecyclerViewAdapterCateg adapter2;
     RecyclerView recyclerView2;
     MyRecyclerViewAdapterCart adapter3;
@@ -60,10 +78,11 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     Dialog myDialog;
     ImageButton deleteAll;
     Button nextButton;
-    Button today_orders;
- //   Button back_button;
     TextView totalPrice;
     List<SpannableString> commentListList = new ArrayList<>();
+
+    TextView profileName;
+    android.support.v7.widget.Toolbar appBar;
 
     //when resuming from finish order
     @Override
@@ -75,6 +94,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             deleteAll.performClick();
             justFinished = false;
             customToast("Comanda finalizata !", true);
+
+            deleteAll.performClick();
         }
 
     }
@@ -85,16 +106,16 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_casa);
 
-
-        //
         recyclerView = findViewById(R.id.rv_items);
         recyclerView2 = findViewById(R.id.rv_categories);
         recyclerView3 = findViewById(R.id.rv_cart);
         totalPrice = findViewById(R.id.totalPrice);
         nextButton = findViewById(R.id.nextButton);
         deleteAll = findViewById(R.id.deleteAll);
-      //  back_button = findViewById(R.id.back_button);
-        today_orders = findViewById(R.id.today_orders);
+        profileName = findViewById(R.id.profileName);
+        appBar = findViewById(R.id.appBar);
+        this.setSupportActionBar(appBar);
+
 
 
         //Force screen Landscape
@@ -105,26 +126,13 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             @Override
             public void onClick(View view) {
                 list_itemsList_cart.clear();
-                cartUpdate();
+                adapter3.notifyDataSetChanged();
             }
         });
 
 
-        today_orders.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(casa.this, orders.class);
-                startActivity(myIntent);
-            }
-        });
+        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-        //register back button
-      //  back_button.setOnClickListener(new View.OnClickListener() {
-      //      @Override
-       //     public void onClick(View view) {
-       //         finish();
-      //      }
-       // });
 
         //Register Finish order button
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -139,8 +147,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
                     myIntent.putExtra("final_cart_list", list_itemsList_cart);
 
-
                     startActivity(myIntent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 } else {
                     customToast("Cosul este gol!", false);
                 }
@@ -150,18 +158,16 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
         //Register cart list
         recyclerView3.setLayoutManager(new LinearLayoutManager(this));
-        adapter3 = new MyRecyclerViewAdapterCart(this, list_itemsList_cart);
-        adapter3.setClickListener(new MyRecyclerViewAdapterCart.ItemClickListener() {
+        adapter3 = new MyRecyclerViewAdapterCart(this, list_itemsList_cart, recyclerView3);
+        recyclerView3.setAdapter(adapter3);
+        adapter3.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
-            public void onItemClick(View view, int position) {
-                // REMOVE THE ITEM FROM THE CART
-                list_itemsList_cart.remove(position);
+            public void onChanged() {
+                super.onChanged();
                 cartUpdate();
-                // Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
             }
         });
-        recyclerView3.setAdapter(adapter3);
-        cartUpdate();
+        adapter3.notifyDataSetChanged();
 
 
         //populate + show categories list
@@ -191,23 +197,38 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
         }
 
-        ViewList("Pizza");
+    }
 
+
+    public void cartFeedback() {
+
+        ObjectAnimator colorFade = ObjectAnimator.ofObject(recyclerView3, "backgroundColor", new ArgbEvaluator(), 0x80ef3b59, 0xffffffff);
+        colorFade.setDuration(500);
+        colorFade.start();
 
     }
 
 
     public void cartUpdate() {
-        totalPrice.setText("Total:" + adapter3.getTotalPrice() + " lei");
-        adapter3.notifyDataSetChanged();
+        if (list_itemsList_cart.size() > 0) {
+            totalPrice.setText("Total: " + adapter3.getTotalPrice() + " lei");
+            nextButton.setEnabled(true);
+            nextButton.setBackground(this.getResources().getDrawable(R.drawable.ripple_button_white_dark));
+        } else {
+            totalPrice.setText("Cosul e gol!");
+            nextButton.setEnabled(false);
+            nextButton.setBackground(this.getResources().getDrawable(R.drawable.ripple_button_white));
+        }
+        cartFeedback();
     }
 
 
-    Button add;
+    ImageButton add;
     TextView count;
-    Button remove;
+    ImageButton remove;
     TextView commentValue;
     Button done;
+    Button dont;
     MultiAutoCompleteTextView comment;
 
     String current_item_title;
@@ -249,6 +270,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         remove = myDialog.findViewById(R.id.remove);
         comment = myDialog.findViewById(R.id.comment);
         done = myDialog.findViewById(R.id.done);
+        dont = myDialog.findViewById(R.id.dont);
         commentValue = myDialog.findViewById(R.id.commentValue);
 
         List<SpannableString> cloneCommentListList = new ArrayList<>();
@@ -258,6 +280,12 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         comment.setAdapter(commentAdapter);
         comment.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
+        dont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
 
         comment_value = 0.0;
         comment.addTextChangedListener(new TextWatcher() {
@@ -299,6 +327,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             public void onShow(DialogInterface dialogInterface) {
                 current_item_count = 1;
                 count.setText(String.valueOf(current_item_count));
+
             }
         });
 
@@ -310,8 +339,8 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         // myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-        myDialog.show();
 
+        myDialog.show();
 
     }
 
@@ -351,24 +380,27 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     public void AddToCart_current() {
 
         //add items
-        listItems temp = new listItems(current_item_title, current_item_subTitle, current_item_price, current_item_more, comment_value, current_list_dialog);
-        for (int i = 0; i < current_item_count; i++) {
+        listItems temp = new listItems(current_item_title, current_item_subTitle, current_item_price, current_item_count, current_item_more, comment_value, current_list_dialog,0);
+
+        boolean found = false;
+        for (int i = 0; i < list_itemsList_cart.size(); i++) {
+            if (list_itemsList_cart.get(i).getItemTitle().equals(temp.getItemTitle())) {
+                if (list_itemsList_cart.get(i).getItemSubtitle().equals(temp.getItemSubtitle())) {
+                    if (list_itemsList_cart.get(i).getItemMore().equals(temp.getItemMore())) {
+                        Integer newQuantity = list_itemsList_cart.get(i).getItemQuantity() + current_item_count;
+                        list_itemsList_cart.get(i).setItemQuantity(newQuantity);
+                        found = true;
+                    }
+                }
+            }
+        }
+        if (!found) {
             list_itemsList_cart.add(temp);
         }
 
 
-        String finalt = current_item_count + " " + current_item_title;
-        if (current_item_count > 1) {
-            finalt = finalt + " adaugate!";
-        } else {
-            finalt = finalt + " adaugat!";
-        }
-
-
-        customToast(finalt, false);
-
         //update cart
-        cartUpdate();
+       adapter3.notifyDataSetChanged();
 
     }
 
@@ -376,34 +408,34 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     public void customToast(String finalt, Boolean longer) {
         //show custom TOAST
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_added, null);
+        View layout; // = inflater.inflate(R.layout.item_added, null);
+            layout = inflater.inflate(R.layout.item_added, null);
 
         TextView text = layout.findViewById(R.id.text);
         text.setText(finalt);
 
         Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+      //  toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setGravity(Gravity.FILL, 0, 0);
         toast.setDuration(Toast.LENGTH_SHORT);
         if (longer) {
             toast.setDuration(Toast.LENGTH_LONG);
         }
+
         toast.setView(layout);
 
-
         toast.show();
-
     }
 
-
+boolean oneTimeInit = false;
     public void CreateCategories() {
 
         // data to populate the RecyclerView with
-        String[] data = {"Pizza", "Sosuri", "Bauturi", "Salate", "Sandwich-uri", "Burgers"};
+        String[] data = {"Pizza", "Sosuri", "Bauturi", "Grill", "Altele", "Meniuri", "Burgers", "Salate", "Focaccia"};
 
         // set up the RecyclerView
-        RecyclerView recyclerView2 = findViewById(R.id.rv_categories);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        adapter2 = new MyRecyclerViewAdapterCateg(this, data);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(this,HORIZONTAL,false));
+        adapter2 = new MyRecyclerViewAdapterCateg(this, data,recyclerView2);
         adapter2.setClickListener(new MyRecyclerViewAdapterCateg.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -411,6 +443,16 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             }
         });
         recyclerView2.setAdapter(adapter2);
+
+        recyclerView2.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (!oneTimeInit) {
+                    recyclerView2.findViewHolderForAdapterPosition(0).itemView.performClick();
+                    oneTimeInit = true;
+                }
+            }
+        });
 
     }
 
@@ -434,17 +476,28 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
             String item_title = Lines.get(i);
             String item_subTitle = Lines.get(i + 1);
             Double item_price = Double.valueOf(Lines.get(i + 2));
+            String item_photo_name = Lines.get(i + 3);
+
+            //extract the image from resources
+            int idd = this.getResources().getIdentifier(item_photo_name, "drawable", this.getPackageName());
 
             // add item to category list
-            listItems temp = new listItems(item_title, item_subTitle, item_price, "", 0.0, current_list_dialog);
+            listItems temp = new listItems(item_title, item_subTitle, item_price, 0, "", 0.0, current_list_dialog, idd);
             list_itemsList.add(temp);
 
-            i = i + 2;
+            i = i + 3;
         }
 
+
+        //sort items
+        Collections.sort(list_itemsList, new NameComp());
+
+
         //finish RecyclerView
-        //recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) ((dpWidth*0.65) / 150);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,noOfColumns));
         adapter = new MyRecyclerViewAdapter(this, list_itemsList);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
@@ -470,4 +523,34 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     }
 
 
+}
+
+class NameComp implements Comparator<listItems> {
+
+    public int compare(listItems time1, listItems time2) {
+
+        //split the item title
+        String[] words = time1.getItemTitle().split(" ");
+        String section = "";
+        // if there are 2 words
+        if (words.length > 1) {
+            // get char from the second word
+            section = String.valueOf(words[1].toUpperCase().charAt(0));
+        } else {
+            section = String.valueOf(words[0].toUpperCase().charAt(0));
+        }
+
+        String[] words2 = time2.getItemTitle().split(" ");
+        String section2 = "";
+        // if there are 2 words
+        if (words2.length > 1) {
+            // get char from the second word
+            section2 = String.valueOf(words2[1].toUpperCase().charAt(0));
+        } else {
+            section2 = String.valueOf(words2[0].toUpperCase().charAt(0));
+        }
+
+
+        return section.compareTo(section2);
+    }
 }

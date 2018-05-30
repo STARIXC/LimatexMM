@@ -5,9 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
  */
 
 //public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> implements SectionIndexer {
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
   //  private String[] mData = new String[0];
     private LayoutInflater mInflater;
@@ -25,56 +27,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
   //  private List<String> mDataArray;
     private ArrayList<Integer> mSectionPositions;
 
-
+    private Context mContext;
     private List<listItems> list_itemsList;
 
     // data is passed into the constructor
     MyRecyclerViewAdapter(Context context, List<listItems> list_itemsList) {
         this.list_itemsList = list_itemsList;
         this.mInflater = LayoutInflater.from(context);
-    }
-
-
-
-    @Override
-    public int getSectionForPosition(int position) {
-        return 0;
-    }
-
-    @Override
-    public Object[] getSections() {
-        List<String> sections = new ArrayList<>(26);
-        mSectionPositions = new ArrayList<>(26);
-        //for each item from the list
-        for (int i = 0, size = list_itemsList.size(); i < size; i++) {
-
-            //get each item
-            final listItems item = list_itemsList.get(i);
-
-            //get the char from the first word
-            String section = String.valueOf(item.getItemTitle().toUpperCase().charAt(0));
-
-            //split the item title
-            String[] words = item.getItemTitle().split(" ");
-
-            // if there are 2 words
-            if (words.length >= 1) {
-                // get char from the second word
-                section = String.valueOf(words[1].toUpperCase().charAt(0));
-            }
-
-
-            if (!sections.contains(section)) {
-                sections.add(section);
-                mSectionPositions.add(i);
-            }
-        }
-        return sections.toArray(new String[0]);
-    }
-
-    @Override
-    public int getPositionForSection(int sectionIndex) {
-        return mSectionPositions.get(sectionIndex);
+        mContext =  context;
     }
 
 
@@ -91,8 +51,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         // set string for button
         final listItems item = list_itemsList.get(position);
 
-        holder.myTextView.setText(item.getItemTitle());
-        holder.myTextView2.setText(item.getItemSubtitle());
+        Picasso.with(mContext).load(item.getImgURL())
+                .fit()
+                .centerCrop()
+                .into(holder.imageView);
+
+        holder.myTextView.setText(item.getItemTitle() + " " + item.getItemSubtitle());
         holder.myTextView3.setText(item.getItemPrice() + " Lei");
 
     }
@@ -107,14 +71,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView myTextView;
-        TextView myTextView2;
         TextView myTextView3;
+        ImageView imageView;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.title);
-            myTextView2 = itemView.findViewById(R.id.subTitle);
             myTextView3 = itemView.findViewById(R.id.price);
+            imageView = itemView.findViewById(R.id.imageView);
+
             itemView.setOnClickListener(this);
         }
 

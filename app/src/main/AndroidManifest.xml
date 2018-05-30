@@ -9,17 +9,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".casa">
+        <activity android:name=".meniu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".finish"
-            android:parentActivityName=".casa"/>
-        <activity android:name=".orders"
-            android:parentActivityName=".casa"/>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".casa"
+            android:parentActivityName=".meniu" />
+        <activity
+            android:name=".finish"/>
+        <activity
+            android:name=".orders"
+            android:parentActivityName=".meniu" />
+        <activity
+            android:name=".admin"
+            android:parentActivityName=".meniu" />
+        <activity
+            android:name=".bucatarie"
+            android:parentActivityName=".meniu" />
     </application>
 
 </manifest>

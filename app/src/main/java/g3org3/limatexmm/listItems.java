@@ -12,22 +12,42 @@ public class listItems implements Parcelable{
     private String itemTitle;
     private String itemSubtitle;
     private Double itemPrice;
+    private Integer itemQuantity;
     private String itemMore;
     private Double itemMorevalue;
     private Integer itemPrepare;
+    private Integer imgURL;
 
-    public listItems(String itemTitle, String itemSubtitle, Double itemPrice, String itemMore, Double itemMorevalue, Integer itemPrepare) {
+    public listItems(String itemTitle, String itemSubtitle, Double itemPrice,Integer itemQuantity, String itemMore, Double itemMorevalue, Integer itemPrepare,Integer imgURL) {
         this.itemTitle = itemTitle;
         this.itemSubtitle = itemSubtitle;
         this.itemPrice =  itemPrice;
+        this.itemQuantity = itemQuantity;
         this.itemMore = itemMore;
         this.itemMorevalue = itemMorevalue;
         this.itemPrepare = itemPrepare;
+        this.imgURL = imgURL;
     }
 
 
     public listItems() {
 
+    }
+
+    public Integer getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(Integer imgURL) {
+        this.imgURL = imgURL;
+    }
+
+    public Integer getItemQuantity() {
+        return itemQuantity;
+    }
+
+    public void setItemQuantity(Integer itemQuantity) {
+        this.itemQuantity = itemQuantity;
     }
 
     public String getItemTitle() {
@@ -88,9 +108,11 @@ public class listItems implements Parcelable{
         parcel.writeString(itemTitle);
         parcel.writeString(itemSubtitle);
         parcel.writeDouble(itemPrice);
+        parcel.writeInt(itemQuantity);
         parcel.writeString(itemMore);
         parcel.writeDouble(itemMorevalue);
         parcel.writeInt(itemPrepare);
+        parcel.writeInt(imgURL);
     }
 
     public static final Creator<listItems> CREATOR = new Creator<listItems>() {
@@ -109,9 +131,11 @@ public class listItems implements Parcelable{
         itemTitle = in.readString();
         itemSubtitle = in.readString();
         itemPrice = in.readDouble();
+        itemQuantity = in.readInt();
         itemMore = in.readString();
         itemMorevalue = in.readDouble();
         itemPrepare = in.readInt();
+        imgURL = in.readInt();
     }
 
 }

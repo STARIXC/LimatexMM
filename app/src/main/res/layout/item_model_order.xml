@@ -42,7 +42,7 @@
         <TextView
             android:id="@+id/deliveryName"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
             android:layout_marginStart="30dp"
             android:clipToPadding="true"
             android:gravity="center|left|bottom"
@@ -52,7 +52,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="16dp"
             android:textStyle="bold"
-            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintHeight_percent="0.4"
             app:layout_constraintStart_toEndOf="@id/timeLabel"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.2" />
@@ -60,7 +60,7 @@
         <TextView
             android:id="@+id/deliveryPhone"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
             android:layout_marginStart="10dp"
             android:clipToPadding="true"
             android:gravity="center|left|bottom"
@@ -70,7 +70,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="13dp"
             app:layout_constraintEnd_toStartOf="@id/orderLabel"
-            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintHeight_percent="0.4"
             app:layout_constraintStart_toEndOf="@id/deliveryName"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,7 +78,7 @@
         <TextView
             android:id="@+id/deliveryAddress"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
             android:layout_marginStart="40dp"
             android:clipToPadding="true"
             android:gravity="center|left|top"
@@ -87,6 +87,7 @@
             android:text="Bolintin Vale, Str florilor, nr 12"
             android:textSize="16dp"
             app:layout_constraintEnd_toStartOf="@id/orderLabel"
+            app:layout_constraintBottom_toBottomOf="@id/orderLabel"
             app:layout_constraintStart_toEndOf="@id/timeLabel"
             app:layout_constraintTop_toBottomOf="@id/deliveryName" />
 
@@ -97,15 +98,33 @@
             android:layout_marginEnd="5dp"
             android:clipToPadding="true"
             android:gravity="center"
-            android:lines="3"
-            android:padding="10dp"
+            android:padding="3dp"
             android:paddingStart="15dp"
             android:text="Total: 200 lei"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintHeight_percent="0.33333"
+            app:layout_constraintTop_toBottomOf="@id/paidLabel"
+            app:layout_constraintWidth_percent="0.23" />
+
+        <TextView
+            android:id="@+id/paidLabel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="5dp"
+            android:clipToPadding="true"
+            android:gravity="center"
+            android:padding="3dp"
+            android:paddingStart="15dp"
+            android:text="(Neplatita)"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.33333"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.23" />
 
@@ -117,11 +136,11 @@
             android:gravity="center"
             android:layout_marginEnd="5dp"
             android:text="Nr.C: 140322"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintHeight_percent="0.33333"
             app:layout_constraintTop_toBottomOf="@id/totalLabel"
             app:layout_constraintWidth_percent="0.23" />
 
@@ -155,9 +174,9 @@
             android:gravity="center"
             android:layout_marginBottom="5dp"
             android:layout_marginStart="50dp"
-            android:background="@drawable/simple_circle_darker"
+            android:background="@drawable/simple_circle_primary_dark"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/timeLabel"
             />
@@ -184,12 +203,13 @@
             android:id="@+id/expandButton"
             android:layout_width="0dp"
             android:layout_height="80dp"
-            android:background="@color/colorWhite"
             android:elevation="4dp"
+            android:background="#50ffffff"
             android:visibility="invisible"
+            android:alpha="0.8"
             android:padding="5dp"
-            android:alpha="0.6"
-            android:src="@drawable/ic_check"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_check_circle_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

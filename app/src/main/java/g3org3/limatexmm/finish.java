@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
@@ -21,6 +22,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,8 +46,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -72,13 +77,19 @@ public class finish extends AppCompatActivity {
     TextView dataBase_label;
     AutoCompleteTextView client_phone;
     EditText client_name;
-    Button client_address;
-    Button cancelOrder;
+    ImageButton client_address;
     TextView client_address_label;
     Button deliverSwitch;
+    Button paidSwitch;
     TextView totalLabel;
     Boolean deliver = true;
+    Boolean paid = false;
     Spinner spinnerAddress;
+    View client_phone_indicator;
+    View client_name_indicator;
+    View client_address_indicator;
+    android.support.v7.widget.Toolbar appBar;
+
 
     boolean connected = false;
 
@@ -91,24 +102,16 @@ public class finish extends AppCompatActivity {
     public void db_connect() {
         if (!connected) {
             dataBase_label.setText("Nu se poate conecta la baza de date !");
-            //   client_phone.setEnabled(false);
-            //    client_name.setEnabled(false);
-            //      client_address.setEnabled(false);
-            //    finishOrder.setEnabled(false);
 
-            client_phone.setBackgroundColor(Color.GRAY);
-            client_name.setBackgroundColor(Color.GRAY);
-            spinnerAddress.setBackgroundColor(Color.GRAY);
-            finishOrder.setBackgroundColor(Color.GRAY);
+            finishOrder.setEnabled(false);
 
         } else {
             dataBase_label.setText("Conectat la baza de date! " + reg_phone_numbers.size() + " numere de telefon inregistrate!");
             client_phone.setEnabled(true);
             client_name.setEnabled(true);
-            finishOrder.setEnabled(true);
 
-            client_phone.setBackgroundColor(getThemeAccentColor(this));
-            client_name.setBackgroundColor(getThemeAccentColor(this));
+            client_phone_indicator.setBackgroundColor(getThemeAccentColor(this));
+            client_name_indicator.setBackgroundColor(getThemeAccentColor(this));
 
 
             //setup autocomplete textView
@@ -172,18 +175,18 @@ public class finish extends AppCompatActivity {
 
         boolean temp_client = false;
         if (client_phone.length() == 10) {
-            client_phone.setBackgroundColor(Color.rgb(14, 165, 87));
+            client_phone_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
             temp_client = true;
         } else {
-            client_phone.setBackgroundColor(getThemeAccentColor(this));
+            client_phone_indicator.setBackgroundColor(getThemeAccentColor(this));
         }
 
         boolean temp_name = false;
         if (client_name.length() > 2) {
             temp_name = true;
-            client_name.setBackgroundColor(Color.rgb(14, 165, 87));
+            client_name_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
         } else {
-            client_name.setBackgroundColor(getThemeAccentColor(this));
+            client_name_indicator.setBackgroundColor(getThemeAccentColor(this));
         }
 
 
@@ -191,29 +194,34 @@ public class finish extends AppCompatActivity {
             if (last_city.length() > 2) {
                 finishOrder.setBackgroundColor(Color.GRAY);
                 finishOrder.setEnabled(false);
-                spinnerAddress.setBackgroundColor(getThemeAccentColor(this));
+                client_address_indicator.setBackgroundColor(getThemeAccentColor(this));
 
             } else {
                 finishOrder.setBackgroundColor(Color.GRAY);
                 finishOrder.setEnabled(false);
-                spinnerAddress.setBackgroundColor(Color.GRAY);
+                client_address_indicator.setBackgroundColor(Color.GRAY);
             }
         } else {
             if (temp_name) {
                 if (temp_client) {
 
-                    client_name.setBackgroundColor(Color.rgb(14, 165, 87));
+                    client_name_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
 
-                    finishOrder.setEnabled(true);
-                    finishOrder.setBackgroundColor(getThemeAccentColor(this));
+                    //if address finished checked
+                    if (addressChecked || !deliver) {
+                        finishOrder.setEnabled(true);
+                        finishOrder.setBackground(this.getResources().getDrawable(R.drawable.ripple_button));
+                    } else {
+                        finishOrder.setEnabled(false);
+                        client_address_indicator.setBackgroundColor(getThemeAccentColor(this));
+                    }
 
                 }
             }
-            spinnerAddress.setBackgroundColor(Color.rgb(14, 165, 87));
+            client_address_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
         }
 
     }
-
 
 
     public void customToast(String finalt, Boolean longer) {
@@ -289,11 +297,167 @@ public class finish extends AppCompatActivity {
 
     }
 
+    Button calc_1;
+    Button calc_2;
+    Button calc_3;
+    Button calc_4;
+    Button calc_5;
+    Button calc_6;
+    Button calc_7;
+    Button calc_8;
+    Button calc_9;
+    Button calc_0;
+    TextView calc_tot;
+    TextView calc_tot_label;
+    Button calc_dot;
+    Button calc_clear;
+
+    String cur_sum_calc = "";
+
+    public void calc_init() {
+
+        calc_1 = findViewById(R.id.calc_1);
+        calc_2 = findViewById(R.id.calc_2);
+        calc_3 = findViewById(R.id.calc_3);
+        calc_4 = findViewById(R.id.calc_4);
+        calc_5 = findViewById(R.id.calc_5);
+        calc_6 = findViewById(R.id.calc_6);
+        calc_7 = findViewById(R.id.calc_7);
+        calc_8 = findViewById(R.id.calc_8);
+        calc_9 = findViewById(R.id.calc_9);
+        calc_0 = findViewById(R.id.calc_0);
+        calc_tot = findViewById(R.id.calc_tot);
+        calc_tot_label = findViewById(R.id.calc_tot_label);
+        calc_dot = findViewById(R.id.calc_dot);
+        calc_clear = findViewById(R.id.calc_clear);
+
+        calc_tot_label.setText("De platit:");
+        calc_tot.setText(String.valueOf(cart_value));
+
+        calc_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 1;
+                calc_refresh();
+            }
+        });
+        calc_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 2;
+                calc_refresh();
+            }
+        });
+        calc_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 3;
+                calc_refresh();
+            }
+        });
+        calc_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 4;
+                calc_refresh();
+            }
+        });
+        calc_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 5;
+                calc_refresh();
+            }
+        });
+        calc_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 6;
+                calc_refresh();
+            }
+        });
+        calc_7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 7;
+                calc_refresh();
+            }
+        });
+        calc_8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 8;
+                calc_refresh();
+            }
+        });
+        calc_9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 9;
+                calc_refresh();
+            }
+        });
+        calc_0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + 0;
+                calc_refresh();
+            }
+        });
+        calc_dot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = cur_sum_calc + ".";
+                calc_refresh();
+            }
+        });
+        calc_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cur_sum_calc = "";
+                calc_refresh();
+            }
+        });
+
+    }
+
+
+    public void calc_refresh() {
+        if (!paid) {
+            paidSwitch.performClick();
+        }
+
+
+        Double temp_sum = 0.0;
+
+        try {
+           temp_sum = Double.valueOf(cur_sum_calc);
+
+            if (cur_sum_calc.length() <= 0) {
+                temp_sum = 0.0;
+            }
+
+        } catch (Exception e) {
+
+        }
+
+            calc_tot.setText(String.valueOf(cart_value - temp_sum ));
+
+        calc_tot_label.setText(String.valueOf(temp_sum));
+
+
+    }
+
+
+
+    Boolean addressChecked = false;
 
     public void checkAddress(String fullAddr) {
+        //default
+        addressChecked = false;
 
         if (isPopUp) {
-            customToast("Se calculeaza distanta...",false);
+            customToast("Se calculeaza distanta...", false);
         }
 
         String temp_addr = fullAddr.replace(" ", "+").trim();
@@ -326,16 +490,19 @@ public class finish extends AppCompatActivity {
 
                             Double dist = Double.valueOf(last_distance.trim());
                             if (dist < 40000) {
+                                addressChecked = true;
+                                check_forms();
                                 currentLocationTime = last_distTime / 60;
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa: " + dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta",false);
+                                    customToast("Distanta catre adresa: " + dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta", false);
                                     doneAddStep = true;
                                     done.setText("Adauga!");
+                                    done.setEnabled(true);
                                 }
 
                             } else {
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa selectata este mult prea mare: " + dist / 100 + " km!",false);
+                                    customToast("Distanta catre adresa selectata este mult prea mare: " + dist / 100 + " km!", false);
                                 }
                             }
 
@@ -350,7 +517,7 @@ public class finish extends AppCompatActivity {
                                         checkAddress(spinnerCity.getSelectedItem().toString());
                                     } else {
                                         String tempp = spinnerAddress.getSelectedItem().toString();
-                                        checkAddress(tempp.substring(0,tempp.indexOf(",,")));
+                                        checkAddress(tempp.substring(0, tempp.indexOf(",,")));
                                     }
                                 }
                             }, 1600);
@@ -361,7 +528,7 @@ public class finish extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customToast("E123: Fara raspuns de la server!",true);
+                customToast("E123: Fara raspuns de la server!", true);
             }
         });
 
@@ -372,6 +539,8 @@ public class finish extends AppCompatActivity {
 
 
     public void SendOrder(ArrayList<listItems> list, userList currentUser) {
+
+
         customToast("Se trimite ...", false);
 
         //disable button durring the process
@@ -399,11 +568,12 @@ public class finish extends AppCompatActivity {
 
         additionalList adList = new additionalList(curDeliver, orderStatus, new Date());
 
-        String date = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, 2).format(new Date());
+        String date = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
+        String time = String.valueOf(android.text.format.DateFormat.format("hhmmss", new java.util.Date()));
 
-        orderListBig docData = new orderListBig(list, currentUser, adList, date);
+        orderListBig docData = new orderListBig(list, currentUser, adList, date + time, currentCounts, paid);
 
-        DatabaseReference ref = database.getReference("pizza/orders/" + date);
+        DatabaseReference ref = database.getReference("pizza/" + date + "/orders/" + time);
         ref.setValue(docData);
 
 
@@ -428,8 +598,9 @@ public class finish extends AppCompatActivity {
                     //exit activity
                     casa.justFinished = true;
                     finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
-            }, 500);
+            }, 1500);
 
         } else {
             dataBase_label.setText("EROARE!");
@@ -505,7 +676,7 @@ public class finish extends AppCompatActivity {
     public void calculate_total() {
 
         SpannableStringBuilder temp_span = new SpannableStringBuilder();
-        temp_span.append("Produse: " + cart_value + " lei \n\n", new UnderlineSpan(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        temp_span.append("Produse: " + cart_value + " lei \n", new UnderlineSpan(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (deliver) {
             if (last_city.length() > 2) {
@@ -599,13 +770,14 @@ public class finish extends AppCompatActivity {
 
                     doneAddStep = false;
                     done.setText("Inainte");
+                    done.setEnabled(true);
                 }
             });
 
             done.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    done.setEnabled(false);
                     //formulate full address;
                     String tempS = spinnerCity.getSelectedItem().toString() + ", " + address.getText().toString();
                     if (!clientAddr.contains(address.getText().toString())) {
@@ -632,11 +804,11 @@ public class finish extends AppCompatActivity {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
                                                                         Toast.makeText(getApplicationContext(), "Noua adresa a clientului adaugata!", Toast.LENGTH_SHORT).show();
-                                                                    //    try {
-                                                                  //          spinnerAddress.setSelection(clientAddr.size(), true);
-                                                                    //    } catch (Exception e) {
-                                                                    //        Log.e("~~~~~", String.valueOf(clientAddr.size()));
-                                                                    //    }
+                                                                        //    try {
+                                                                        //          spinnerAddress.setSelection(clientAddr.size(), true);
+                                                                        //    } catch (Exception e) {
+                                                                        //        Log.e("~~~~~", String.valueOf(clientAddr.size()));
+                                                                        //    }
                                                                     }
                                                                 });
 
@@ -659,11 +831,14 @@ public class finish extends AppCompatActivity {
 
     Integer currentLocationTime = 0;
     FirebaseDatabase database;
+    Integer currentCounts = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish);
+
 
         cart_value = 0.0;
         last_city = "";
@@ -675,8 +850,6 @@ public class finish extends AppCompatActivity {
 
         // get the cart list
 
-        //   Intent intent = getIntent();
-        // list_items_intent = getIntent().putParcelableArrayListExtra("final_cart_list");
         list_items_intent = (ArrayList<listItems>) getIntent().getSerializableExtra("final_cart_list");
 
         //Force screen Landscape
@@ -687,12 +860,27 @@ public class finish extends AppCompatActivity {
         client_phone = findViewById(R.id.client_phone);
         client_name = findViewById(R.id.client_name);
         client_address = findViewById(R.id.client_address);
-        cancelOrder = findViewById(R.id.cancelOrder);
         finishOrder = findViewById(R.id.finishOrder);
         deliverSwitch = findViewById(R.id.deliverSwitch);
+        paidSwitch = findViewById(R.id.paidSwitch);
         totalLabel = findViewById(R.id.totalLabel);
         client_address_label = findViewById(R.id.client_address_label);
         spinnerAddress = findViewById(R.id.spinnerAddress);
+
+
+        appBar = findViewById(R.id.appBar);
+        this.setSupportActionBar(appBar);
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+        client_phone_indicator = findViewById(R.id.client_phone_indicator);
+        client_name_indicator = findViewById(R.id.client_name_indicator);
+        client_address_indicator = findViewById(R.id.client_address_indicator);
 
 
         clientAddr = new ArrayList<>();
@@ -738,7 +926,6 @@ public class finish extends AppCompatActivity {
                 if (deliver) {
                     deliverSwitch.setText("Fara livrare");
                     deliverSwitch.setBackgroundResource(R.drawable.ripple_button_yellow);
-                    totalLabel.setBackgroundResource(R.drawable.ripple_button_yellow);
                     deliver = false;
                     client_address.setVisibility(View.GONE);
                     spinnerAddress.setVisibility(View.GONE);
@@ -748,11 +935,28 @@ public class finish extends AppCompatActivity {
                 } else {
                     deliverSwitch.setText("Cu Livrare");
                     deliverSwitch.setBackgroundResource(R.drawable.ripple_button);
-                    totalLabel.setBackgroundResource(R.drawable.ripple_button_darker);
                     client_address.setVisibility(View.VISIBLE);
                     spinnerAddress.setVisibility(View.VISIBLE);
                     client_address_label.setVisibility(View.VISIBLE);
                     deliver = true;
+                }
+                check_forms();
+            }
+        });
+
+        paidSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (paid) {
+                    paidSwitch.setText("Neplatita!");
+                    paidSwitch.setBackgroundResource(R.drawable.ripple_button);
+                    paid = false;
+                    check_minimum_city("");
+
+                } else {
+                    paidSwitch.setText("Deja platita");
+                    paidSwitch.setBackgroundResource(R.drawable.ripple_button_yellow);
+                    paid = true;
                 }
                 check_forms();
             }
@@ -774,13 +978,6 @@ public class finish extends AppCompatActivity {
         });
 
 
-        cancelOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
 
         //create list to store clients
         clients_extracted = new ArrayList<>();
@@ -792,6 +989,22 @@ public class finish extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         database = FirebaseDatabase.getInstance();
+
+
+        String date = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
+        DatabaseReference ref = database.getReference("pizza/" + date + "/orders");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentCounts = Integer.valueOf(String.valueOf(dataSnapshot.getChildrenCount())) + 1;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         connected = false;
@@ -833,22 +1046,9 @@ public class finish extends AppCompatActivity {
         check_forms();
 
         check_minimum_city("");
-        client_address.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+        calc_init();
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                check_forms();
-            }
-        });
 
         client_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -883,11 +1083,18 @@ public class finish extends AppCompatActivity {
                 //Reset current user orders when phone number is focused and changed
                 current_user_orders = 0;
 
+
+                //Autocomplete Client name in UI
+                client_name.setText("");
+                clientAddr.clear();
+                cAddr.notifyDataSetChanged();
+
                 //Lose focus// hide keyboard when the number is completed
                 if (client_phone.getText().length() == 10) {
                     client_phone.clearFocus();
                     // Close keyboard
                     ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
+
                 }
 
                 //Valide other forms/inputs
@@ -939,8 +1146,14 @@ public class finish extends AppCompatActivity {
                             //Autocomplete Client address in UI
 
                             //get addresses list from extracted data
-                            clientAddr.clear();
-                            clientAddr.addAll(clients_extracted.get(i).getUserAddr());
+                            // clientAddr = new ArrayList<>();
+
+                            try {
+                                clientAddr.clear();
+                                clientAddr.addAll(clients_extracted.get(i).getUserAddr());
+                            } catch (Exception e) {
+                                Log.e("EROARE!!!!!!!", e.getMessage());
+                            }
 
                             //set addresses to spinner
                             cAddr.notifyDataSetChanged();

@@ -17,11 +17,18 @@ public class MyRecyclerViewAdapterCateg extends RecyclerView.Adapter<MyRecyclerV
     private String[] mData = new String[0];
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private Context mContext;
+    private RecyclerView recyclerView;
+
+    private static final int UNSELECTED = -1;
+    private int selectedItem = UNSELECTED;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapterCateg(Context context, String[] data) {
+    MyRecyclerViewAdapterCateg(Context context, String[] data,RecyclerView recyclerView) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        mContext = context;
+        this.recyclerView = recyclerView;
     }
 
     // inflates the cell layout from xml when needed
@@ -34,6 +41,7 @@ public class MyRecyclerViewAdapterCateg extends RecyclerView.Adapter<MyRecyclerV
     // binds the data to the textview in each cell
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bind();
         String animal = mData[position];
         holder.categ.setText(animal);
     }
@@ -45,20 +53,53 @@ public class MyRecyclerViewAdapterCateg extends RecyclerView.Adapter<MyRecyclerV
     }
 
 
+
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Button categ;
 
         ViewHolder(View itemView) {
             super(itemView);
-            categ =  itemView.findViewById(R.id.title);
+            categ = itemView.findViewById(R.id.title);
             categ.setOnClickListener(this);
-           // itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
+
+        public void bind() {
+            int position = getAdapterPosition();
+            boolean isSelected = position == selectedItem;
+          //  expandButton.setSelected(isSelected);
+        //    expandableLayout.setExpanded(isSelected, false);
+        }
+
 
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+
+            MyRecyclerViewAdapterCateg.ViewHolder holder = (MyRecyclerViewAdapterCateg.ViewHolder) recyclerView.findViewHolderForAdapterPosition(selectedItem);
+            if (holder != null) {
+             //   holder.expandButton.setSelected(false);
+            //    holder.expandableLayout.collapse();
+
+                holder.categ.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button));
+
+
+            }
+            int position = getAdapterPosition();
+            if (position == selectedItem) {
+                selectedItem = UNSELECTED;
+
+
+            } else {
+             //   expandButton.setSelected(true);
+             //   expandableLayout.expand();
+
+                categ.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_darker));
+
+                selectedItem = position;
+            }
+
         }
     }
 

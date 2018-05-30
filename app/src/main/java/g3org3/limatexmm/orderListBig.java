@@ -8,20 +8,40 @@ import java.util.List;
 
 public class orderListBig {
 
-  List<listItems> orderList;
- userList userSimple;
+    List<listItems> orderList;
+   userList userSimple;
     additionalList additionalSimple;
-    String dateSimple;
+   String dateSimple;
+   Integer countSimple;
+   Boolean paid;
 
     public orderListBig() {
 
     }
 
-    public orderListBig(List<listItems> orderList, userList userSimple, additionalList additionalSimple, String dateSimple){
+    public orderListBig(List<listItems> orderList, userList userSimple, additionalList additionalSimple, String dateSimple,Integer countSimple,Boolean paid) {
         this.orderList = orderList;
         this.userSimple = userSimple;
         this.additionalSimple = additionalSimple;
-        this.dateSimple =dateSimple;
+        this.dateSimple = dateSimple;
+        this.countSimple = countSimple;
+        this.paid = paid;
+    }
+
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
+
+    public Integer getCountSimple() {
+        return countSimple;
+    }
+
+    public void setCountSimple(Integer countSimple) {
+        this.countSimple = countSimple;
     }
 
     public String getDateSimple() {

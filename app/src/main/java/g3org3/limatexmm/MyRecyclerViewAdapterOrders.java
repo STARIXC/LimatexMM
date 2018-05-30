@@ -1,42 +1,24 @@
 package g3org3.limatexmm;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +47,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_order2, parent, false);
+                .inflate(R.layout.item_model_order, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -93,15 +75,17 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         }
         StringBuilder finalItems = new StringBuilder();
         for (int i = 0; i < maxi; i++) {
+            finalItems.append("x");
+            finalItems.append(item.getOrderList().get(i).getItemQuantity());
+            finalItems.append(" ");
             finalItems.append(item.getOrderList().get(i).getItemTitle());
-            finalItems.append(", ");
+            finalItems.append(" ");
             finalItems.append(item.getOrderList().get(i).getItemSubtitle());
             finalItems.append("\n");
         }
-        finalItems.append("(...)");
 
-        if (item.getOrderList().size() > 2){
-            finalItems.append(" inca " + String.valueOf(item.getOrderList().size()) + " produse");
+        if (item.getOrderList().size() > 2) {
+            finalItems.append("... inca " + String.valueOf(item.getOrderList().size()-2) + " produse");
         }
 
         holder.orderLabel.setText(finalItems);
@@ -110,24 +94,31 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         //Write Total Order Value
         Double totalPrice = 0.0;
         for (int i2 = 0; i2 < item.getOrderList().size(); i2++) {
-            totalPrice = totalPrice + item.getOrderList().get(i2).getItemPrice() + item.getOrderList().get(i2).getItemMorevalue();
+            totalPrice = totalPrice + ((item.getOrderList().get(i2).getItemPrice() + item.getOrderList().get(i2).getItemMorevalue()) * item.getOrderList().get(i2).getItemQuantity());
         }
 
         holder.totalLabel.setText("Total: " + String.valueOf(totalPrice) + " lei");
+        if (item.getPaid()) {
+            holder.paidLabel.setText("Platita");
+            holder.paidLabel.setTextColor(Color.rgb(49, 158, 34));
+        } else {
+            holder.paidLabel.setText("Neplatita!");
+            holder.paidLabel.setTextColor(Color.rgb(244, 66, 66));
+        }
 
         //Get current date
         Date temp_date2 = new Date();
 
         Date item_date = item.additionalSimple.getOrderDate();
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(item_date);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int mins = calendar.get(Calendar.MINUTE);
-        int secs = calendar.get(Calendar.SECOND);
+        // Calendar calendar = Calendar.getInstance();
+        // calendar.setTime(item_date);
+        // int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        // int mins = calendar.get(Calendar.MINUTE);
+        // int secs = calendar.get(Calendar.SECOND);
 
 
-        holder.idLabel.setText("Nr.C: " + String.valueOf(String.valueOf(hours) + String.valueOf(mins) + String.valueOf(secs)));
+        holder.idLabel.setText("Nr.Comanda: " + String.valueOf(item.countSimple));
 
         //Write time passed
         long diff = temp_date2.getTime() - item_date.getTime();
@@ -137,9 +128,9 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         //if item require deliver
         if (item.getAdditionalSimple().getOrderDeliver().equals(1)) {
             //display the time passed + time to deliver
-            holder.timeLabel.setText(String.valueOf(jMinsI + item.getUserSimple().getUserAddrCurrentTime()));
+            holder.timeLabel.setText(String.valueOf(jMinsI)); // + item.getUserSimple().getUserAddrCurrentTime()));
             holder.timeLabelS.setVisibility(View.VISIBLE);
-            holder.timeLabelS.setText("(" + item.getUserSimple().getUserAddrCurrentTime()+")");
+            holder.timeLabelS.setText("+" + item.getUserSimple().getUserAddrCurrentTime());
         } else {
             //display only the time passed
             holder.timeLabel.setText(String.valueOf(jMinsI));
@@ -167,7 +158,8 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
 
         //connect to database
         database = FirebaseDatabase.getInstance();
-        ref = database.getReference("pizza/orders/" + item.dateSimple + "/additionalSimple/orderStatus");
+        String currentDate = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
+        ref = database.getReference("pizza/" + currentDate + "/orders/" + item.dateSimple.substring(8, 14) + "/additionalSimple/orderStatus");
 
         holder.denyButton.setText("Anuleaza comanda!");
         holder.denyButton.setOnClickListener(new View.OnClickListener() {
@@ -229,12 +221,14 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         }
 
         final StringBuilder allOrder = new StringBuilder();
-        for (int i = 0; i< item.getOrderList().size(); i++) {
-            String nr = String.valueOf((i+1));
+        for (int i = 0; i < item.getOrderList().size(); i++) {
+            String nr = String.valueOf((i + 1));
             allOrder.append(nr + ") ");
             allOrder.append(item.getOrderList().get(i).getItemTitle());
             allOrder.append(", ");
             allOrder.append(item.getOrderList().get(i).getItemSubtitle());
+            allOrder.append(" x");
+            allOrder.append(item.getOrderList().get(i).getItemQuantity());
             allOrder.append("      ");
         }
 
@@ -280,9 +274,6 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
     }
 
 
-
-
-
     // total number of cells
     @Override
     public int getItemCount() {
@@ -307,8 +298,8 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
         TextView moreView;
         View aboveButtonS;
         View aboveButton;
+        TextView paidLabel;
         android.support.constraint.ConstraintLayout topView;
-
 
 
         public ViewHolder(View itemView) {
@@ -334,6 +325,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
             expandableLayout.setOnExpansionUpdateListener(this);
             expandButton = itemView.findViewById(R.id.expandButton);
             aboveButtonS = itemView.findViewById(R.id.aboveButtonS);
+            paidLabel = itemView.findViewById(R.id.paidLabel);
 
 
             aboveButton.setOnClickListener(this);
@@ -359,11 +351,11 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
                 holder.denyButton.setBackgroundColor(Color.rgb(244, 244, 244));
                 holder.expandOrderButton.setBackgroundColor(Color.rgb(244, 244, 244));
 
-                if(more){
+                if (more) {
                     holder.expandOrderButton.performClick();
                 }
 
-                if(batchSelected){
+                if (batchSelected) {
                     holder.aboveButton.performLongClick();
                 }
 
@@ -378,7 +370,7 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
                 aboveButton.setSelected(true);
                 expandableLayout.expand();
 
-                if(batchSelected){
+                if (batchSelected) {
                     aboveButton.performLongClick();
                 }
 
