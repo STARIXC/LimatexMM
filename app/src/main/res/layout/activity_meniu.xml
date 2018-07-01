@@ -19,7 +19,7 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="43dp"
-            android:background="@color/colorWhite"
+            android:background="@color/colorWhiteDark"
             app:title="Acasa">
 
 
@@ -29,24 +29,25 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <Button
+    <android.support.design.button.MaterialButton
         android:id="@+id/casa"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="20dp"
-        android:background="@drawable/ripple_button"
-        android:drawableEnd="@drawable/ic_shopping_cart_black_24dp"
-        android:drawablePadding="5dp"
-        android:drawableTint="@color/colorWhite"
+        android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
         android:padding="10dp"
         android:text="Casa"
         android:textColor="@color/colorWhite"
-        android:textSize="70px"
+        android:textSize="20sp"
+        app:cornerRadius="0dp"
+        app:icon="@drawable/ic_shopping_cart_black_24dp"
         app:layout_constraintBottom_toTopOf="@id/midSpace"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.3"
+        app:rippleColor="@color/colorWhite" />
 
     <TextView
         android:layout_width="0dp"
@@ -63,25 +64,26 @@
         app:layout_constraintStart_toStartOf="@id/casa"
         app:layout_constraintTop_toBottomOf="@id/casa" />
 
-    <Button
+    <android.support.design.button.MaterialButton
         android:id="@+id/bucatarie"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="20dp"
-        android:background="@drawable/ripple_button_yellow"
-        android:drawableEnd="@drawable/ic_restaurant_black_24dp"
-        android:drawablePadding="5dp"
-        android:drawableTint="@color/colorWhite"
+        android:backgroundTint="@color/colorYellow"
         android:gravity="center"
         android:padding="10dp"
         android:text="Bucatarie"
         android:textColor="@color/colorWhite"
-        android:textSize="70px"
+        android:textSize="20sp"
+        app:cornerRadius="0dp"
+        app:icon="@drawable/ic_restaurant_black_24dp"
         app:layout_constraintBottom_toTopOf="@id/midSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.3"
+        app:rippleColor="@color/colorWhite" />
 
     <TextView
         android:layout_width="0dp"
@@ -98,24 +100,25 @@
         app:layout_constraintStart_toStartOf="@id/bucatarie"
         app:layout_constraintTop_toBottomOf="@id/bucatarie" />
 
-    <Button
+    <android.support.design.button.MaterialButton
         android:id="@+id/monitor"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="20dp"
-        android:background="@drawable/ripple_button_darker"
-        android:drawableEnd="@drawable/ic_desktop_windows_black_24dp"
-        android:drawablePadding="5dp"
-        android:drawableTint="@color/colorWhite"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:gravity="center"
         android:padding="10dp"
         android:text="Monitor"
         android:textColor="@color/colorWhite"
-        android:textSize="70px"
+        android:textSize="20sp"
+        app:cornerRadius="0dp"
+        app:icon="@drawable/ic_desktop_windows_black_24dp"
         app:layout_constraintBottom_toTopOf="@id/midSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.3"
+        app:rippleColor="@color/colorWhite" />
 
     <TextView
         android:layout_width="0dp"
@@ -133,22 +136,26 @@
         app:layout_constraintTop_toBottomOf="@id/monitor" />
 
 
-    <Button
+    <android.support.design.button.MaterialButton
         android:id="@+id/admin"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/ripple_button_white"
-        android:drawableEnd="@drawable/ic_person_outline_black_24dp"
-        android:drawablePadding="5dp"
+        android:backgroundTint="@color/colorWhite"
         android:gravity="center"
         android:padding="10dp"
         android:text="Administrator"
-        android:textSize="60px"
+        android:textColor="@color/colorDarkGrey"
+        android:textSize="16sp"
+        app:cornerRadius="0dp"
+        app:icon="@drawable/ic_person_outline_black_24dp"
+        app:iconTint="@color/colorDarkGrey"
         app:layout_constraintBottom_toTopOf="@id/botSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.4"
+        app:rippleColor="@color/colorPrimaryDark" />
 
     <View
         android:id="@+id/botSpace"

@@ -83,7 +83,7 @@ public class MyArrayAdapter extends ArrayAdapter<SpannableString> {
 
         SpannableString comment = getItem(position);
 
-        TextView name = (TextView) view.findViewById(R.id.textDD);
+        TextView name = view.findViewById(R.id.textDD);
         name.setText(comment);
 
         return view;

@@ -111,12 +111,6 @@ public class MyRecyclerViewAdapterOrders extends RecyclerView.Adapter<MyRecycler
 
         Date item_date = item.additionalSimple.getOrderDate();
 
-        // Calendar calendar = Calendar.getInstance();
-        // calendar.setTime(item_date);
-        // int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        // int mins = calendar.get(Calendar.MINUTE);
-        // int secs = calendar.get(Calendar.SECOND);
-
 
         holder.idLabel.setText("Nr.Comanda: " + String.valueOf(item.countSimple));
 

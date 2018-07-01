@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -9,21 +10,19 @@
     android:clipToPadding="true">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
         android:background="@color/colorWhite"
         android:clipToPadding="true"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.13"
+        app:layout_constraintHeight_percent="0.16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.9">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Spinner
             android:id="@+id/spinnerCity"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorWhite"
             android:theme="@style/spStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -38,7 +37,7 @@
             android:id="@+id/address"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
+            android:background="@color/colorWhiteDark"
             android:ems="10"
             android:elevation="2dp"
             android:hint="strada, numarul"
@@ -54,11 +53,13 @@
             android:id="@+id/done"
             android:layout_width="0dp"
             android:elevation="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/ripple_button"
+            android:background="@drawable/ripple_button_white"
             android:gravity="center"
             android:text="Inainte"
-            android:textColor="@android:color/white"
+            android:textAllCaps="false"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@id/address"
             app:layout_constraintWidth_percent="0.2" />
@@ -67,13 +68,15 @@
             android:id="@+id/cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/ripple_button_yellow"
-            android:src="@drawable/ic_reply_white_24px"
-            app:layout_constraintWidth_percent="0.1"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/ripple_button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_delete_black_24dp"
+            android:padding="15dp"
+            android:tint="@color/colorWhite"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
 
-            />
+            app:layout_constraintWidth_percent="0.1" />
 
     </android.support.constraint.ConstraintLayout>
 

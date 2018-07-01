@@ -9,30 +9,123 @@
     tools:context="g3org3.limatexmm.casa">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rv_items_c"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorPrimaryDark"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/totalPrice"
+        app:layout_constraintEnd_toStartOf="@+id/next_button_c"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHeight_percent="0.08"/>
+        app:layout_constraintTop_toBottomOf="@id/appBarContainer">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_items"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_items"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorWhiteDark"
+            android:paddingStart="10dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="10dp"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabMenu" />
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabMenu"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:padding="2dp"
+            android:background="@color/colorWhiteDark"
+            app:tabTextColor="@color/colorYellow"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabMaxWidth="100dp"
+            app:tabMode="scrollable">
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tab example" />
+
+        </android.support.design.widget.TabLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rv_items_c2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorWhiteDark"
-        android:paddingTop="4dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@id/rv_categories"
-        app:layout_constraintEnd_toStartOf="@+id/nextButton"
+        android:background="@color/colorWhite"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/next_button_c"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarContainer" />
+        app:layout_constraintTop_toBottomOf="@id/appBarContainer">
+
+
+        <SearchView
+            android:layout_width="0dp"
+            android:id="@+id/search_bar"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@color/colorWhiteDarker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="@id/search_bar"
+            app:layout_constraintEnd_toEndOf="@id/search_bar"
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/search_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Cauta produsele mai rapid cu bara de sus"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_result"
+                android:layout_width="match_parent"
+                android:background="@color/colorWhite"
+                android:layout_height="match_parent"/>
+
+
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/search"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="2dp"
+        android:text="Cauta"
+        android:textSize="14sp"
+        app:cornerRadius="10dp"
+        app:icon="@drawable/ic_search_black_24dp"
+        app:iconPadding="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rv_cart"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <android.support.v7.widget.RecyclerView
@@ -43,93 +136,160 @@
         android:clipToPadding="true"
         android:elevation="0dp"
         android:padding="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/botCartBorder"
-        app:layout_constraintStart_toEndOf="@+id/rv_items"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarContainer"
         app:layout_constraintWidth_percent="0.35" />
 
-
-    <Button
-        android:id="@+id/nextButton"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/next_button_c"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ripple_button_white_dark"
-        android:padding="3dp"
-        android:text="Finalizeaza"
-        android:textSize="14sp"
-        android:textColor="#95000000"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.08"
-        app:layout_constraintStart_toEndOf="@+id/rv_items"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintWidth_percent="0.35" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.35">
+
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/nextButton"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="Finalizeaza"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/ic_check_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/deleteAll"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginStart="5dp"
+            android:text="Sterge"
+            android:textColor="@color/colorDarkGrey"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_delete_black_24dp"
+            app:iconTint="@color/colorDarkGrey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/undoDelete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/colorPrimary" />
+
+
+        <!-- TO USE LATER MAYBE -->
+        <android.support.design.button.MaterialButton
+            android:id="@+id/undoDelete"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_undo_black_24dp"
+            app:iconTint="@color/colorDarkGrey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/colorPrimary" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/topCartBorder"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@id/rv_items"
+        android:layout_height="1dp"
+        android:background="@color/colorDarkGrey"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="#90000000"
-        app:layout_constraintTop_toTopOf="@id/rv_cart"
-        app:layout_constraintHeight_percent="0.002"/>
+        app:layout_constraintStart_toStartOf="@id/rv_cart"
+        app:layout_constraintTop_toTopOf="@id/rv_cart" />
 
     <View
         android:id="@+id/botCartBorder"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@id/rv_items"
+        android:layout_height="1dp"
+        android:background="@color/colorDarkGrey"
+        app:layout_constraintBottom_toTopOf="@id/estimatedTime"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="#90000000"
+        app:layout_constraintStart_toStartOf="@id/rv_cart" />
+
+
+    <TextView
+        android:id="@+id/estimatedTimeLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center|left"
+        android:paddingStart="10dp"
+        android:text="Timp estimat:"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode.Subtitle"
+        android:textColor="@color/colorDarkGrey"
+        android:textSize="11dp"
         app:layout_constraintBottom_toTopOf="@id/totalPrice"
-        app:layout_constraintHeight_percent="0.0023"/>
+        app:layout_constraintEnd_toStartOf="@id/estimatedTime"
+        app:layout_constraintStart_toStartOf="@id/rv_cart"
+        app:layout_constraintTop_toBottomOf="@id/rv_cart" />
+
+    <TextView
+        android:id="@+id/estimatedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:gravity="center|left"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="..."
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode.Subtitle"
+        android:textColor="@color/colorDarkGrey"
+        android:textSize="11dp"
+        app:layout_constraintBottom_toTopOf="@id/totalPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_cart" />
+
+    <TextView
+        android:id="@+id/totalPriceLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center|left"
+        android:paddingStart="10dp"
+        android:text="Total:"
+        android:textAllCaps="true"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode.Subtitle"
+        android:textColor="@android:color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@id/next_button_c"
+        app:layout_constraintEnd_toStartOf="@id/totalPrice"
+        app:layout_constraintStart_toStartOf="@id/rv_cart" />
 
     <TextView
         android:id="@+id/totalPrice"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:gravity="center|left"
-        android:paddingStart="20dp"
-        android:text="Total: 150 lei"
+        android:padding="2dp"
+        android:paddingStart="10dp"
+        android:text="55 Lei"
         android:textAllCaps="false"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@id/nextButton"
-        app:layout_constraintEnd_toStartOf="@id/deleteAll"
-        app:layout_constraintHeight_percent="0.07"
-        app:layout_constraintStart_toEndOf="@+id/rv_items"
-        app:layout_constraintTop_toBottomOf="@id/rv_cart" />
-
-    <ImageButton
-        android:id="@+id/deleteAll"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:padding="5dp"
-        android:scaleType="fitCenter"
-        android:alpha="0.8"
-        android:src="@drawable/ic_delete_black_24dp"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode.Subtitle"
+        android:textColor="@color/colorDarkGrey"
+        android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/nextButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_cart"
-        app:layout_constraintWidth_percent="0.07" />
-
+        app:layout_constraintBottom_toTopOf="@id/next_button_c"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarContainer"
         android:layout_width="match_parent"
-        android:visibility="visible"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
@@ -140,27 +300,43 @@
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
             app:title="Casa">
 
-            <ImageButton
-                android:id="@+id/profileIcon"
+            <android.support.design.button.MaterialButton
+                android:id="@+id/profileName"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
-                android:background="@android:color/transparent"
+                android:layout_marginEnd="20dp"
+                android:elevation="0dp"
+                android:gravity="center"
                 android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:alpha="0.8"
-                android:src="@drawable/ic_person_outline_black_24dp"/>
+                android:text="Mihai Ion"
+                android:textAllCaps="false"
+                android:textColor="@color/colorDarkGrey"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                app:icon="@drawable/ic_person_outline_black_24dp"
+                app:iconPadding="5dp"
+                app:iconTint="@color/colorDarkGrey" />
 
-                <TextView
-                    android:id="@+id/profileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textSize="18sp"
-                    android:padding="5dp"
-                    android:layout_gravity="right"
-                    android:gravity="center"
-                    android:text="Mihai Ion"/>
 
+            <android.support.design.button.MaterialButton
+                android:id="@+id/clock"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="14:21"
+                android:textAllCaps="false"
+                android:textColor="@color/colorDarkGrey"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                app:icon="@drawable/ic_access_time_black_24dp"
+                app:iconPadding="5dp"
+                app:iconTint="@color/colorDarkGrey" />
 
         </android.support.v7.widget.Toolbar>
 

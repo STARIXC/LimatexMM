@@ -9,14 +9,17 @@
     android:layout_height="fill_parent">
 
 
-    <Button
+    <android.support.design.button.MaterialButton
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/ripple_button"
+        app:cornerRadius="0dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="0dp"
+        android:elevation="0dp"
         android:text="Pizza"
         android:textColor="@color/colorWhite"
         android:textSize="14sp"

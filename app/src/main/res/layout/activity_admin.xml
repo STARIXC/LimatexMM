@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/colorWhiteDark"
     android:layout_height="match_parent"
     tools:context=".admin">
 
@@ -17,7 +18,7 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="43dp"
-            android:background="@color/colorWhite"
+            android:background="@color/colorWhiteDark"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
             app:title="Administratie">
 

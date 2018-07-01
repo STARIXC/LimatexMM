@@ -25,7 +25,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private ItemClickListener mClickListener;
 
   //  private List<String> mDataArray;
-    private ArrayList<Integer> mSectionPositions;
+//    private ArrayList<Integer> mSectionPositions;
 
     private Context mContext;
     private List<listItems> list_itemsList;
@@ -90,16 +90,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     // convenience method for getting data at click position
-    String getItemTitle(int id) {
-        return list_itemsList.get(id).getItemTitle();
-    }
-
-    String getItemSubTitle(int id) {
-        return list_itemsList.get(id).getItemSubtitle();
-    }
-
-    double getItemPrice(int id) {
-        return list_itemsList.get(id).getItemPrice();
+    listItems getItem(int id) {
+        return list_itemsList.get(id);
     }
 
     // allows clicks events to be caught

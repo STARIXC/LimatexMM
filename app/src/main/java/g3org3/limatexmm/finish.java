@@ -5,24 +5,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.button.MaterialButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
-import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,12 +30,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -56,40 +54,34 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class finish extends AppCompatActivity {
 
     Button finishOrder;
     TextView dataBase_label;
+
+    TextInputLayout client_phone_c;
     AutoCompleteTextView client_phone;
+
+    TextInputLayout client_name_c;
     EditText client_name;
-    ImageButton client_address;
-    TextView client_address_label;
-    Button deliverSwitch;
-    Button paidSwitch;
+
+    TextInputLayout client_address_c;
+    Spinner spinnerAddress;
+    MaterialButton client_address;
+
+    MaterialButton deliverSwitch;
+    MaterialButton paidSwitch;
+
     TextView totalLabel;
     Boolean deliver = true;
     Boolean paid = false;
-    Spinner spinnerAddress;
-    View client_phone_indicator;
-    View client_name_indicator;
-    View client_address_indicator;
-    android.support.v7.widget.Toolbar appBar;
 
+    android.support.v7.widget.Toolbar appBar;
 
     boolean connected = false;
 
@@ -99,20 +91,439 @@ public class finish extends AppCompatActivity {
 
     //GOOGLE MAPS KEY:  AIzaSyBioAUEf-XXf_R7PzbbTZPHxHi-IRP9JOY
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_finish);
+
+
+        cart_value = 0.0;
+        last_city = "";
+        meet_minimum = false;
+        minimum_current = 0.0;
+
+        // Get the Intent that started this activity and extract the string
+        cart_value = Double.valueOf(getIntent().getStringExtra(casa.CART_VALUE_EX));
+
+        // get the cart list
+        list_items_intent = (ArrayList<listItems>) getIntent().getSerializableExtra("final_cart_list");
+
+        //Force screen Landscape
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        dataBase_label = findViewById(R.id.dataBase_label);
+
+        client_phone = findViewById(R.id.client_phone);
+        client_name = findViewById(R.id.client_name);
+        client_address = findViewById(R.id.client_address);
+        client_phone_c = findViewById(R.id.client_phone_c);
+        client_name_c = findViewById(R.id.client_name_c);
+        client_address_c = findViewById(R.id.client_address_c);
+        finishOrder = findViewById(R.id.finishOrder);
+        deliverSwitch = findViewById(R.id.deliverSwitch);
+        paidSwitch = findViewById(R.id.paidSwitch);
+        totalLabel = findViewById(R.id.totalLabel);
+        spinnerAddress = findViewById(R.id.spinnerAddress);
+
+
+        appBar = findViewById(R.id.appBar);
+        this.setSupportActionBar(appBar);
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+        clientAddr = new ArrayList<>();
+        cAddr = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clientAddr);// R.layout.simple_dropdown_item_finish, clientAddr);
+
+
+        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                //  ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
+                ((TextView) adapterView.getChildAt(0)).setTextSize(15);
+                ((TextView) adapterView.getChildAt(0)).setBackgroundColor(Color.rgb(239, 239, 239));
+
+                String curAddr = "";
+                if (spinnerAddress != null && spinnerAddress.getSelectedItem() != null) {
+                    curAddr = (String) spinnerAddress.getSelectedItem();
+                }
+
+                checkAddress(curAddr);
+
+                check_forms();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spinnerAddress.setAdapter(cAddr);
+
+        client_address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addressPopUp();
+            }
+        });
+
+
+        deliverSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (deliver) {
+                    deliverSwitch.setText("Fara livrare");
+                    //    deliverSwitch.setSupportBackgroundTintList(null);
+
+                    deliver = false;
+                    client_address.setVisibility(View.GONE);
+                    spinnerAddress.setVisibility(View.GONE);
+                    check_minimum_city("");
+
+                } else {
+                    deliverSwitch.setText("Cu Livrare");
+                    //   deliverSwitch.setBackgroundTintList(getResources().getColorStateList(R.color.colorYellow));
+                    client_address.setVisibility(View.VISIBLE);
+                    spinnerAddress.setVisibility(View.VISIBLE);
+                    deliver = true;
+                }
+                check_forms();
+            }
+        });
+
+        paidSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (paid) {
+                    paidSwitch.setText("Neplatita!");
+                    //  paidSwitch.setBackgroundTintList(getColorStateList(R.color.colorPrimary));
+                    paid = false;
+                    check_minimum_city("");
+
+                } else {
+                    paidSwitch.setText("Deja platita");
+                    //   paidSwitch.setBackgroundTintList(getColorStateList(R.color.colorYellow));
+                    paid = true;
+                }
+                check_forms();
+            }
+        });
+
+
+        finishOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String curAddr = "";
+                if (spinnerAddress != null && spinnerAddress.getSelectedItem() != null) {
+                    curAddr = (String) spinnerAddress.getSelectedItem();
+                }
+
+                userList curUser = new userList(clientAddr, curAddr, currentLocationTime, client_name.getText().toString(), client_phone.getText().toString(), current_user_orders, new Date(), 0);
+                SendOrder(list_items_intent, curUser);
+            }
+        });
+
+
+        //create list to store clients
+        clients_extracted = new ArrayList<>();
+
+        //create list to store phone numbers
+        reg_phone_numbers = new ArrayList<>();
+
+        //Get the database
+        db = FirebaseFirestore.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+
+
+        String date = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
+        DatabaseReference ref = database.getReference("pizza/" + date + "/orders");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentCounts = Integer.valueOf(String.valueOf(dataSnapshot.getChildrenCount())) + 1;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        connected = false;
+        db_connect();
+
+
+        //enter the collection clients // get every document
+        db.collection("clients").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+
+                        Log.e("Working Orders id", ":" + document.getData());
+
+                        //get values inside document
+                        userList userList = document.toObject(g3org3.limatexmm.userList.class);
+
+                        //add each client to internal basedata
+                        clients_extracted.add(userList);
+
+                        //add every phone number extracted to AutoComplet phone number TextView
+                        reg_phone_numbers.add(userList.getUserPhone());
+
+                        connected = true;
+                    }
+                    //show message about basedata
+                    db_connect();
+
+                } else {
+                    connected = false;
+                    //show message about basedata
+                    db_connect();
+                }
+            }
+        });
+
+
+        check_forms();
+
+        check_minimum_city("");
+
+        calc_init();
+
+
+        client_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                check_client_name(String.valueOf(editable));
+            }
+        });
+
+
+        //lose focus after text is correct
+        client_phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                check_client_phone(String.valueOf(editable));
+
+                //Reset current user orders when phone number is focused and changed
+                current_user_orders = 0;
+
+
+                //Autocomplete Client name in UI
+                client_name.setText("");
+                clientAddr.clear();
+                cAddr.notifyDataSetChanged();
+
+                //Lose focus// hide keyboard when the number is completed
+                if (client_phone.getText().length() == 10) {
+                    client_phone.clearFocus();
+                    // Close keyboard
+                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
+
+                }
+
+                //Valide other forms/inputs
+                check_forms();
+
+            }
+        });
+
+        //after textbox lose focus
+        client_phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+
+                //if focus is on phonenumber
+                if (b) {
+                    // Open keyboard
+                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(client_phone, InputMethodManager.SHOW_FORCED);
+                } else {
+                    // Close keyboard
+                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
+                }
+
+
+                //if number is not valid
+                if (client_phone.getText().length() < 10) {
+                    if (client_phone.getText().length() > 0) {
+                        customToast("Numar de telefon", "incorect!", true);
+                    }
+                    client_phone.setText("");
+                } else {
+                    //if number IS VALID
+                    //Search it in extracted DB
+
+                    //Enable user UI in case there is no phone detected
+                    client_name.setEnabled(true);
+
+                    Boolean userFound = false;
+
+                    //Search for each client in basedata for the current phone number inserted
+                    for (int i = 0; i < clients_extracted.size(); i++) {
+
+                        //NEED TO add mod for not stressing UI too much
+                        dataBase_label.setText(i + "/" + clients_extracted.size());
+
+                        if (clients_extracted.get(i).getUserPhone().contains(client_phone.getText().toString())) {
+
+                            userFound = true;
+
+                            //Autocomplete Client name in UI
+                            client_name.setText(clients_extracted.get(i).getUserName());
+
+                            //Autocomplete Client address in UI
+
+                            //get addresses list from extracted data
+                            // clientAddr = new ArrayList<>();
+
+                            try {
+                                clientAddr.clear();
+                                clientAddr.addAll(clients_extracted.get(i).getUserAddr());
+                            } catch (Exception e) {
+                                Log.e("EROARE!!!!!!!", e.getMessage());
+                            }
+
+                            //set addresses to spinner
+                            cAddr.notifyDataSetChanged();
+
+                            //Get client join date
+                            Date temp_date = clients_extracted.get(i).getUserJoin();
+
+                            //Get current date
+                            Date temp_date2 = new Date();
+
+                            //Calculate the days from when he joined
+                            long diff = temp_date2.getTime() - temp_date.getTime();
+                            String jDays = String.valueOf(diff / 1000 / 60 / 60 / 24);
+
+                            //Get client orders count
+                            Integer client_orders_ex = clients_extracted.get(i).getUserOrders();
+
+                            //Set infotaiment label text
+                            dataBase_label.setText("Finalizeaza comanda, Stiu pe " + clients_extracted.get(i).getUserName() + " de " + jDays + " zile, are " + String.valueOf(client_orders_ex) + " comenzi la noi.");
+
+                            //DEBUG
+                            orderOrders(clients_extracted.get(i).getUserAddr());
+
+                            //save current user oders
+                            current_user_orders = client_orders_ex;
+
+                            //Get current user docID
+                            db.collection("clients").whereEqualTo("userPhone", client_phone.getText().toString())
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    current_user_docId = document.getId();
+                                                }
+                                            } else {
+                                                dataBase_label.setText("Eroare fatala, id-ul clientului nu se poate gasi");
+                                            }
+                                        }
+                                    });
+
+
+                            //disable user actions to changing client name,address when the number is already in database;
+                            client_name.setEnabled(false);
+
+                            // Close keyboard
+                            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
+
+
+                            break; //stop searching
+                        }
+                    }
+                    if (!userFound) {
+                        //Set infotaiment label text
+                        dataBase_label.setText(":(  Clientul nu exista, adauga datele si finalizeaza comanda pentru a-l adauga!");
+                        //if client doens't exist and you want deliver
+                        if (deliver) {
+                            //open address enterer
+                            if (clientAddr.size() < 1) {
+                                addressPopUp();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        //pre-create the icons
+        errorIcon = this.getResources().getDrawable(R.drawable.ic_error_black_24dp);
+        errorIcon.setBounds(0, 0, errorIcon.getIntrinsicWidth(), errorIcon.getIntrinsicHeight());
+        errorIcon.setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+
+        checkIcon = this.getResources().getDrawable(R.drawable.ic_check_circle_black_24dp);
+        checkIcon.setBounds(0, 0, checkIcon.getIntrinsicWidth(), checkIcon.getIntrinsicHeight());
+        checkIcon.setColorFilter(Color.rgb(108, 193, 42), PorterDuff.Mode.SRC_ATOP);
+
+    }
+
+    Drawable errorIcon;
+    Drawable checkIcon;
+
+    public void check_client_name(String name) {
+        if (name.length() <= 2) {
+            client_name.setCompoundDrawables(null, null, errorIcon, null);
+        } else {
+            client_name.setCompoundDrawables(null, null, checkIcon, null);
+        }
+    }
+
+    public void check_client_phone(String phone) {
+        if (phone.length() <= 9) {
+            client_phone.setCompoundDrawables(null, null, errorIcon, null);
+        } else {
+            client_phone.setCompoundDrawables(null, null, checkIcon, null);
+        }
+    }
+
+
     public void db_connect() {
         if (!connected) {
             dataBase_label.setText("Nu se poate conecta la baza de date !");
-
+            //TODO: show NOT connected to db at ActionBar
+            appBar.setBackgroundColor(Color.RED);
             finishOrder.setEnabled(false);
 
         } else {
             dataBase_label.setText("Conectat la baza de date! " + reg_phone_numbers.size() + " numere de telefon inregistrate!");
+            //TODO: show connected to database at Actionbar
+            appBar.setBackgroundColor(Color.TRANSPARENT);
             client_phone.setEnabled(true);
             client_name.setEnabled(true);
-
-            client_phone_indicator.setBackgroundColor(getThemeAccentColor(this));
-            client_name_indicator.setBackgroundColor(getThemeAccentColor(this));
-
 
             //setup autocomplete textView
             adapter = new ArrayAdapter<String>(this, R.layout.simple_dropdown_item, reg_phone_numbers);
@@ -175,71 +586,34 @@ public class finish extends AppCompatActivity {
 
         boolean temp_client = false;
         if (client_phone.length() == 10) {
-            client_phone_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
             temp_client = true;
-        } else {
-            client_phone_indicator.setBackgroundColor(getThemeAccentColor(this));
         }
 
         boolean temp_name = false;
         if (client_name.length() > 2) {
             temp_name = true;
-            client_name_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
-        } else {
-            client_name_indicator.setBackgroundColor(getThemeAccentColor(this));
         }
 
 
         if (!meet_minimum) {
             if (last_city.length() > 2) {
-                finishOrder.setBackgroundColor(Color.GRAY);
                 finishOrder.setEnabled(false);
-                client_address_indicator.setBackgroundColor(getThemeAccentColor(this));
-
             } else {
-                finishOrder.setBackgroundColor(Color.GRAY);
                 finishOrder.setEnabled(false);
-                client_address_indicator.setBackgroundColor(Color.GRAY);
             }
         } else {
             if (temp_name) {
                 if (temp_client) {
-
-                    client_name_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
-
                     //if address finished checked
                     if (addressChecked || !deliver) {
                         finishOrder.setEnabled(true);
-                        finishOrder.setBackground(this.getResources().getDrawable(R.drawable.ripple_button));
                     } else {
                         finishOrder.setEnabled(false);
-                        client_address_indicator.setBackgroundColor(getThemeAccentColor(this));
                     }
 
                 }
             }
-            client_address_indicator.setBackgroundColor(Color.rgb(14, 165, 87));
         }
-
-    }
-
-
-    public void customToast(String finalt, Boolean longer) {
-
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_added, null);
-
-        TextView text = layout.findViewById(R.id.text);
-        text.setText(finalt);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        if (longer) {
-            toast.setDuration(Toast.LENGTH_LONG);
-        }
-        toast.setView(layout);
-        toast.show();
 
     }
 
@@ -431,7 +805,7 @@ public class finish extends AppCompatActivity {
         Double temp_sum = 0.0;
 
         try {
-           temp_sum = Double.valueOf(cur_sum_calc);
+            temp_sum = Double.valueOf(cur_sum_calc);
 
             if (cur_sum_calc.length() <= 0) {
                 temp_sum = 0.0;
@@ -441,13 +815,12 @@ public class finish extends AppCompatActivity {
 
         }
 
-            calc_tot.setText(String.valueOf(cart_value - temp_sum ));
+        calc_tot.setText(String.valueOf(cart_value - temp_sum));
 
         calc_tot_label.setText(String.valueOf(temp_sum));
 
 
     }
-
 
 
     Boolean addressChecked = false;
@@ -457,7 +830,7 @@ public class finish extends AppCompatActivity {
         addressChecked = false;
 
         if (isPopUp) {
-            customToast("Se calculeaza distanta...", false);
+            customToast("Se calculeaza", " distanta...", false);
         }
 
         String temp_addr = fullAddr.replace(" ", "+").trim();
@@ -494,7 +867,7 @@ public class finish extends AppCompatActivity {
                                 check_forms();
                                 currentLocationTime = last_distTime / 60;
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa: " + dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta", false);
+                                    customToast("Distanta catre adresa: ", dist / 1000 + " km, " + String.valueOf(last_distTime / 60) + " minute distanta", false);
                                     doneAddStep = true;
                                     done.setText("Adauga!");
                                     done.setEnabled(true);
@@ -502,13 +875,13 @@ public class finish extends AppCompatActivity {
 
                             } else {
                                 if (isPopUp) {
-                                    customToast("Distanta catre adresa selectata este mult prea mare: " + dist / 100 + " km!", false);
+                                    customToast("Distanta catre adresa selectata este mult prea mare: ", dist / 100 + " km!", false);
                                 }
                             }
 
                         } else {
                             if (isPopUp) {
-                                customToast("Strada nu a fost gasita, se considera doar orasul", true);
+                                customToast("Strada nu a fost gasita,", "se considera doar orasul", true);
                             }
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -528,7 +901,7 @@ public class finish extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                customToast("E123: Fara raspuns de la server!", true);
+                customToast("Server ERROR", "E123: Fara raspuns de la server!", true);
             }
         });
 
@@ -541,7 +914,7 @@ public class finish extends AppCompatActivity {
     public void SendOrder(ArrayList<listItems> list, userList currentUser) {
 
 
-        customToast("Se trimite ...", false);
+        customToast("Comanda", "se inregistreaza", false);
 
         //disable button durring the process
         finishOrder.setEnabled(false);
@@ -834,395 +1207,28 @@ public class finish extends AppCompatActivity {
     Integer currentCounts = 0;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_finish);
-
-
-        cart_value = 0.0;
-        last_city = "";
-        meet_minimum = false;
-        minimum_current = 0.0;
-
-        // Get the Intent that started this activity and extract the string
-        cart_value = Double.valueOf(getIntent().getStringExtra(casa.CART_VALUE_EX));
-
-        // get the cart list
-
-        list_items_intent = (ArrayList<listItems>) getIntent().getSerializableExtra("final_cart_list");
-
-        //Force screen Landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-        dataBase_label = findViewById(R.id.dataBase_label);
-
-        client_phone = findViewById(R.id.client_phone);
-        client_name = findViewById(R.id.client_name);
-        client_address = findViewById(R.id.client_address);
-        finishOrder = findViewById(R.id.finishOrder);
-        deliverSwitch = findViewById(R.id.deliverSwitch);
-        paidSwitch = findViewById(R.id.paidSwitch);
-        totalLabel = findViewById(R.id.totalLabel);
-        client_address_label = findViewById(R.id.client_address_label);
-        spinnerAddress = findViewById(R.id.spinnerAddress);
-
-
-        appBar = findViewById(R.id.appBar);
-        this.setSupportActionBar(appBar);
-        appBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-
-        client_phone_indicator = findViewById(R.id.client_phone_indicator);
-        client_name_indicator = findViewById(R.id.client_name_indicator);
-        client_address_indicator = findViewById(R.id.client_address_indicator);
-
-
-        clientAddr = new ArrayList<>();
-        cAddr = new ArrayAdapter<String>(this, R.layout.simple_dropdown_item_finish, clientAddr);
-
-
-        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
-                ((TextView) adapterView.getChildAt(0)).setTextSize(20);
-
-                String curAddr = "";
-                if (spinnerAddress != null && spinnerAddress.getSelectedItem() != null) {
-                    curAddr = (String) spinnerAddress.getSelectedItem();
-                }
-
-                checkAddress(curAddr);
-
-                check_forms();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerAddress.setAdapter(cAddr);
-
-        client_address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addressPopUp();
-            }
-        });
-
-
-        deliverSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (deliver) {
-                    deliverSwitch.setText("Fara livrare");
-                    deliverSwitch.setBackgroundResource(R.drawable.ripple_button_yellow);
-                    deliver = false;
-                    client_address.setVisibility(View.GONE);
-                    spinnerAddress.setVisibility(View.GONE);
-                    client_address_label.setVisibility(View.GONE);
-                    check_minimum_city("");
-
-                } else {
-                    deliverSwitch.setText("Cu Livrare");
-                    deliverSwitch.setBackgroundResource(R.drawable.ripple_button);
-                    client_address.setVisibility(View.VISIBLE);
-                    spinnerAddress.setVisibility(View.VISIBLE);
-                    client_address_label.setVisibility(View.VISIBLE);
-                    deliver = true;
-                }
-                check_forms();
-            }
-        });
-
-        paidSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (paid) {
-                    paidSwitch.setText("Neplatita!");
-                    paidSwitch.setBackgroundResource(R.drawable.ripple_button);
-                    paid = false;
-                    check_minimum_city("");
-
-                } else {
-                    paidSwitch.setText("Deja platita");
-                    paidSwitch.setBackgroundResource(R.drawable.ripple_button_yellow);
-                    paid = true;
-                }
-                check_forms();
-            }
-        });
-
-
-        finishOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String curAddr = "";
-                if (spinnerAddress != null && spinnerAddress.getSelectedItem() != null) {
-                    curAddr = (String) spinnerAddress.getSelectedItem();
-                }
-
-                userList curUser = new userList(clientAddr, curAddr, currentLocationTime, client_name.getText().toString(), client_phone.getText().toString(), current_user_orders, new Date(), 0);
-                SendOrder(list_items_intent, curUser);
-            }
-        });
-
-
-
-        //create list to store clients
-        clients_extracted = new ArrayList<>();
-
-        //create list to store phone numbers
-        reg_phone_numbers = new ArrayList<>();
-
-        //Get the database
-        db = FirebaseFirestore.getInstance();
-
-        database = FirebaseDatabase.getInstance();
-
-
-        String date = String.valueOf(android.text.format.DateFormat.format("yyyyMMdd", new java.util.Date()));
-        DatabaseReference ref = database.getReference("pizza/" + date + "/orders");
-
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentCounts = Integer.valueOf(String.valueOf(dataSnapshot.getChildrenCount())) + 1;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        connected = false;
-        db_connect();
-
-
-        //enter the collection clients // get every document
-        db.collection("clients").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-
-                        Log.e("Working Orders id", ":" + document.getData());
-
-                        //get values inside document
-                        userList userList = document.toObject(g3org3.limatexmm.userList.class);
-
-                        //add each client to internal basedata
-                        clients_extracted.add(userList);
-
-                        //add every phone number extracted to AutoComplet phone number TextView
-                        reg_phone_numbers.add(userList.getUserPhone());
-
-                        connected = true;
-                    }
-                    //show message about basedata
-                    db_connect();
-
-                } else {
-                    connected = false;
-                    //show message about basedata
-                    db_connect();
-                }
-            }
-        });
-
-
-        check_forms();
-
-        check_minimum_city("");
-
-        calc_init();
-
-
-        client_name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                check_forms();
-            }
-        });
-
-
-        //lose focus after text is correct
-        client_phone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //Reset current user orders when phone number is focused and changed
-                current_user_orders = 0;
-
-
-                //Autocomplete Client name in UI
-                client_name.setText("");
-                clientAddr.clear();
-                cAddr.notifyDataSetChanged();
-
-                //Lose focus// hide keyboard when the number is completed
-                if (client_phone.getText().length() == 10) {
-                    client_phone.clearFocus();
-                    // Close keyboard
-                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
-
-                }
-
-                //Valide other forms/inputs
-                check_forms();
-
-            }
-        });
-
-        //after textbox lose focus
-        client_phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-
-                //if focus is on phonenumber
-                if (b) {
-                    // Open keyboard
-                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(client_phone, InputMethodManager.SHOW_FORCED);
-                } else {
-                    // Close keyboard
-                    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
-                }
-
-
-                //if number is not valid
-                if (client_phone.getText().length() < 10) {
-                    client_phone.setText("");
-                } else {
-                    //if number IS VALID
-                    //Search it in extracted DB
-
-                    //Enable user UI in case there is no phone detected
-                    client_name.setEnabled(true);
-
-                    Boolean userFound = false;
-
-                    //Search for each client in basedata for the current phone number inserted
-                    for (int i = 0; i < clients_extracted.size(); i++) {
-
-                        //NEED TO add mod for not stressing UI too much
-                        dataBase_label.setText(i + "/" + clients_extracted.size());
-
-                        if (clients_extracted.get(i).getUserPhone().contains(client_phone.getText().toString())) {
-
-                            userFound = true;
-
-                            //Autocomplete Client name in UI
-                            client_name.setText(clients_extracted.get(i).getUserName());
-
-                            //Autocomplete Client address in UI
-
-                            //get addresses list from extracted data
-                            // clientAddr = new ArrayList<>();
-
-                            try {
-                                clientAddr.clear();
-                                clientAddr.addAll(clients_extracted.get(i).getUserAddr());
-                            } catch (Exception e) {
-                                Log.e("EROARE!!!!!!!", e.getMessage());
-                            }
-
-                            //set addresses to spinner
-                            cAddr.notifyDataSetChanged();
-
-                            //Get client join date
-                            Date temp_date = clients_extracted.get(i).getUserJoin();
-
-                            //Get current date
-                            Date temp_date2 = new Date();
-
-                            //Calculate the days from when he joined
-                            long diff = temp_date2.getTime() - temp_date.getTime();
-                            String jDays = String.valueOf(diff / 1000 / 60 / 60 / 24);
-
-                            //Get client orders count
-                            Integer client_orders_ex = clients_extracted.get(i).getUserOrders();
-
-                            //Set infotaiment label text
-                            dataBase_label.setText("Finalizeaza comanda, Stiu pe " + clients_extracted.get(i).getUserName() + " de " + jDays + " zile, are " + String.valueOf(client_orders_ex) + " comenzi la noi.");
-
-                            //DEBUG
-                            orderOrders(clients_extracted.get(i).getUserAddr());
-
-                            //save current user oders
-                            current_user_orders = client_orders_ex;
-
-                            //Get current user docID
-                            db.collection("clients").whereEqualTo("userPhone", client_phone.getText().toString())
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (DocumentSnapshot document : task.getResult()) {
-                                                    current_user_docId = document.getId();
-                                                }
-                                            } else {
-                                                dataBase_label.setText("Eroare fatala, id-ul clientului nu se poate gasi");
-                                            }
-                                        }
-                                    });
-
-
-                            //disable user actions to changing client name,address when the number is already in database;
-                            client_name.setEnabled(false);
-
-                            // Close keyboard
-                            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(client_phone.getWindowToken(), 0);
-
-
-                            break; //stop searching
-                        }
-                    }
-                    if (!userFound) {
-                        //Set infotaiment label text
-                        dataBase_label.setText(":(  Clientul nu exista, adauga datele si finalizeaza comanda pentru a-l adauga!");
-                        //if client doens't exist and you want deliver
-                        if (deliver) {
-                            //open address enterer
-                            if (clientAddr.size() < 1) {
-                                addressPopUp();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-
+    public void customToast(String messageTitle, String message, Boolean longer) {
+        //show custom TOAST
+        LayoutInflater inflater = getLayoutInflater();
+        View layout; // = inflater.inflate(R.layout.popup, null);
+        layout = inflater.inflate(R.layout.popup, null);
+
+        TextView text = layout.findViewById(R.id.messageTitle);
+        TextView text2 = layout.findViewById(R.id.message);
+        text.setText(messageTitle);
+        text2.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        //  toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setGravity(Gravity.FILL, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        if (longer) {
+            toast.setDuration(Toast.LENGTH_LONG);
+        }
+
+        toast.setView(layout);
+
+        toast.show();
     }
 
 

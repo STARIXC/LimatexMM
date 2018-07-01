@@ -2,21 +2,14 @@ package g3org3.limatexmm;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class orders extends AppCompatActivity {
@@ -62,7 +53,7 @@ public class orders extends AppCompatActivity {
     public void customToast(String finalt, Boolean longer) {
 
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_added, null);
+        View layout = inflater.inflate(R.layout.popup, null);
 
         TextView text = layout.findViewById(R.id.text);
         text.setText(finalt);

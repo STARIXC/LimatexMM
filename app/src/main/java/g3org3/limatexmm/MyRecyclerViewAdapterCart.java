@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -52,6 +54,12 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         holder.bind();
         final listItems item = list_itemsList.get(position);
 
+        //set image
+        Picasso.with(mContext).load(item.getImgURL())
+                .fit()
+                .centerCrop()
+                .into(holder.cart_image);
+
         //set title
         holder.cart_title.setText((position + 1) + ". " + item.getItemTitle() + " " + item.getItemSubtitle());
 
@@ -59,9 +67,9 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         String prodPrice = String.valueOf((item.getItemPrice() + item.getItemMorevalue()) * item.getItemQuantity());
 
         String temp_pharse = "";
-      //  if (Double.valueOf(extraPrice) > 0) {
-       //     temp_pharse = "(" + extraPrice.replace(".0", "") + ")";
-      //  }
+        //  if (Double.valueOf(extraPrice) > 0) {
+        //     temp_pharse = "(" + extraPrice.replace(".0", "") + ")";
+        //  }
         temp_pharse = temp_pharse + prodPrice + " Lei";
 
         holder.cart_price.setText(temp_pharse);
@@ -81,7 +89,7 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         holder.cart_more_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Notite: " + finalSS , Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Notite: " + finalSS, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -153,6 +161,7 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
         ImageButton cart_more_button;
         ImageButton cart_add;
         ImageButton cart_remove;
+        ImageView cart_image;
 
 
         public ViewHolder(View itemView) {
@@ -167,6 +176,7 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
             cart_more_button = itemView.findViewById(R.id.cart_more_button);
             cart_add = itemView.findViewById(R.id.cart_add);
             cart_remove = itemView.findViewById(R.id.cart_remove);
+            cart_image = itemView.findViewById(R.id.cart_image);
             expandableLayout.setInterpolator(new DecelerateInterpolator());
             expandableLayout.setOnExpansionUpdateListener(this);
 
@@ -187,11 +197,8 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
                 holder.expandButton.setSelected(false);
                 holder.expandableLayout.collapse();
 
-                // WhiteDark
-                holder.cart_count.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
-                holder.cart_title.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
-                holder.cart_price.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white));
-
+                // deselected
+                holder.expandButton.setBackgroundColor(Color.argb(0, 0, 0, 0));
                 holder.expandButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_expand_more_black_24dp));
 
 
@@ -206,12 +213,9 @@ public class MyRecyclerViewAdapterCart extends RecyclerView.Adapter<MyRecyclerVi
                 expandButton.setSelected(true);
                 expandableLayout.expand();
 
-                // White
-                cart_count.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white_dark));
-                cart_title.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white_dark));
-                cart_price.setBackground(mContext.getResources().getDrawable(R.drawable.ripple_button_white_dark));
-
-               expandButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_expand_less_black_24dp));
+                // selected
+                expandButton.setBackgroundColor(Color.argb(20, 0, 0, 0));
+                expandButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_expand_less_black_24dp));
 
                 selectedItem = position;
             }
