@@ -29,6 +29,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
+
     <android.support.design.button.MaterialButton
         android:id="@+id/casa"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
@@ -147,7 +148,7 @@
         android:text="Administrator"
         android:textColor="@color/colorDarkGrey"
         android:textSize="16sp"
-        app:cornerRadius="0dp"
+        app:cornerRadius="10dp"
         app:icon="@drawable/ic_person_outline_black_24dp"
         app:iconTint="@color/colorDarkGrey"
         app:layout_constraintBottom_toTopOf="@id/botSpace"

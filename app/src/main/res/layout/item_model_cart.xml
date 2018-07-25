@@ -29,7 +29,7 @@
         <ImageView
             android:id="@+id/cart_image"
             android:layout_width="50dp"
-            android:padding="6dp"
+            android:padding="5dp"
             android:layout_height="50dp"
             android:scaleType="fitCenter"
             android:src="@drawable/pizza1"
@@ -40,7 +40,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:scaleType="center"
+            android:scaleType="fitCenter"
             android:padding="4dp"
             android:src="@drawable/circular_frame"
             app:layout_constraintBottom_toTopOf="@+id/midSpace"

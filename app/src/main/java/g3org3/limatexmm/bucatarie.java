@@ -95,24 +95,7 @@ public class bucatarie extends AppCompatActivity {
 
             }
         });
-
-        //listen for data from adapter
-     //   LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("showDialog"));
-
     }
-/*
-    public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String personName = intent.getStringExtra("personName");
-            String phone = intent.getStringExtra("phone");
-
-            //show the dialog
-            expandItem(personName, phone, "", "", "");
-
-        }
-    };
-*/
 
     public void filterList() {
         if (loaded) {
@@ -144,7 +127,6 @@ public class bucatarie extends AppCompatActivity {
         }
     }
 
-
     public void updateList() {
 
         //update the adapter
@@ -153,78 +135,5 @@ public class bucatarie extends AppCompatActivity {
         rv_bucatarie.setAdapter(adapter);
 
     }
-
-
-    /*
-
-
-
-
-
-
-    Dialog myDialog;
-    ImageButton back;
-    ImageButton ok;
-    TextView deliverMore;
-    Button personName;
-    Button phone;
-    Button time;
-    Button deliver;
-
-
-
-
-    //send data to activity
-    String personName = item.getUserSimple().getUserName();
-    String phone = item.getUserSimple().getUserPhone();
-    String data;
-    String delivery;
-    String moreDelivery;
-    Intent intent = new Intent("showDialog");
-                intent.putExtra("personName",personName);
-                intent.putExtra("phone",phone);
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
-
-
-    public void expandItem(String personNameData, String phoneData, String timeData, String deliveryData, String moreDeliveryData) {
-
-        myDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        myDialog.setContentView(R.layout.bucatarie_meniu);
-        myDialog.setTitle("More");
-
-
-        back = myDialog.findViewById(R.id.back);
-        ok = myDialog.findViewById(R.id.ok);
-        deliverMore = myDialog.findViewById(R.id.deliverMore);
-        personName = myDialog.findViewById(R.id.personName);
-        phone = myDialog.findViewById(R.id.phone);
-        time = myDialog.findViewById(R.id.time);
-        deliver = myDialog.findViewById(R.id.deliver);
-
-        myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                dialogInterface.dismiss();
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                myDialog.dismiss();
-            }
-        });
-
-        personName.setText(personNameData);
-        phone.setText(phoneData);
-
-        //  deliver.setText(item.additionalSimple.getOrderDeliver());
-
-
-
-        myDialog.show();
-
-    }
-*/
 
 }

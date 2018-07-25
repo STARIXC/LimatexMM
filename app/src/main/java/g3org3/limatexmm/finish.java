@@ -1,5 +1,6 @@
 package g3org3.limatexmm;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -176,6 +177,7 @@ public class finish extends AppCompatActivity {
 
 
         deliverSwitch.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 if (deliver) {
@@ -199,6 +201,7 @@ public class finish extends AppCompatActivity {
         });
 
         paidSwitch.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 if (paid) {
@@ -1040,11 +1043,6 @@ public class finish extends AppCompatActivity {
     }
 
 
-    public static int getThemeAccentColor(final Context context) {
-        final TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, value, true);
-        return value.data;
-    }
 
     public void calculate_total() {
 

@@ -4,8 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,14 +38,12 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +70,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     SearchView search_bar;
     RecyclerView search_result;
     MyRecyclerViewAdapterSearch search_result_adapter;
-    TextView search_hint;
 
     SharedPreferences sharedPref;
     TextView profileName;
@@ -83,7 +80,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     TextView count;
     ImageButton remove;
     TextView commentValue;
-    Button done;
+    ImageButton done;
     Button dont;
     MultiAutoCompleteTextView comment;
     //dialog items END
@@ -144,6 +141,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public void swapView(boolean anim, boolean save) {
         if (rv_items_c2.getVisibility() != View.VISIBLE) {    //determine which view to switch
             if (anim) {
@@ -189,7 +187,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         rv_items_c2 = findViewById(R.id.rv_items_c2);
         search_bar = findViewById(R.id.search_bar);
         search_result = findViewById(R.id.search_result);
-        search_hint = findViewById(R.id.search_hint);
 
         //search_bar click listener
         search_bar.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +202,10 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         search_result_adapter = new MyRecyclerViewAdapterSearch(this, list_itemsList);
         search_result.setAdapter(search_result_adapter);
 
-        search_bar.setIconified(false);
+        //search_bar.setIconified(false);
+        // Close keyboard
+        //((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(search_bar.getWindowToken(), 0);
+
 
         search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -222,6 +222,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
 
 
         search_result_adapter.setClickListener(this);
+
 
         //load action bar
         this.setSupportActionBar(appBar);
@@ -373,6 +374,7 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
     }
 
 
+    @SuppressLint("SetTextI18n")
     public void cartUpdate() {
         if (list_itemsList_cart.size() > 0) {
             totalPrice.setText(rv_cart_adapter.getTotalPrice() + " lei");
@@ -405,6 +407,16 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         modifiedCurItem = curItem;
 
         myDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+
+        //set animations to dialog
+        Objects.requireNonNull(myDialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        //apply background dimming effect + animation
+        WindowManager.LayoutParams lp = myDialog.getWindow().getAttributes();
+        lp.dimAmount=0.5f;
+        myDialog.getWindow().setAttributes(lp);
+        myDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
         myDialog.setContentView(R.layout.item_add);
         myDialog.setTitle("More");
 
@@ -555,7 +567,6 @@ public class casa extends AppCompatActivity implements MyRecyclerViewAdapter.Ite
         text2.setText(message);
 
         Toast toast = new Toast(getApplicationContext());
-        //  toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setGravity(Gravity.FILL, 0, 0);
         toast.setDuration(Toast.LENGTH_SHORT);
         if (longer) {

@@ -5,9 +5,15 @@
     android:layout_width="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#80000000"
+    android:animateLayoutChanges="true"
     android:clipToPadding="true"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:id="@+id/dont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 <android.support.constraint.ConstraintLayout
     android:layout_width="0dp"
@@ -20,7 +26,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintWidth_percent="0.7">
+    app:layout_constraintWidth_percent="0.8">
 
 
     <ImageButton
@@ -29,13 +35,13 @@
         android:layout_height="0dp"
         android:background="@drawable/ripple_button_white"
         android:padding="16dp"
-        android:alpha="0.8"
+        android:tint="@color/colorDarkGrey"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_add_circle_outline_black_24dp"
         app:layout_constraintHeight_percent="0.35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.10" />
+        app:layout_constraintWidth_percent="0.12" />
 
     <TextView
         android:id="@+id/count"
@@ -49,7 +55,7 @@
         android:textSize="30sp"
         app:layout_constraintHeight_percent="0.30"
         app:layout_constraintTop_toBottomOf="@id/add"
-        app:layout_constraintWidth_percent="0.10" />
+        app:layout_constraintWidth_percent="0.12" />
 
     <ImageButton
         android:id="@+id/remove"
@@ -57,13 +63,13 @@
         android:layout_height="0dp"
         android:gravity="top|center"
         android:padding="16dp"
-        android:alpha="0.8"
+        android:tint="@color/colorDarkGrey"
         android:scaleType="fitCenter"
         android:background="@drawable/ripple_button_white"
         android:src="@drawable/ic_remove_circle_outline_black_24dp"
         app:layout_constraintHeight_percent="0.35"
         app:layout_constraintTop_toBottomOf="@id/count"
-        app:layout_constraintWidth_percent="0.10" />
+        app:layout_constraintWidth_percent="0.12" />
 
 
 
@@ -101,35 +107,24 @@
         app:layout_constraintTop_toBottomOf="@id/comment" />
 
 
-    <android.support.design.button.MaterialButton
+    <ImageButton
         android:id="@+id/done"
         android:layout_width="0dp"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_height="0dp"
-        android:textSize="15sp"
-        app:icon="@drawable/ic_check_black_24dp"
-        android:gravity="center"
-        app:iconSize="60dp"
+        android:gravity="top|center"
+        android:padding="16dp"
+        android:tint="@color/colorDarkGrey"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_check_black_24dp"
+        android:background="@drawable/ripple_button_white"
         app:layout_constraintStart_toEndOf="@id/comment"
-        app:rippleColor="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/commentValue"
-        app:layout_constraintWidth_percent="0.1" />
+        app:layout_constraintWidth_percent="0.12" />
 
 </android.support.constraint.ConstraintLayout>
 
-    <android.support.design.button.MaterialButton
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:id="@+id/dont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@color/colorWhite"
-        android:text="Click in afara dialogului pentru a anula"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="@id/dialogu"
-        app:layout_constraintEnd_toEndOf="@id/dialogu"
-        app:layout_constraintTop_toBottomOf="@id/dialogu"/>
 
 </android.support.constraint.ConstraintLayout>
